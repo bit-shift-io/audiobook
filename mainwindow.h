@@ -2,8 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QModelIndex>
 
-class AudioPlayer;
+class Player;
+class Library;
+class Settings;
+class LibraryModel;
 
 namespace Ui {
 class MainWindow;
@@ -16,8 +20,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    AudioPlayer *audio_player;
-    //Playlist *playlist;
+    Player *player;
+    Library *library;
+    Settings *settings;
 
 private:
     Ui::MainWindow *ui;
@@ -25,7 +30,8 @@ private:
 public slots:
     void play_pause();
     void bookmark();
-    void open_file();
+    void pick_library_directory();
+    void play_selected_book(QModelIndex idx);
 
 signals:
     void volume_changed();

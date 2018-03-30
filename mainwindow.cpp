@@ -1,8 +1,10 @@
 #include "mainwindow.h"
-#include "audioplayer.h"
+#include "player.h"
+#include "library.h"
 #include "ui_mainwindow.h"
+#include "settings.h"
+#include "librarymodel.h"
 #include <QtWidgets>
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -10,12 +12,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui = new Ui::MainWindow();
     ui->setupUi(this);
 
-    audio_player = new AudioPlayer();
-    //playlist = new Playlist();
+    player = new Player();
+    library = new Library();
+    settings = new Settings();
 
     // connect buttons to ui
     connect(ui->button_play_pause, SIGNAL(clicked()), this, SLOT(play_pause()));
-    connect(ui->button_settings, SIGNAL(clicked()), this, SLOT(open_file()));
+    connect(ui->button_settings, SIGNAL(clicked()), this, SLOT(pick_library_directory()));
 
     // theme buttons
     ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
@@ -27,6 +30,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->button_settings->setToolTip(tr("Open a file..."));
     ui->button_settings->setFixedSize(ui->button_settings->sizeHint());
     ui->button_settings->setText(tr("..."));
+
+    // library view/table
+    LibraryModel *library_model = new LibraryModel(0,library);
+    ui->view_library->setModel(library_model);
+    ui->view_library->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->view_library->verticalHeader()->hide();
+
+   // QItemSelectionModel *sm = ui->view_library->selectionModel();
+   // connect(sm, SIGNAL(doubleClicked(QModelIndex,QModelIndex)),this, SLOT(on_tableViewTriggerSelectionModel_currentRowChanged(QModelIndex,QModelIndex)));
+
+    connect(ui->view_library, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(play_selected_book(QModelIndex)));
+
 
 }
 
@@ -40,18 +55,21 @@ void MainWindow::bookmark()
 
 }
 
-void MainWindow::play_pause()
+void MainWindow::play_selected_book(QModelIndex idx)
 {
-    audio_player->togglePlayback();
+    const Book &book = library->get_book_list().at(idx.row());
+    player->play_book(book);
 }
 
-void MainWindow::open_file()
+void MainWindow::play_pause()
 {
-    QFileDialog fileDialog(this);
-    fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
-    fileDialog.setWindowTitle(tr("Open File"));
-    fileDialog.setMimeTypeFilters(AudioPlayer::supportedMimeTypes());
-    fileDialog.setDirectory(QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath()));
-    if (fileDialog.exec() == QDialog::Accepted)
-        audio_player->playUrl(fileDialog.selectedUrls().constFirst());
+    player->toggle_play_pause();
+}
+
+void MainWindow::pick_library_directory()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Library"),
+                                                    QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath()),
+                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    library->set_library_directory(dir);
 }

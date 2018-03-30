@@ -1,4 +1,4 @@
-#include "audioplayer.h"
+#include "player.h"
 #include "mainwindow.h"
 
 #include <QApplication>
@@ -28,7 +28,7 @@ static bool associateFileTypes()
 
     settings.beginGroup(QStringLiteral("SupportedTypes"));
     QMimeDatabase mimeDatabase;
-    const QStringList supportedMimeTypes = AudioPlayer::supportedMimeTypes();
+    const QStringList supportedMimeTypes = Player::supportedMimeTypes();
     for (const QString &fileType : supportedMimeTypes) {
         const QStringList suffixes = mimeDatabase.mimeTypeForName(fileType).suffixes();
         for (QString suffix : suffixes) {
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     parser.setApplicationDescription(QGuiApplication::applicationDisplayName());
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.addPositionalArgument(QStringLiteral("url"), AudioPlayer::tr("The URL to open."));
+    parser.addPositionalArgument(QStringLiteral("url"), Player::tr("The URL to open."));
     parser.process(app);
 
 
