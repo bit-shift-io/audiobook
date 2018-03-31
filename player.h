@@ -1,9 +1,9 @@
  
-#ifndef AUDIOPLAYER_H
-#define AUDIOPLAYER_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include <QWidget>
 #include <QMediaPlayer>
+#include <QPoint>
 
 
 class Book;
