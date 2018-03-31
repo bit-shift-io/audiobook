@@ -60,18 +60,16 @@ int main(int argc, char *argv[])
     //if (!associateFileTypes())
     //    return -1;
 
+    /*
     QCommandLineParser parser;
     parser.setApplicationDescription(QGuiApplication::applicationDisplayName());
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument(QStringLiteral("url"), Player::tr("The URL to open."));
     parser.process(app);
-
+    */
 
     MainWindow *main_window = new MainWindow();
-    //if (!parser.positionalArguments().isEmpty())
-    //    main_window.loadFile(parser.positionalArguments().first());
-    //      player.playUrl(QUrl::fromUserInput(parser.positionalArguments().constFirst(), QDir::currentPath(), QUrl::AssumeLocalFile));
     main_window->show();
 
     return app.exec();

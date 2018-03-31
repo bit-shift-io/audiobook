@@ -40,8 +40,11 @@ QStringList Player::supportedMimeTypes()
 void Player::play_book(const Book &book)
 {
     QMediaPlaylist *playlist = new QMediaPlaylist;
-    QUrl url = QUrl::fromLocalFile(book.files.at(0));
-    playlist->addMedia(url);
+    for(auto file_name: book.files)
+    {
+        QUrl url = QUrl::fromLocalFile(file_name);
+        playlist->addMedia(url);
+    }
     playlist->setCurrentIndex(1);
     mediaPlayer.setPlaylist(playlist);
     mediaPlayer.play();

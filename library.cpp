@@ -20,8 +20,7 @@ QVector<Book> Library::get_book_list() {
     return book_list;
 }
 
-bool caseInsensitiveLessThan(const Book &s1, const Book &s2)
-{
+bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
     return s1.title.toLower() < s2.title.toLower();
 }
 
@@ -42,8 +41,8 @@ void Library::update_library_list() {
 
         // get abs paths
         QStringList abs_current_files;
-        for (QStringList::Iterator it=current_files.begin(); it != current_files.end(); ++it) {
-            abs_current_files << current_dir.absoluteFilePath(*it);
+        for (auto current_file : current_files) {
+            abs_current_files << current_dir.absoluteFilePath(current_file);
         }
 
         if (current_files.count() > 0) {
