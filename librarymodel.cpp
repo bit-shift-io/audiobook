@@ -1,5 +1,6 @@
 #include "librarymodel.h"
 #include "library.h"
+#include "audiohelper.h"
 
 LibraryModel::LibraryModel(QObject *parent, Library *p_library) :QAbstractTableModel(parent)
 {
@@ -35,7 +36,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
         case 1:
             return book.chapters.count();
         case 2:
-            return book.chapter_times.count();
+            return AudioHelper::get_display_time(book.time);
         }
     }
     return QVariant();

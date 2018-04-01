@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QStringList>
+#include <QTime>
+#include <QVector>
 
 class Book
 {
@@ -11,12 +13,12 @@ public:
     Book();
     QString title;
     QStringList chapters;
-    QStringList chapter_times;
+    QVector<uint> chapter_times;
 
     QString directory;
     QStringList files;
 
-    QString time;
+    uint time;
 
 };
 

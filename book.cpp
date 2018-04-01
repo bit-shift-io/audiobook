@@ -2,5 +2,5 @@
 
 Book::Book()
 {
-
+    time = 0;
 }

@@ -12,4 +12,14 @@ qmake -project
 qmake
 make
 
+# build and install taglib:
 
+cmake -DBUILD_EXAMPLES=ON .
+
+or to a path: cmake -DCMAKE_INSTALL_PREFIX=/usr/
+
+make
+
+sudo make install
+
+should install to /usr/local/include/taglib/

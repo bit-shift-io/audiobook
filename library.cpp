@@ -1,5 +1,6 @@
 #include "library.h"
 #include "book.h"
+#include "audiohelper.h"
 #include <QDirIterator>
 #include <QDir>
 #include <QDebug>
@@ -39,19 +40,25 @@ void Library::update_library_list() {
         QDir current_dir(directories.filePath());
         QStringList current_files = current_dir.entryList(file_filters, QDir::NoDotAndDotDot | QDir::Files);
 
-        // get abs paths
-        QStringList abs_current_files;
-        for (auto current_file : current_files) {
-            abs_current_files << current_dir.absoluteFilePath(current_file);
-        }
-
         if (current_files.count() > 0) {
             Book book;
+
+            // get abs paths and file times
+            QStringList abs_current_files;
+
+            for (auto current_file : current_files) {
+                QString abs_current_file = current_dir.absoluteFilePath(current_file);
+                uint current_length = AudioHelper::get_time_msec(abs_current_file);
+
+                abs_current_files << abs_current_file;
+                book.chapter_times.append(current_length);
+                book.time += current_length;
+            }
+
             book.title = lib_dir.relativeFilePath(directories.filePath());
             book.files = abs_current_files;
             book.chapters = current_files;
             book.directory = lib_dir.relativeFilePath(directories.filePath());
-
             book_list.append(book);
         }
 

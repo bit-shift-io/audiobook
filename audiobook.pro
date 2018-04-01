@@ -4,8 +4,10 @@
 
 TEMPLATE = app
 TARGET = audiobook
-INCLUDEPATH += .
-QT += widgets multimedia
+INCLUDEPATH += . /usr/local/include/
+QT += widgets multimedia core
+LIBS += -ltag -lz
+
 
 # The following define makes your compiler warn you if you use any
 # feature of Qt which has been marked as deprecated (the exact warnings
@@ -25,7 +27,8 @@ HEADERS += book.h \
            mainwindow.h \
            player.h \
            playlist.h \
-           settings.h
+           settings.h \
+    audiohelper.h
 FORMS += mainwindow.ui
 SOURCES += book.cpp \
            library.cpp \
@@ -34,4 +37,5 @@ SOURCES += book.cpp \
            mainwindow.cpp \
            player.cpp \
            playlist.cpp \
-           settings.cpp
+           settings.cpp \
+    audiohelper.cpp
