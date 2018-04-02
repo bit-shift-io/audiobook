@@ -32,9 +32,13 @@ public slots:
     void bookmark();
     void pick_library_directory();
     void play_selected_book(QModelIndex idx);
+    void set_position(int position);
+    void set_volume(int volume);
+    void update_position(qint64 position);
+    void update_duration(qint64 duration);
+    void update_info();
+    void create_shortcuts();
 
-signals:
-    void volume_changed();
 };
 
 #endif // MAINWINDOW_H
