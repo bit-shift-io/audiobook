@@ -28,7 +28,8 @@ HEADERS += book.h \
            player.h \
            playlist.h \
            settings.h \
-    audiohelper.h
+    audiohelper.h \
+    stretchingheader.h
 FORMS += mainwindow.ui
 SOURCES += book.cpp \
            library.cpp \
@@ -38,4 +39,5 @@ SOURCES += book.cpp \
            player.cpp \
            playlist.cpp \
            settings.cpp \
-    audiohelper.cpp
+    audiohelper.cpp \
+    stretchingheader.cpp

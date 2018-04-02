@@ -26,6 +26,19 @@ int LibraryModel::columnCount(const QModelIndex & /*parent*/) const
 
 QVariant LibraryModel::data(const QModelIndex &index, int role) const
 {
+    if (role == Qt::TextAlignmentRole)
+    {
+        switch (index.column())
+        {
+        case 0:
+            return Qt::AlignLeft;
+        case 1:
+            return Qt::AlignCenter;
+        case 2:
+            return Qt::AlignCenter;
+        }
+    }
+
     if (role == Qt::DisplayRole)
     {
         const Book &book = library->get_book_list().at(index.row());

@@ -38,6 +38,7 @@ public slots:
     void update_duration(qint64 duration);
     void update_info();
     void create_shortcuts();
+    void quit();
 
 };
 

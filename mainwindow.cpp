@@ -5,6 +5,7 @@
 #include "settings.h"
 #include "librarymodel.h"
 #include "audiohelper.h"
+#include "stretchingheader.h"
 #include <QtWidgets>
 #include <QShortcut>
 
@@ -16,11 +17,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     library = new Library();
     settings = new Settings();
 
-    // connect buttons to ui
-    connect(ui->button_play_pause, SIGNAL(clicked()), this, SLOT(play_pause()));
-    connect(ui->button_settings, SIGNAL(clicked()), this, SLOT(pick_library_directory()));
-    connect(ui->slider_progress, SIGNAL(valueChanged(int)), this, SLOT(set_position(int)));
-    connect(ui->slider_volume, SIGNAL(valueChanged(int)), this, SLOT(set_volume(int)));
 
     // play/pause
     ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
@@ -36,11 +32,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->button_settings->setIcon(style()->standardIcon(QStyle::SP_DialogApplyButton));
     ui->button_settings->setToolTip(tr("Settings"));
     //ui->button_settings->setFixedSize(ui->button_settings->sizeHint());
+    ui->button_settings->setPopupMode(QToolButton::InstantPopup);
+
+    QMenu *menu_settings = new QMenu();
+    QAction *action_library = new QAction(tr("&Library"),this);
+    action_library->setStatusTip(tr("Change library path"));
+    menu_settings->addAction(action_library);
+
+    QAction *action_quit = new QAction(tr("&Quit"),this);
+    action_quit->setStatusTip(tr("Quit"));
+    menu_settings->addAction(action_quit);
+
+    ui->button_settings->setMenu(menu_settings);
 
     // chapter/bookmarks button
     ui->button_chapters->setIcon(style()->standardIcon(QStyle::SP_ComputerIcon));
-    QMenu *menu_chapters = new QMenu(this);
-    QAction *act0 = new QAction("test",this);
+    ui->button_chapters->setPopupMode(QToolButton::InstantPopup);
+    QMenu *menu_chapters = new QMenu();
+    QAction *act0 = new QAction("chapter 01",this);
     act0->setObjectName("act0");
     menu_chapters->addAction(act0);
     ui->button_chapters->setMenu(menu_chapters);
@@ -48,10 +57,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // library view/table
     LibraryModel *library_model = new LibraryModel(0,library);
     ui->view_library->setModel(library_model);
-    ui->view_library->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->view_library->verticalHeader()->hide();
 
+    StretchingHeader *header = new StretchingHeader(Qt::Horizontal, ui->view_library);
+    header->setStretchFactors(StretchFactors() << 4 << 1 << 1);
+    header->setSectionResizeMode(QHeaderView::Fixed);
+    header->setStretchLastSection(true);
+    ui->view_library->setHorizontalHeader(header);
     connect(ui->view_library, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(play_selected_book(QModelIndex)));
+
+    // connect buttons to ui
+    connect(ui->button_play_pause, SIGNAL(clicked()), this, SLOT(play_pause()));
+
+    connect(ui->slider_progress, SIGNAL(valueChanged(int)), this, SLOT(set_position(int)));
+    connect(ui->slider_volume, SIGNAL(valueChanged(int)), this, SLOT(set_volume(int)));
+
+    connect(action_library, SIGNAL(triggered()), this, SLOT(pick_library_directory()));
+    connect(action_quit, SIGNAL(triggered()), this, SLOT(quit()));
 
     create_shortcuts();
 }
@@ -130,12 +152,15 @@ void MainWindow::pick_library_directory() {
     library->set_library_directory(dir);
 }
 
+void MainWindow::quit() {
+    QCoreApplication::quit();
+}
 
-void MainWindow::create_shortcuts()
-{
+void MainWindow::create_shortcuts() {
     /*
+
     QShortcut *quitShortcut = new QShortcut(QKeySequence::Quit, this);
-    connect(quitShortcut, &QShortcut::activated, QCoreApplication::quit);
+    connect(quitShortcut, &QShortcut::activated, this, SLOT(quit()));
 
     QShortcut *openShortcut = new QShortcut(QKeySequence::Open, this);
     connect(openShortcut, &QShortcut::activated, this, SLOT(pick_library_directory()));
@@ -154,6 +179,6 @@ void MainWindow::create_shortcuts()
 
     QShortcut *decreaseShortcut = new QShortcut(Qt::Key_Down, this);
     connect(decreaseShortcut, &QShortcut::activated, player, SLOT(decrease_volume()));
-    */
+*/
 }
 
