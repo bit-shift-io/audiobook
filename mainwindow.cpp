@@ -17,11 +17,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     library = new Library();
     settings = new Settings();
 
-
     // play/pause
     ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
     ui->button_play_pause->setToolTip(tr("Play"));
-    //ui->button_play_pause->setFixedSize(ui->button_play_pause->sizeHint());
 
     // rewind
     ui->button_rewind->setIcon(style()->standardIcon(QStyle::SP_ArrowBack));
@@ -67,13 +65,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(ui->view_library, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(play_selected_book(QModelIndex)));
 
     // connect buttons to ui
-    connect(ui->button_play_pause, SIGNAL(clicked()), this, SLOT(play_pause()));
+    connect(ui->button_play_pause, &QToolButton::clicked, player, &Player::toggle_play_pause);
 
-    connect(ui->slider_progress, SIGNAL(valueChanged(int)), this, SLOT(set_position(int)));
-    connect(ui->slider_volume, SIGNAL(valueChanged(int)), this, SLOT(set_volume(int)));
+    //connect(ui->slider_progress, &QSlider::valueChanged, this, &MainWindow::set_position);
+    connect(ui->slider_volume, &QSlider::valueChanged, player, &Player::setVolume);
 
-    connect(action_library, SIGNAL(triggered()), this, SLOT(pick_library_directory()));
-    connect(action_quit, SIGNAL(triggered()), this, SLOT(quit()));
+    connect(action_library, &QAction::triggered, this,  &MainWindow::pick_library_directory);
+    connect(action_quit, &QAction::triggered, this, &QCoreApplication::quit);
+
+    // connect media player
+    connect(player, &QMediaPlayer::stateChanged, this, &MainWindow::update_media_state);
+    connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::update_position);
+    connect(player, &QMediaPlayer::mediaChanged, this, &MainWindow::update_media_info);
+
 
     create_shortcuts();
 }
@@ -91,23 +95,23 @@ void MainWindow::play_selected_book(QModelIndex idx) {
     player->play_book(book);
 }
 
-void MainWindow::play_pause() {
-    if (player->state() == QMediaPlayer::PlayingState) {
+void MainWindow::update_media_state() {
+    if (player->state() == QMediaPlayer::PausedState) {
         ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
         ui->button_play_pause->setToolTip(tr("Play"));
-        player->pause();
     }
     else {
-
         ui->button_play_pause->setToolTip(tr("Pause"));
         ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
-        player->play();
     }
 }
 
+void MainWindow::update_media_info() {
+    ui->label_track_time->setText(AudioHelper::get_display_time(player->get_playlist_length()));
+}
 
 void MainWindow::update_position(qint64 position) {
-    ui->slider_progress->setValue(position);
+    ui->slider_progress->setValue(player->get_progress());
     ui->label_track_position->setText(AudioHelper::get_display_time(position));
 }
 
@@ -124,25 +128,9 @@ void MainWindow::set_position(int position) {
         player->setPosition(position);
 }
 
-void MainWindow::set_volume(int volume) {
-    player->setVolume(volume);
-}
 
 void MainWindow::update_info() {
     ui->label_track_time->setText(AudioHelper::get_display_time((player->duration())));
-    /*
-    QStringList info;
-    if (player->mediaPlayer.isMetaDataAvailable()) {
-        QString author = player->mediaPlayer.metaData(QStringLiteral("Author")).toString();
-        if (!author.isEmpty())
-            info.append(author);
-        QString title = player->mediaPlayer.metaData(QStringLiteral("Title")).toString();
-        if (!title.isEmpty())
-            info.append(title);
-    }
-    info.append(formatTime(player->mediaPlayer.duration()));
-    infoLabel->setText(info.join(tr(" - ")));
-    */
 }
 
 void MainWindow::pick_library_directory() {
@@ -157,28 +145,26 @@ void MainWindow::quit() {
 }
 
 void MainWindow::create_shortcuts() {
-    /*
 
     QShortcut *quitShortcut = new QShortcut(QKeySequence::Quit, this);
-    connect(quitShortcut, &QShortcut::activated, this, SLOT(quit()));
+    connect(quitShortcut, &QShortcut::activated, this, &QCoreApplication::quit);
 
     QShortcut *openShortcut = new QShortcut(QKeySequence::Open, this);
-    connect(openShortcut, &QShortcut::activated, this, SLOT(pick_library_directory()));
+    connect(openShortcut, &QShortcut::activated, this, &MainWindow::pick_library_directory);
 
     QShortcut *toggleShortcut = new QShortcut(Qt::Key_Space, this);
-    connect(toggleShortcut, &QShortcut::activated, this, SLOT(play_pause()));
+    connect(toggleShortcut, &QShortcut::activated, player, &Player::toggle_play_pause);
 
     QShortcut *forwardShortcut = new QShortcut(Qt::Key_Right, this);
-    connect(forwardShortcut, &QShortcut::activated, player, SLOT(seek_forward()));
+    connect(forwardShortcut, &QShortcut::activated, player, &Player::seek_forward);
 
     QShortcut *backwardShortcut = new QShortcut(Qt::Key_Left, this);
-    connect(backwardShortcut, &QShortcut::activated, player, SLOT(seek_backward()));
+    connect(backwardShortcut, &QShortcut::activated, player, &Player::seek_backward);
 
     QShortcut *increaseShortcut = new QShortcut(Qt::Key_Up, this);
-    connect(increaseShortcut, &QShortcut::activated, player, SLOT(increase_volume()));
+    connect(increaseShortcut, &QShortcut::activated, player, &Player::increase_volume);
 
     QShortcut *decreaseShortcut = new QShortcut(Qt::Key_Down, this);
-    connect(decreaseShortcut, &QShortcut::activated, player, SLOT(decrease_volume()));
-*/
+    connect(decreaseShortcut, &QShortcut::activated, player, &Player::decrease_volume);
 }
 

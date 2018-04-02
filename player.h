@@ -13,6 +13,10 @@ public:
     explicit Player(QMediaPlayer *parent = nullptr);
     static QStringList supportedMimeTypes();
     static QStringList supportedSuffixes();
+    uint playlist_time;
+    float progress_scale;
+    uint get_playlist_length();
+    uint get_progress();
 
 public slots:
     void play_url(const QUrl& url);
@@ -21,11 +25,8 @@ public slots:
     void seek_backward();
     void increase_volume();
     void decrease_volume();
+    void toggle_play_pause();
 
-signals:
-    void duration_changed();
-    void position_changed();
-    void data_changed();
 
 };
 
