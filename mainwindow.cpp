@@ -4,7 +4,8 @@
 #include "ui_mainwindow.h"
 #include "settings.h"
 #include "librarymodel.h"
-#include "audiohelper.h"
+#include "audioutil.h"
+#include "book.h"
 #include "stretchingheader.h"
 #include <QtWidgets>
 #include <QShortcut>
@@ -78,8 +79,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::update_position);
     connect(player, &QMediaPlayer::mediaChanged, this, &MainWindow::update_media_info);
 
-
     create_shortcuts();
+    read_settings();
 }
 
 MainWindow::~MainWindow() {
@@ -91,9 +92,21 @@ void MainWindow::bookmark() {
 }
 
 void MainWindow::play_selected_book(QModelIndex idx) {
-    const Book &book = library->get_book_list().at(idx.row());
-    player->play_book(book);
+    const Book& book = library->get_book_list().at(idx.row());
+    player->set_playing_book(book);
+    player->play();
+    write_settings();
 }
+
+void MainWindow::set_playing_book(const QString &book_directory) {
+    const Book* book = library->find_by_directory(book_directory);
+    if(!book)
+        return;
+    int index = library->get_book_index(*book);
+    ui->view_library->selectRow(index);
+    player->set_playing_book(*book);
+}
+
 
 void MainWindow::update_media_state() {
     if (player->state() == QMediaPlayer::PausedState) {
@@ -107,12 +120,12 @@ void MainWindow::update_media_state() {
 }
 
 void MainWindow::update_media_info() {
-    ui->label_track_time->setText(AudioHelper::get_display_time(player->get_playlist_length()));
+    ui->label_track_time->setText(AudioUtil::get_display_time(player->get_playlist_length()));
 }
 
 void MainWindow::update_position(qint64 position) {
     ui->slider_progress->setValue(player->get_progress());
-    ui->label_track_position->setText(AudioHelper::get_display_time(position));
+    ui->label_track_position->setText(AudioUtil::get_display_time(position));
 }
 
 void MainWindow::update_duration(qint64 duration) {
@@ -130,7 +143,7 @@ void MainWindow::set_position(int position) {
 
 
 void MainWindow::update_info() {
-    ui->label_track_time->setText(AudioHelper::get_display_time((player->duration())));
+    ui->label_track_time->setText(AudioUtil::get_display_time((player->duration())));
 }
 
 void MainWindow::pick_library_directory() {
@@ -142,6 +155,49 @@ void MainWindow::pick_library_directory() {
 
 void MainWindow::quit() {
     QCoreApplication::quit();
+}
+
+void MainWindow::write_settings() {
+    QSettings settings("bit-shift", "audio book");
+
+    settings.beginGroup("MainWindow");
+    settings.setValue("size", size());
+    settings.setValue("pos", pos());
+    settings.endGroup();
+
+    settings.beginGroup("Library");
+    settings.setValue("library_directory", library->get_library_directory());
+    settings.endGroup();
+
+    settings.beginGroup("Player");
+    settings.setValue("playing_book_directory", player->get_playing_book().directory);
+    settings.endGroup();
+
+}
+
+void MainWindow::read_settings() {
+    QSettings settings("bit-shift", "audio book");
+
+    settings.beginGroup("MainWindow");
+    resize(settings.value("size", QSize(600, 400)).toSize());
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+    settings.endGroup();
+
+    settings.beginGroup("Library");
+    QString dir = settings.value("library_directory", QDir::homePath()).toString();
+    library->set_library_directory(dir);
+    settings.endGroup();
+
+    settings.beginGroup("Player");
+    QString playing_book_dir = settings.value("playing_book_directory", "").toString();
+    set_playing_book(playing_book_dir);
+    settings.endGroup();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    write_settings();
+    event->accept();
 }
 
 void MainWindow::create_shortcuts() {

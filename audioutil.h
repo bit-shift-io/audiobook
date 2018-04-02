@@ -1,10 +1,10 @@
-#ifndef AUDIOHELPER_H
-#define AUDIOHELPER_H
+#ifndef AudioUtil_H
+#define AudioUtil_H
 
 #include <QString>
 #include <QTime>
 
-class AudioHelper
+class AudioUtil
 {
 public:
     static QString get_display_time(uint p_time);
@@ -14,4 +14,4 @@ public:
     static QTime add_time(QTime &a, QTime &b);
 };
 
-#endif // AUDIOHELPER_H
+#endif // AudioUtil_H

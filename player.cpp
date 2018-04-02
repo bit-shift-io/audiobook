@@ -15,9 +15,10 @@ QStringList Player::supportedMimeTypes() {
     return result;
 }
 
-void Player::play_book(const Book &book) {
+void Player::set_playing_book(const Book &p_book) {
+    book = p_book;
     playlist_time = book.time;
-    progress_scale = 100.0/playlist_time;
+    progress_scale = 10000.0/playlist_time;
 
     QMediaPlaylist *playlist = new QMediaPlaylist;
     for(auto file_name: book.files)
@@ -27,8 +28,10 @@ void Player::play_book(const Book &book) {
     }
     playlist->setCurrentIndex(1);
     setPlaylist(playlist);
+}
 
-    play();
+const Book& Player::get_playing_book() {
+    return book;
 }
 
 void Player::play_url(const QUrl &url) {
@@ -37,7 +40,7 @@ void Player::play_url(const QUrl &url) {
 }
 
 void Player::toggle_play_pause() {
-    if (state() == QMediaPlayer::PausedState)
+    if (state() != QMediaPlayer::PlayingState)
         play();
     else
         pause();

@@ -19,6 +19,7 @@ public:
     QStringList files;
 
     uint time;
+    bool operator==(const Book& rhs);
 
 };
 

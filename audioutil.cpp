@@ -1,11 +1,11 @@
-#include "audiohelper.h"
+#include "audioutil.h"
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <taglib/tpropertymap.h>
 
 
 
-QString AudioHelper::get_display_time(uint p_time) {
+QString AudioUtil::get_display_time(uint p_time) {
     //uint milliseconds = p_time%1000;
     uint seconds = (p_time/1000)%60;
     uint minutes = (p_time/(1000*60))%60;
@@ -17,7 +17,7 @@ QString AudioHelper::get_display_time(uint p_time) {
     return t;
 }
 
-uint AudioHelper::get_time_msec(const QString &p_filename) {
+uint AudioUtil::get_time_msec(const QString &p_filename) {
     TagLib::FileRef f(p_filename.toUtf8().constData());
     uint len = f.file()->audioProperties()->lengthInMilliseconds();
     return len;
@@ -25,7 +25,7 @@ uint AudioHelper::get_time_msec(const QString &p_filename) {
 
 
 // OLD
-QTime AudioHelper::get_time(const QString &p_filename) {
+QTime AudioUtil::get_time(const QString &p_filename) {
 
     TagLib::FileRef f(p_filename.toUtf8().constData());
     QTime time(0,0,0,0);
@@ -35,7 +35,7 @@ QTime AudioHelper::get_time(const QString &p_filename) {
     return time;
 }
 
-QTime AudioHelper::add_time(QTime &a, QTime &b) {
+QTime AudioUtil::add_time(QTime &a, QTime &b) {
     QTime time(a.hour()+b.hour(),a.minute()+b.minute(),a.second() + b.second(),a.msec()+b.msec());
     return time;
 }

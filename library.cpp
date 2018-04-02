@@ -1,6 +1,6 @@
 #include "library.h"
 #include "book.h"
-#include "audiohelper.h"
+#include "audioutil.h"
 #include <QDirIterator>
 #include <QDir>
 #include <QDebug>
@@ -17,8 +17,28 @@ void Library::set_library_directory(QString &dir) {
     emit library_updated();
 }
 
+
+const Book* Library::find_by_directory(const QString& dir) {
+    Book b;
+    b.directory=dir;
+    int i = book_list.indexOf(b);
+    if (i == -1)
+        return NULL;
+
+    return &book_list[i];
+}
+
+int Library::get_book_index(const Book& book) {
+    int i = book_list.indexOf(book);
+    return i;
+}
+
 QVector<Book> Library::get_book_list() {
     return book_list;
+}
+
+QString Library::get_library_directory() {
+    return library_directory;
 }
 
 bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
@@ -48,7 +68,7 @@ void Library::update_library_list() {
 
             for (auto current_file : current_files) {
                 QString abs_current_file = current_dir.absoluteFilePath(current_file);
-                uint current_length = AudioHelper::get_time_msec(abs_current_file);
+                uint current_length = AudioUtil::get_time_msec(abs_current_file);
 
                 abs_current_files << abs_current_file;
                 book.chapter_times.append(current_length);

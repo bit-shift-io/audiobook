@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QModelIndex>
+#include <QCloseEvent>
 
 class Player;
 class Library;
@@ -23,6 +24,11 @@ public:
     Player *player;
     Library *library;
     Settings *settings;
+    void write_settings();
+    void read_settings();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::MainWindow *ui;
@@ -39,6 +45,7 @@ public slots:
     void quit();
     void update_media_state();
     void update_media_info();
+    void set_playing_book(const QString &book_directory);
 
 };
 

@@ -2,6 +2,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "book.h"
 #include <QMediaPlayer>
 
 class Book;
@@ -17,10 +18,14 @@ public:
     float progress_scale;
     uint get_playlist_length();
     uint get_progress();
+    const Book& get_playing_book();
+
+protected:
+    Book book;
 
 public slots:
     void play_url(const QUrl& url);
-    void play_book(const Book &book);
+    void set_playing_book(const Book &book);
     void seek_forward();
     void seek_backward();
     void increase_volume();

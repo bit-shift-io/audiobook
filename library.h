@@ -22,6 +22,10 @@ public slots:
     void set_library_directory(QString &dir);
     void update_library_list();
     QVector<Book> get_book_list();
+    QString get_library_directory();
+    const Book* find_by_directory(const QString& dir);
+    int get_book_index(const Book& book);
+
 };
 
 #endif // PLAYLIST_H
