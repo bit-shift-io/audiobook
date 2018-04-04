@@ -18,7 +18,7 @@ protected:
     QVector<Book> book_list;
 
 signals:
-    void library_updated();
+    void library_changed();
 
 public slots:
     void set_library_directory(QString &dir);

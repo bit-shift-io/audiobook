@@ -14,7 +14,7 @@ Library::Library(QObject *parent) : QObject(parent)
 void Library::set_library_directory(QString &dir) {
     library_directory = dir;
     update_library_list();
-    emit library_updated();
+    emit library_changed();
 }
 
 

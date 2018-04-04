@@ -23,9 +23,9 @@ public:
     ~MainWindow();
     Player *player;
     Library *library;
-    Settings *settings;
     void write_settings();
     void read_settings();
+    void open_about_url();
 
 protected:
     void closeEvent(QCloseEvent *event);

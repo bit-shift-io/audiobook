@@ -7,7 +7,7 @@ LibraryModel::LibraryModel(QObject *parent, Library *p_library) :QAbstractTableM
 {
     library = p_library;
     // connect this model to the library update function
-    connect(p_library, SIGNAL(library_updated()), this, SLOT(update_data()));
+    connect(p_library, &Library::library_changed, this, &LibraryModel::update_data);
 }
 
 void LibraryModel::update_data() {

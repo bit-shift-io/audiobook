@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     library = new Library();
 
     // play/pause
-    ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+    ui->button_play_pause->setText(QChar(0xf04b));
     ui->button_play_pause->setToolTip("Play");
 
     // seek back
@@ -43,7 +43,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->button_repeat->setText(QChar(0xf2ea));
     ui->button_repeat->setToolTip("Repeat");
 
-
     // settings
     ui->button_settings->setFont(font);
     ui->button_settings->setText(QChar(0xf0c9));
@@ -52,11 +51,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     QMenu *menu_settings = new QMenu();
     QAction *action_library = new QAction(tr("&Library"),this);
-    action_library->setStatusTip(tr("Change library path"));
     menu_settings->addAction(action_library);
 
+    QAction *action_about = new QAction(tr("&About"),this);
+    menu_settings->addAction(action_about);
+
     QAction *action_quit = new QAction(tr("&Quit"),this);
-    action_quit->setStatusTip(tr("Quit"));
     menu_settings->addAction(action_quit);
 
     ui->button_settings->setMenu(menu_settings);
@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     header->setSectionResizeMode(QHeaderView::Fixed);
     header->setStretchLastSection(true);
     ui->view_library->setHorizontalHeader(header);
-    connect(ui->view_library, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(play_selected_book(QModelIndex)));
+    connect(ui->view_library, &QTableView::doubleClicked, this, &MainWindow::play_selected_book);
 
     // connect buttons to ui
     connect(ui->button_play_pause, &QToolButton::clicked, player, &Player::toggle_play_pause);
@@ -88,12 +88,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     connect(action_library, &QAction::triggered, this,  &MainWindow::pick_library_directory);
     connect(action_quit, &QAction::triggered, this, &QCoreApplication::quit);
+    connect(action_about, &QAction::triggered, this, &MainWindow::open_about_url);
 
     // connect media player
-    connect(player, &QMediaPlayer::stateChanged, this, &MainWindow::update_media_state);
-    connect(player, &QMediaPlayer::positionChanged, this, &MainWindow::update_position);
-    connect(player, &QMediaPlayer::mediaChanged, this, &MainWindow::update_media_info);
-    //connect(player, &QMediaPlaylist::playbackModeChanged, this, &MainWindow::update_playback_mode);
+    connect(player, &Player::stateChanged, this, &MainWindow::update_media_state);
+    connect(player, &Player::positionChanged, this, &MainWindow::update_position);
+    connect(player, &Player::mediaChanged, this, &MainWindow::update_media_info);
+    connect(player, &Player::playback_mode_changed, this, &MainWindow::update_playback_mode);
 
     create_shortcuts();
     read_settings();
@@ -105,6 +106,11 @@ MainWindow::~MainWindow() {
 
 void MainWindow::bookmark() {
 
+}
+
+void MainWindow::open_about_url() {
+    QUrl url("http://bit-shift.io");
+    QDesktopServices::openUrl(url);
 }
 
 void MainWindow::play_selected_book(QModelIndex idx) {
@@ -133,23 +139,23 @@ void MainWindow::set_playing_chapter() {
 
 void MainWindow::update_playback_mode() {
     if (player->playlist()->playbackMode() == QMediaPlaylist::PlaybackMode::Sequential) {
-        ui->button_repeat->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+        ui->button_repeat->setText(QChar(0xf161));
         ui->button_repeat->setToolTip(tr("Repeat"));
     }
     else {
         ui->button_repeat->setToolTip(tr("Sequential"));
-        ui->button_repeat->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+        ui->button_repeat->setText(QChar(0xf2ea));
     }
 }
 
 void MainWindow::update_media_state() {
     if (player->state() == QMediaPlayer::PausedState) {
-        ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+        ui->button_play_pause->setText(QChar(0xf04b));
         ui->button_play_pause->setToolTip(tr("Play"));
     }
     else {
         ui->button_play_pause->setToolTip(tr("Pause"));
-        ui->button_play_pause->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
+        ui->button_play_pause->setText(QChar(0xf04c));
     }
 }
 
@@ -168,13 +174,11 @@ void MainWindow::update_media_info() {
         menu_chapters->addAction(action);
         connect(action, &QAction::triggered, this,  &MainWindow::set_playing_chapter);
     }
-
-
 }
 
 void MainWindow::update_position(qint64 position) {
     ui->slider_progress->setValue(player->get_progress());
-    ui->label_track_position->setText(AudioUtil::get_display_time(position));
+    ui->label_track_position->setText(AudioUtil::get_display_time(player->get_position()));
 }
 
 void MainWindow::update_duration(qint64 duration) {

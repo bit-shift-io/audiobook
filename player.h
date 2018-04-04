@@ -18,6 +18,7 @@ public:
     float progress_scale;
     uint get_playlist_length();
     uint get_progress();
+    uint get_position();
     const Book& get_playing_book();
 
 protected:
@@ -33,7 +34,12 @@ public slots:
     void decrease_volume();
     void toggle_play_pause();
     void toggle_repeat();
+    void playbackModeChanged();
+    void currentIndexChanged();
 
+signals:
+    void playback_mode_changed();
+    void current_index_changed();
 
 };
 

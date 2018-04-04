@@ -8,6 +8,14 @@ Player::Player(QMediaPlayer *parent) : QMediaPlayer(parent) {
 
 }
 
+void Player::playbackModeChanged() {
+    emit playback_mode_changed();
+}
+
+void Player::currentIndexChanged() {
+    emit current_index_changed();
+}
+
 QStringList Player::supportedMimeTypes() {
     QStringList result = QMediaPlayer::supportedMimeTypes();
     if (result.isEmpty())
@@ -28,6 +36,10 @@ void Player::set_playing_book(const Book &p_book) {
     }
     playlist->setCurrentIndex(1);
     setPlaylist(playlist);
+
+    // connect this playlist to our slots
+    connect(playlist, &QMediaPlaylist::playbackModeChanged, this, &Player::playbackModeChanged);
+    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::currentIndexChanged);
 }
 
 void Player::set_playing_chapter(QString p_chapter) {
@@ -64,7 +76,17 @@ uint Player::get_playlist_length() {
 }
 
 uint Player::get_progress() {
-    return progress_scale * position();
+    return progress_scale * get_position();
+}
+
+uint Player::get_position() {
+    // account for chapters before current chapter
+    int start_pos = 0;
+    int idx = playlist()->currentIndex();
+    for(int i = 0; i < idx ; ++i) {
+        start_pos += book.chapter_times[i];
+    }
+    return start_pos + position();
 }
 
 void Player::seek_forward() {
