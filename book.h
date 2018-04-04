@@ -12,13 +12,14 @@ class Book
 public:
     Book();
     QString title;
-    QStringList chapters;
+    QString directory;
+
+    QStringList chapter_titles;
+    QStringList chapter_files;
     QVector<uint> chapter_times;
 
-    QString directory;
-    QStringList files;
-
     uint time;
+
     bool operator==(const Book& rhs);
 
 };

@@ -1,10 +1,10 @@
 #include "library.h"
 #include "book.h"
-#include "audioutil.h"
 #include <QDirIterator>
 #include <QDir>
 #include <QDebug>
 #include <QtAlgorithms>
+#include "taglib/fileref.h"
 
 Library::Library(QObject *parent) : QObject(parent)
 {
@@ -63,22 +63,22 @@ void Library::update_library_list() {
         if (current_files.count() > 0) {
             Book book;
 
+            book.title = lib_dir.relativeFilePath(directories.filePath());
+            book.directory = lib_dir.relativeFilePath(directories.filePath());
+
             // get abs paths and file times
             QStringList abs_current_files;
 
             for (auto current_file : current_files) {
-                QString abs_current_file = current_dir.absoluteFilePath(current_file);
-                uint current_length = AudioUtil::get_time_msec(abs_current_file);
+                QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
+                uint current_length = get_time_msec(abs_current_file);
 
-                abs_current_files << abs_current_file;
+                book.chapter_files.append(abs_current_file.absoluteFilePath());
                 book.chapter_times.append(current_length);
+                book.chapter_titles.append(abs_current_file.baseName());
                 book.time += current_length;
             }
 
-            book.title = lib_dir.relativeFilePath(directories.filePath());
-            book.files = abs_current_files;
-            book.chapters = current_files;
-            book.directory = lib_dir.relativeFilePath(directories.filePath());
             book_list.append(book);
         }
 
@@ -88,4 +88,11 @@ void Library::update_library_list() {
     qSort(book_list.begin(), book_list.end(), caseInsensitiveLessThan);
 
 
+}
+
+
+uint Library::get_time_msec(QFileInfo file) {
+    TagLib::FileRef f(file.absoluteFilePath().toUtf8().constData());
+    uint len = f.file()->audioProperties()->lengthInMilliseconds();
+    return len;
 }

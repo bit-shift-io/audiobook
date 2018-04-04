@@ -26,10 +26,8 @@ HEADERS += book.h \
            librarymodel.h \
            mainwindow.h \
            player.h \
-           playlist.h \
-           settings.h \
-    stretchingheader.h \
-    audioutil.h
+           audioutil.h \
+    stretchingheader.h
 FORMS += mainwindow.ui
 SOURCES += book.cpp \
            library.cpp \
@@ -37,7 +35,8 @@ SOURCES += book.cpp \
            main.cpp \
            mainwindow.cpp \
            player.cpp \
-           playlist.cpp \
-           settings.cpp \
-    stretchingheader.cpp \
-    audioutil.cpp
+           audioutil.cpp \
+    stretchingheader.cpp
+
+RESOURCES += \
+    resources.qrc

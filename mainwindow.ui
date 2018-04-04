@@ -109,7 +109,41 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="button_rewind">
+            <widget class="QToolButton" name="button_repeat">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_book_title">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Book Title</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QToolButton" name="button_seek_back">
              <property name="text">
               <string/>
              </property>
@@ -129,6 +163,26 @@
             </widget>
            </item>
            <item>
+            <widget class="QToolButton" name="button_seek_forward">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <widget class="QSlider" name="slider_volume">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -138,7 +192,7 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>100</width>
+               <width>150</width>
                <height>0</height>
               </size>
              </property>

@@ -4,12 +4,14 @@
 #include <QObject>
 #include <QVector>
 #include "book.h"
+#include <QFileInfo>
 
 class Library : public QObject
 {
     Q_OBJECT
 public:
     explicit Library(QObject *parent = nullptr);
+    uint get_time_msec(QFileInfo file);
 
 protected:
     QString library_directory;

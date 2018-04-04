@@ -46,6 +46,8 @@ public slots:
     void update_media_state();
     void update_media_info();
     void set_playing_book(const QString &book_directory);
+    void set_playing_chapter();
+    void update_playback_mode();
 
 };
 

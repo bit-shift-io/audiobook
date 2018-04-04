@@ -26,11 +26,13 @@ protected:
 public slots:
     void play_url(const QUrl& url);
     void set_playing_book(const Book &book);
+    void set_playing_chapter(QString p_chapter);
     void seek_forward();
     void seek_backward();
     void increase_volume();
     void decrease_volume();
     void toggle_play_pause();
+    void toggle_repeat();
 
 
 };

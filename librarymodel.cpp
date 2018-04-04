@@ -2,6 +2,7 @@
 #include "library.h"
 #include "audioutil.h"
 
+
 LibraryModel::LibraryModel(QObject *parent, Library *p_library) :QAbstractTableModel(parent)
 {
     library = p_library;
@@ -47,7 +48,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
         case 0:
             return book.title;
         case 1:
-            return book.chapters.count();
+            return book.chapter_titles.count();
         case 2:
             return AudioUtil::get_display_time(book.time);
         }

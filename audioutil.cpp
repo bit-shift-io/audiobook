@@ -22,22 +22,3 @@ uint AudioUtil::get_time_msec(const QString &p_filename) {
     uint len = f.file()->audioProperties()->lengthInMilliseconds();
     return len;
 }
-
-
-// OLD
-QTime AudioUtil::get_time(const QString &p_filename) {
-
-    TagLib::FileRef f(p_filename.toUtf8().constData());
-    QTime time(0,0,0,0);
-    int len = f.file()->audioProperties()->lengthInSeconds();
-    time = time.addSecs(len);
-    //time = time.addSecs(f.audioProperties()->lengthInSeconds());
-    return time;
-}
-
-QTime AudioUtil::add_time(QTime &a, QTime &b) {
-    QTime time(a.hour()+b.hour(),a.minute()+b.minute(),a.second() + b.second(),a.msec()+b.msec());
-    return time;
-}
-
-

@@ -21,7 +21,7 @@ void Player::set_playing_book(const Book &p_book) {
     progress_scale = 10000.0/playlist_time;
 
     QMediaPlaylist *playlist = new QMediaPlaylist;
-    for(auto file_name: book.files)
+    for(auto file_name: book.chapter_files)
     {
         QUrl url = QUrl::fromLocalFile(file_name);
         playlist->addMedia(url);
@@ -29,6 +29,12 @@ void Player::set_playing_book(const Book &p_book) {
     playlist->setCurrentIndex(1);
     setPlaylist(playlist);
 }
+
+void Player::set_playing_chapter(QString p_chapter) {
+    int i = book.chapter_titles.indexOf(p_chapter);
+    playlist()->setCurrentIndex(i);
+}
+
 
 const Book& Player::get_playing_book() {
     return book;
@@ -44,6 +50,13 @@ void Player::toggle_play_pause() {
         play();
     else
         pause();
+}
+
+void Player::toggle_repeat() {
+    if (playlist()->playbackMode() == QMediaPlaylist::PlaybackMode::Sequential)
+        playlist()->setPlaybackMode(QMediaPlaylist::PlaybackMode::CurrentItemInLoop);
+    else
+        playlist()->setPlaybackMode(QMediaPlaylist::PlaybackMode::Sequential);
 }
 
 uint Player::get_playlist_length() {
