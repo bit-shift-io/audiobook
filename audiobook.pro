@@ -4,6 +4,13 @@
 
 TEMPLATE = app
 TARGET = audiobook
+
+APP_NAME        = "AudioBook"
+APP_LOW_NAME    = "audiobook"
+APP_AUTHOR      = "Bronson Mathews"
+APP_COPYRIGHT = "(C) 2018 $$APP_AUTHOR"
+APP_REVERSE_NAME = "io.bit-shift"
+
 INCLUDEPATH += . /usr/local/include/
 QT += widgets multimedia core
 LIBS += -ltag -lz
@@ -40,3 +47,25 @@ SOURCES += src/book.cpp \
 
 RESOURCES += \
     resources/resources.qrc
+    
+# Install all files on Linux. For make install
+unix:!mac:!android {
+  target.path = $$PREFIX/bin
+
+  desktop_file.files = resources/$${APP_REVERSE_NAME}.desktop
+  desktop_file.path = $$quote($$PREFIX/share/applications/)
+
+  appdata.files = resources/$${APP_REVERSE_NAME}.appdata.xml
+  appdata.path = $$quote($$PREFIX/share/metainfo/)
+
+  desktop_icon.files = resources/$${TARGET}.png
+  desktop_icon.path = $$quote($$PREFIX/share/pixmaps/)
+
+  INSTALLS += target desktop_file desktop_icon appdata
+}
+
+android {
+  target.path = $$PREFIX
+
+  INSTALLS += target
+}
