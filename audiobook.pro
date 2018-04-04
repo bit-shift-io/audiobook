@@ -21,22 +21,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += book.h \
-           library.h \
-           librarymodel.h \
-           mainwindow.h \
-           player.h \
-           audioutil.h \
-    stretchingheader.h
-FORMS += mainwindow.ui
-SOURCES += book.cpp \
-           library.cpp \
-           librarymodel.cpp \
-           main.cpp \
-           mainwindow.cpp \
-           player.cpp \
-           audioutil.cpp \
-    stretchingheader.cpp
+HEADERS += src/book.h \
+           src/library.h \
+           src/librarymodel.h \
+           src/mainwindow.h \
+           src/player.h \
+           src/audioutil.h \
+    src/stretchingheader.h
+FORMS += src/mainwindow.ui
+SOURCES += src/book.cpp \
+           src/library.cpp \
+           src/librarymodel.cpp \
+           src/main.cpp \
+           src/mainwindow.cpp \
+           src/player.cpp \
+           src/audioutil.cpp \
+    src/stretchingheader.cpp
 
 RESOURCES += \
-    resources.qrc
+    resources/resources.qrc
