@@ -58,7 +58,7 @@ unix:!mac:!android {
   appdata.files = resources/$${APP_REVERSE_NAME}.appdata.xml
   appdata.path = $$quote($$PREFIX/share/metainfo/)
 
-  desktop_icon.files = resources/$${APP_REVERSE_NAME}.png
+  desktop_icon.files = resources/$${APP_REVERSE_NAME}.svg
   desktop_icon.path = $$quote($$PREFIX/share/pixmaps/)
 
   INSTALLS += target desktop_file desktop_icon appdata
