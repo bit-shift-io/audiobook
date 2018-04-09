@@ -37,7 +37,7 @@ public slots:
     void bookmark();
     void pick_library_directory();
     void play_selected_book(QModelIndex idx);
-    void set_position(int position);
+    void set_position();
     void update_position(qint64 position);
     void update_duration(qint64 duration);
     void update_info();
@@ -47,7 +47,7 @@ public slots:
     void update_media_info();
     void set_playing_book(const QString &book_directory);
     void set_playing_chapter();
-    void update_playback_mode();
+    void set_playback_mode();
 
 };
 

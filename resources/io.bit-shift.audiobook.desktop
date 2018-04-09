@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Version=1.0
+Exec=audiobook %F
+Name=AudioBook
+GenericName=Audio book player
+Comment=Audio book player
+Icon=o.bit-shift.audiobook
+Terminal=false
+Categories=Multimedia
+MimeType=audio/mpeg;audio/mp3;audio/*;

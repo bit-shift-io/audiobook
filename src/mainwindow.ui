@@ -109,7 +109,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="button_repeat">
+            <widget class="QToolButton" name="button_playback_mode">
              <property name="text">
               <string/>
              </property>
@@ -229,6 +229,9 @@
              </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="popupMode">
+              <enum>QToolButton::InstantPopup</enum>
              </property>
             </widget>
            </item>

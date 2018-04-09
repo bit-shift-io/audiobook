@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.bit-shift.audiobook.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>AudioBook</name>
+  <update_contact>bronsonmathews_AT_gmail.com</update_contact>
+  <summary>Audio book player</summary>
+  ​<translation type="qt">audiobook</translation>
+  <description>
+    <p>
+      Audiobook is a minimal audio book player.
+    </p>
+  </description>
+  <launchable type="desktop-id">io.bit-shift.audiobook.desktop</launchable>
+  <url type="homepage">http://bit-shit.io</url>
+  <provides>
+    <binary>audiobook</binary>
+  </provides>
+</component>

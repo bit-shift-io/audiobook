@@ -9,7 +9,7 @@ APP_NAME        = "AudioBook"
 APP_LOW_NAME    = "audiobook"
 APP_AUTHOR      = "Bronson Mathews"
 APP_COPYRIGHT = "(C) 2018 $$APP_AUTHOR"
-APP_REVERSE_NAME = "io.bit-shift"
+APP_REVERSE_NAME = "io.bit-shift.audiobook"
 
 INCLUDEPATH += . /usr/local/include/
 QT += widgets multimedia core
@@ -58,7 +58,7 @@ unix:!mac:!android {
   appdata.files = resources/$${APP_REVERSE_NAME}.appdata.xml
   appdata.path = $$quote($$PREFIX/share/metainfo/)
 
-  desktop_icon.files = resources/$${TARGET}.png
+  desktop_icon.files = resources/$${APP_REVERSE_NAME}.png
   desktop_icon.path = $$quote($$PREFIX/share/pixmaps/)
 
   INSTALLS += target desktop_file desktop_icon appdata

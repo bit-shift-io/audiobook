@@ -4,6 +4,7 @@
 
 #include "book.h"
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 class Book;
 
@@ -20,6 +21,8 @@ public:
     uint get_progress();
     uint get_position();
     const Book& get_playing_book();
+    const int get_playing_chapter_index();
+    const QString get_playing_chapter_title();
 
 protected:
     Book book;
@@ -28,17 +31,19 @@ public slots:
     void play_url(const QUrl& url);
     void set_playing_book(const Book &book);
     void set_playing_chapter(QString p_chapter);
+    void set_position(uint p_position);
     void seek_forward();
     void seek_backward();
     void increase_volume();
     void decrease_volume();
+    void set_playback_mode(QMediaPlaylist::PlaybackMode mode);
     void toggle_play_pause();
-    void toggle_repeat();
-    void playbackModeChanged();
+    //void playbackModeChanged();
     void currentIndexChanged();
 
+
 signals:
-    void playback_mode_changed();
+    //void playback_mode_changed();
     void current_index_changed();
 
 };

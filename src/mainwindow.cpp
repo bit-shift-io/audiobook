@@ -24,29 +24,53 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     player = new Player();
     library = new Library();
 
+    // postion slider
+    ui->slider_progress->setTracking(false);
+
     // play/pause
     ui->button_play_pause->setText(QChar(0xf04b));
     ui->button_play_pause->setToolTip("Play");
+    ui->button_play_pause->setFixedSize(32,32);
 
     // seek back
     ui->button_seek_back->setFont(font);
     ui->button_seek_back->setText(QChar(0xf04a));
     ui->button_seek_back->setToolTip("Back 30 seconds");
+    ui->button_seek_back->setFixedSize(32,32);
 
     // seek forward
     ui->button_seek_forward->setFont(font);
     ui->button_seek_forward->setText(QChar(0xf04e));
     ui->button_seek_forward->setToolTip("Forward 30 seconds");
+    ui->button_seek_forward->setFixedSize(32,32);
 
-    // repeat
-    ui->button_repeat->setFont(font);
-    ui->button_repeat->setText(QChar(0xf2ea));
-    ui->button_repeat->setToolTip("Repeat");
+    // playback
+    ui->button_playback_mode->setFont(font);
+    ui->button_playback_mode->setText(QChar(0xf30b));
+    ui->button_playback_mode->setToolTip("Playback Mode");
+    ui->button_playback_mode->setFixedSize(32,32);
+    ui->button_playback_mode->setPopupMode(QToolButton::InstantPopup);
+
+    QMenu *menu_repeat = new QMenu();
+    QAction *action_sequential = new QAction(tr("&Sequential"),this);
+    action_sequential->setData("sequential");
+    menu_repeat->addAction(action_sequential);
+
+    QAction *action_repeat_chapter = new QAction(tr("Repeat &Chapter"),this);
+    action_repeat_chapter->setData("chapter");
+    menu_repeat->addAction(action_repeat_chapter);
+
+    QAction *action_repeat_book = new QAction(tr("Repeat &Book"),this);
+    action_repeat_book->setData("book");
+    menu_repeat->addAction(action_repeat_book);
+
+    ui->button_playback_mode->setMenu(menu_repeat);
 
     // settings
     ui->button_settings->setFont(font);
     ui->button_settings->setText(QChar(0xf0c9));
     ui->button_settings->setToolTip("Settings");
+    ui->button_settings->setFixedSize(32,32);
     ui->button_settings->setPopupMode(QToolButton::InstantPopup);
 
     QMenu *menu_settings = new QMenu();
@@ -65,6 +89,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->button_chapters->setFont(font);
     ui->button_chapters->setText(QChar(0xf02e));
     ui->button_chapters->setToolTip("Chapters");
+    ui->button_chapters->setFixedSize(32,32);
     ui->button_chapters->setPopupMode(QToolButton::InstantPopup);
 
     // library view/table
@@ -80,21 +105,24 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(ui->view_library, &QTableView::doubleClicked, this, &MainWindow::play_selected_book);
 
     // connect buttons to ui
-    connect(ui->button_play_pause, &QToolButton::clicked, player, &Player::toggle_play_pause);
-    connect(ui->button_repeat, &QToolButton::clicked, player, &Player::toggle_repeat);
+    connect(ui->slider_progress, &QSlider::sliderReleased, this, &MainWindow::set_position);
 
-    //connect(ui->slider_progress, &QSlider::valueChanged, this, &MainWindow::set_position);
     connect(ui->slider_volume, &QSlider::valueChanged, player, &Player::setVolume);
 
+    // settings actions
     connect(action_library, &QAction::triggered, this,  &MainWindow::pick_library_directory);
     connect(action_quit, &QAction::triggered, this, &QCoreApplication::quit);
     connect(action_about, &QAction::triggered, this, &MainWindow::open_about_url);
 
+    // playback mode actions
+    connect(action_sequential, &QAction::triggered, this,  &MainWindow::set_playback_mode);
+    connect(action_repeat_chapter, &QAction::triggered, this, &MainWindow::set_playback_mode);
+    connect(action_repeat_book, &QAction::triggered, this, &MainWindow::set_playback_mode);
+
     // connect media player
     connect(player, &Player::stateChanged, this, &MainWindow::update_media_state);
     connect(player, &Player::positionChanged, this, &MainWindow::update_position);
-    connect(player, &Player::mediaChanged, this, &MainWindow::update_media_info);
-    connect(player, &Player::playback_mode_changed, this, &MainWindow::update_playback_mode);
+    connect(player, &Player::current_index_changed, this, &MainWindow::update_media_info);
 
     create_shortcuts();
     read_settings();
@@ -131,20 +159,29 @@ void MainWindow::set_playing_book(const QString &book_directory) {
 
 void MainWindow::set_playing_chapter() {
     QAction *action = qobject_cast<QAction *>(sender());
-    if (action) {
-        qDebug() << action->text();
+    if (action)
         player->set_playing_chapter(action->text());
-    }
 }
 
-void MainWindow::update_playback_mode() {
-    if (player->playlist()->playbackMode() == QMediaPlaylist::PlaybackMode::Sequential) {
-        ui->button_repeat->setText(QChar(0xf161));
-        ui->button_repeat->setToolTip(tr("Repeat"));
+void MainWindow::set_playback_mode() {
+    QAction *action = qobject_cast<QAction *>(sender());
+
+    if (!action)
+        return;
+
+    //qDebug() << action->data().toString();
+
+    if (action->data().toString() == "sequential" ) {
+        ui->button_playback_mode->setText(QChar(0xf30b));
+        player->set_playback_mode(QMediaPlaylist::PlaybackMode::Sequential);
     }
-    else {
-        ui->button_repeat->setToolTip(tr("Sequential"));
-        ui->button_repeat->setText(QChar(0xf2ea));
+    else if (action->data().toString() == "chapter" ) {
+        ui->button_playback_mode->setText(QChar(0xf2f9));
+        player->set_playback_mode(QMediaPlaylist::PlaybackMode::CurrentItemInLoop);
+    }
+    else if (action->data().toString() == "book" ) {
+        ui->button_playback_mode->setText(QChar(0xf362));
+        player->set_playback_mode(QMediaPlaylist::PlaybackMode::Loop);
     }
 }
 
@@ -160,15 +197,17 @@ void MainWindow::update_media_state() {
 }
 
 void MainWindow::update_media_info() {
-    const Book& book = player->get_playing_book();
+
+    const QString chapter = player->get_playing_chapter_title();
     ui->label_track_time->setText(AudioUtil::get_display_time(player->get_playlist_length()));
-    ui->label_book_title->setText(book.title);
-    setWindowTitle(book.title);
+    ui->label_book_title->setText(chapter);
+    setWindowTitle(chapter);
 
     // get list of chapters
     QMenu *menu_chapters = new QMenu();
     ui->button_chapters->setMenu(menu_chapters);
 
+    const Book& book = player->get_playing_book();
     for (auto chapter : book.chapter_titles) {
         QAction *action = new QAction(chapter,this);
         menu_chapters->addAction(action);
@@ -177,8 +216,10 @@ void MainWindow::update_media_info() {
 }
 
 void MainWindow::update_position(qint64 position) {
-    ui->slider_progress->setValue(player->get_progress());
-    ui->label_track_position->setText(AudioUtil::get_display_time(player->get_position()));
+    if (!ui->slider_progress->isSliderDown()) {
+        ui->slider_progress->setValue(player->get_progress());
+        ui->label_track_position->setText(AudioUtil::get_display_time(player->get_position()));
+    }
 }
 
 void MainWindow::update_duration(qint64 duration) {
@@ -188,10 +229,12 @@ void MainWindow::update_duration(qint64 duration) {
     update_info();
 }
 
-void MainWindow::set_position(int position) {
-    // avoid seeking when the slider value change is triggered from update_position()
-    //if (qAbs(player->position() - position) > 99)
-        player->setPosition(position);
+void MainWindow::set_position() {
+    float slider_position = ui->slider_progress->sliderPosition() / 10000.0;
+    uint playlist_length = player->get_playlist_length();
+    // convert from slider pos to book time
+    uint pos = playlist_length * slider_position;
+    player->set_position(pos);
 }
 
 
