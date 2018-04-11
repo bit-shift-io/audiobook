@@ -110,22 +110,25 @@ void Player::set_position(uint p_position) {
     }
 
     // set chapter and position
-    playlist()->setCurrentIndex(idx);
+    if (idx != playlist()->currentIndex())
+        playlist()->setCurrentIndex(idx);
     //QMetaObject::invokeMethod(this, "setPosition", Qt::QueuedConnection, Q_ARG(qlonglong, p_position));
-    //setPosition(p_position);
+    setPosition(p_position);
 }
 
 
 
 void Player::seek_forward() {
-    uint current_position = get_position();
+    int current_position = get_position();
     current_position += 30000; // 30s
     set_position(current_position);
 }
 
 void Player::seek_backward() {
-    uint current_position = get_position();
+    int current_position = get_position();
     current_position -= 30000; // 30s
+    if (current_position < 0)
+        current_position = 0;
     set_position(current_position);
 }
 
