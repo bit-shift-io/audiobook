@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->slider_progress->setTracking(false);
 
     // play/pause
+    ui->button_play_pause->setFont(font);
     ui->button_play_pause->setText(QChar(0xf04b));
     ui->button_play_pause->setToolTip("Play");
     ui->button_play_pause->setFixedSize(32,32);
@@ -106,8 +107,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     // connect buttons to ui
     connect(ui->slider_progress, &QSlider::sliderReleased, this, &MainWindow::set_position);
-
     connect(ui->slider_volume, &QSlider::valueChanged, player, &Player::setVolume);
+    connect(ui->button_play_pause, &QToolButton::clicked, player, &Player::toggle_play_pause);
 
     // settings actions
     connect(action_library, &QAction::triggered, this,  &MainWindow::pick_library_directory);
