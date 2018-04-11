@@ -6,15 +6,10 @@ Player::Player(QMediaPlayer *parent) : QMediaPlayer(parent) {
     setPlaylist(playlist);
 
     // connect this playlist to our slots
-    //connect(playlist, &QMediaPlaylist::playbackModeChanged, this, &Player::playbackModeChanged);
     connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::currentIndexChanged);
 }
 
-/*
-void Player::playbackModeChanged() {
-    emit playback_mode_changed();
-}
-*/
+
 void Player::currentIndexChanged() {
     emit current_index_changed();
 }

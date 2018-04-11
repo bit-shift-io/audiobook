@@ -38,12 +38,10 @@ public slots:
     void decrease_volume();
     void set_playback_mode(QMediaPlaylist::PlaybackMode mode);
     void toggle_play_pause();
-    //void playbackModeChanged();
     void currentIndexChanged();
 
 
 signals:
-    //void playback_mode_changed();
     void current_index_changed();
 
 };
