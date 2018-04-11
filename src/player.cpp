@@ -118,16 +118,22 @@ void Player::set_position(uint p_position) {
 
 
 void Player::seek_forward() {
+    uint current_position = get_position();
+    current_position += 30000; // 30s
+    set_position(current_position);
 }
 
 void Player::seek_backward() {
+    uint current_position = get_position();
+    current_position -= 30000; // 30s
+    set_position(current_position);
 }
 
 void Player::increase_volume() {
-
+    setVolume(volume() + 10);
 }
 
 void Player::decrease_volume() {
-
+    setVolume(volume() - 10);
 }
 

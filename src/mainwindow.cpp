@@ -34,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     ui->button_play_pause->setFixedSize(32,32);
 
     // seek back
-    ui->button_seek_back->setFont(font);
-    ui->button_seek_back->setText(QChar(0xf04a));
-    ui->button_seek_back->setToolTip("Back 30 seconds");
-    ui->button_seek_back->setFixedSize(32,32);
+    ui->button_seek_backward->setFont(font);
+    ui->button_seek_backward->setText(QChar(0xf04a));
+    ui->button_seek_backward->setToolTip("Back 30 seconds");
+    ui->button_seek_backward->setFixedSize(32,32);
 
     // seek forward
     ui->button_seek_forward->setFont(font);
@@ -109,6 +109,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(ui->slider_progress, &QSlider::sliderReleased, this, &MainWindow::set_position);
     connect(ui->slider_volume, &QSlider::valueChanged, player, &Player::setVolume);
     connect(ui->button_play_pause, &QToolButton::clicked, player, &Player::toggle_play_pause);
+    connect(ui->button_seek_backward, &QToolButton::clicked, player, &Player::seek_backward);
+    connect(ui->button_seek_forward, &QToolButton::clicked, player, &Player::seek_forward);
 
     // settings actions
     connect(action_library, &QAction::triggered, this,  &MainWindow::pick_library_directory);
@@ -124,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(player, &Player::stateChanged, this, &MainWindow::update_media_state);
     connect(player, &Player::positionChanged, this, &MainWindow::update_position);
     connect(player, &Player::current_index_changed, this, &MainWindow::update_media_info);
+    connect(player, &Player::volumeChanged, this, &MainWindow::update_volume);
 
     create_shortcuts();
     read_settings();
@@ -213,6 +216,12 @@ void MainWindow::update_media_info() {
         QAction *action = new QAction(chapter,this);
         menu_chapters->addAction(action);
         connect(action, &QAction::triggered, this,  &MainWindow::set_playing_chapter);
+    }
+}
+
+void MainWindow::update_volume() {
+    if (!ui->slider_volume->isSliderDown()) {
+        ui->slider_volume->setValue(player->volume());
     }
 }
 
