@@ -39,8 +39,13 @@ set(UI
     src/mainwindow.ui
 )
 
+
+# qt resources
+set(CMAKE_AUTORCC ON)
+qt5_add_resources (RCC_SOURCES res/resources.qrc)
+
 # app config
-add_executable(audiobook ${SOURCES} ${HEADERS} ${UI})
+add_executable(audiobook ${SOURCES} ${HEADERS} ${UI} ${RCC_SOURCES})
 
 # taglib configuration
 set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -57,6 +62,6 @@ install(TARGETS audiobook DESTINATION bin)
 
 # Do platform specific post target stuff
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    install(FILES resources/io.bit-shift.audiobook.desktop DESTINATION /usr/share/applications ) # /usr/share?
-    install(FILES resources/io.bit-shift.audiobook.svg DESTINATION /usr/share/pixmaps ) # /usr/share?
+    install(FILES res/io.bit-shift.audiobook.desktop DESTINATION /usr/share/applications ) # /usr/share?
+    install(FILES res/io.bit-shift.audiobook.svg DESTINATION /usr/share/pixmaps ) # /usr/share?
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
