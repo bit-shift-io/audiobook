@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Make Debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceRoot}/build"
+            },
+            "command": "cmake",
+            "args": [
+                "${workspaceRoot}",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "dependsOn":["cmake"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
