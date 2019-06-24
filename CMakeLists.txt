@@ -39,30 +39,18 @@ set(UI
     src/mainwindow.ui
 )
 
-# taglib configuration
-set(TAGLIB_VERSION 1.11.1)
-set(TAGLIB_CHECKSUM "cee7be0ccfc892fa433d6c837df9522a")
-include(ExternalProject)
-
-# TagLib
-ExternalProject_Add(
-    taglib
-    URL https://taglib.org/releases/taglib-${TAGLIB_VERSION}.tar.gz
-    URL_MD5 ${TAGLIB_CHECKSUM}
-    CONFIGURE_COMMAND ${CMAKE_COMMAND}
-                      ${CMAKE_CURRENT_BINARY_DIR}/taglib/src/taglib
-                      -DCMAKE_MAKE_PROGRAM=${UNIX_MAKE_PROGRAM}
-                      -DBUILD_SHARED_LIBS=ON
-                      -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/build/taglib/
-
-    PREFIX taglib
-    INSTALL_COMMAND ${UNIX_MAKE_PROGRAM} install
-)
-add_library(tag SHARED IMPORTED)
-set_target_properties(tag PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/build/taglib/lib/libtag.so)
-
-
+# app config
 add_executable(audiobook ${SOURCES} ${HEADERS} ${UI})
+
+# taglib configuration
+set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
+find_package( TAGLIB REQUIRED )
+if ( TAGLIB_FOUND )
+    include_directories( ${TAGLIB_INCLUDE_DIRS} )
+    target_link_libraries( audiobook ${TAGLIB_LIBRARIES} )
+endif( TAGLIB_FOUND )
+
+# app config
 target_link_libraries(audiobook Qt5::Widgets)
 QT5_USE_MODULES(audiobook Multimedia MultimediaWidgets)
 install(TARGETS audiobook DESTINATION bin)
