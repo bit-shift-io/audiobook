@@ -5,7 +5,7 @@
             "name": "Debug Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/audiobook",
+            "program": "${workspaceFolder}/build/${workspaceFolderBasename}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
