@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName(QStringLiteral("AudioBook"));
     QCoreApplication::setApplicationVersion( QLatin1String(QT_VERSION_STR));
-    QCoreApplication::setOrganizationName(QStringLiteral("bit-shift"));
-    QCoreApplication::setOrganizationDomain("bit-shift.io");
+    QCoreApplication::setOrganizationName(QStringLiteral("bitshift"));
+    QCoreApplication::setOrganizationDomain("bitshift.io");
     QGuiApplication::setApplicationDisplayName(QStringLiteral("AudioBook"));
 
     MainWindow *main_window = new MainWindow();
