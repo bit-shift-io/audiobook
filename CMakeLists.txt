@@ -62,6 +62,6 @@ install(TARGETS audiobook DESTINATION bin)
 
 # Do platform specific post target stuff
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    install(FILES res/io.bit-shift.audiobook.desktop DESTINATION /usr/share/applications ) # /usr/share?
-    install(FILES res/io.bit-shift.audiobook.svg DESTINATION /usr/share/pixmaps ) # /usr/share?
+    install(FILES res/io.bitshift.audiobook.desktop DESTINATION /usr/share/applications ) # /usr/share?
+    install(FILES res/io.bitshift.audiobook.svg DESTINATION /usr/share/pixmaps ) # /usr/share?
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

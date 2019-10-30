@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2018 Bronson Mathews <bronsonmathews@gmail.com> -->
 <component type="desktop-application">
-  <id>io.bit-shift.audiobook.desktop</id>
+  <id>io.bitshift.audiobook.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0</project_license>
   <name>AudioBook</name>
@@ -13,8 +13,8 @@
       Audiobook is a minimal audio book player.
     </p>
   </description>
-  <launchable type="desktop-id">io.bit-shift.audiobook.desktop</launchable>
-  <url type="homepage">http://bit-shit.io</url>
+  <launchable type="desktop-id">io.bitshift.audiobook.desktop</launchable>
+  <url type="homepage">http://bitshit.io</url>
   <provides>
     <binary>audiobook</binary>
   </provides>
