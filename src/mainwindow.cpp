@@ -141,7 +141,7 @@ void MainWindow::bookmark() {
 }
 
 void MainWindow::open_about_url() {
-    QUrl url("http://bit-shift.io");
+    QUrl url("http://bitshift.io");
     QDesktopServices::openUrl(url);
 }
 
@@ -266,7 +266,7 @@ void MainWindow::quit() {
 }
 
 void MainWindow::write_settings() {
-    QSettings settings("bit-shift", "audio book");
+    QSettings settings("bitshift", "audio book");
 
     settings.beginGroup("MainWindow");
     settings.setValue("size", size());
@@ -284,7 +284,7 @@ void MainWindow::write_settings() {
 }
 
 void MainWindow::read_settings() {
-    QSettings settings("bit-shift", "audio book");
+    QSettings settings("bitshift", "audio book");
 
     settings.beginGroup("MainWindow");
     resize(settings.value("size", QSize(600, 400)).toSize());
