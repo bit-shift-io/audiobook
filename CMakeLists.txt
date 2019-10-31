@@ -58,10 +58,11 @@ endif( TAGLIB_FOUND )
 # app config
 target_link_libraries(audiobook Qt5::Widgets)
 QT5_USE_MODULES(audiobook Multimedia MultimediaWidgets)
+
 install(TARGETS audiobook DESTINATION bin)
 
 # Do platform specific post target stuff
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    install(FILES res/io.bitshift.audiobook.desktop DESTINATION /usr/share/applications ) # /usr/share?
-    install(FILES res/io.bitshift.audiobook.svg DESTINATION /usr/share/pixmaps ) # /usr/share?
+    install(FILES res/io.bitshift.audiobook.desktop DESTINATION share/applications ) # /usr/share?
+    install(FILES res/io.bitshift.audiobook.svg DESTINATION share/pixmaps ) # /usr/share?
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

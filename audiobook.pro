@@ -9,7 +9,7 @@ APP_NAME        = "AudioBook"
 APP_LOW_NAME    = "audiobook"
 APP_AUTHOR      = "Bronson Mathews"
 APP_COPYRIGHT = "(C) 2018 $$APP_AUTHOR"
-APP_REVERSE_NAME = "io.bit-shift.audiobook"
+APP_REVERSE_NAME = "io.bitshift.audiobook"
 
 INCLUDEPATH += . /usr/local/include/
 QT += widgets multimedia core
@@ -46,7 +46,7 @@ SOURCES += src/book.cpp \
     src/stretchingheader.cpp
 
 RESOURCES += \
-    resources/resources.qrc
+    res/resources.qrc
     
 # Install all files on Linux. For make install
 unix:!mac:!android {
