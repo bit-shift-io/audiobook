@@ -1,5 +1,5 @@
 # audiobook
-Minimal audio book reader
+Minimal audio book reader for desktop.
 
 # requirements:
 QT5
@@ -19,3 +19,6 @@ make
 sudo make install
 
 should install to /usr/local/include/taglib/
+
+# screenshots
+![ScreenShot](screenshots/main_linux.png)
