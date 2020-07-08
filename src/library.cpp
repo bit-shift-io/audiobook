@@ -1,10 +1,10 @@
-#include "library.h"
-#include "book.h"
 #include <QDirIterator>
 #include <QDir>
 #include <QDebug>
 #include <QtAlgorithms>
-#include "taglib/fileref.h"
+#include "library.h"
+#include "book.h"
+#include "audioutil.h"
 
 Library::Library(QObject *parent) : QObject(parent)
 {
@@ -71,7 +71,7 @@ void Library::update_library_list() {
 
             for (auto current_file : current_files) {
                 QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
-                uint current_length = get_time_msec(abs_current_file);
+                uint current_length = AudioUtil::get_time_msec(abs_current_file.absoluteFilePath());
 
                 book.chapter_files.append(abs_current_file.absoluteFilePath());
                 book.chapter_times.append(current_length);
@@ -90,9 +90,3 @@ void Library::update_library_list() {
 
 }
 
-
-uint Library::get_time_msec(QFileInfo file) {
-    TagLib::FileRef f(file.absoluteFilePath().toUtf8().constData());
-    uint len = f.file()->audioProperties()->lengthInMilliseconds();
-    return len;
-}

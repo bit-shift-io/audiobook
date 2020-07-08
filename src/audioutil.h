@@ -1,8 +1,10 @@
 #ifndef AudioUtil_H
 #define AudioUtil_H
 
-#include <QString>
 #include <QTime>
+#include <QFileInfo>
+
+class QString;
 
 class AudioUtil
 {
@@ -12,6 +14,7 @@ public:
 
     static QTime get_time(const QString &p_filename);
     static QTime add_time(QTime &a, QTime &b);
+
 };
 
 #endif // AudioUtil_H
