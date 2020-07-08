@@ -1,5 +1,5 @@
 #include "audioutil.h"
-#include "taglib/fileref.h"
+//#include "taglib/fileref.h"
 
 
 QString AudioUtil::get_display_time(uint p_time) {
@@ -16,7 +16,10 @@ QString AudioUtil::get_display_time(uint p_time) {
 
 
 uint AudioUtil::get_time_msec(const QString &p_filename) {
+    /*
     TagLib::FileRef f(p_filename.toUtf8().constData());
     uint len = f.file()->audioProperties()->lengthInMilliseconds();
     return len;
+    */
+    return 0;
 }
