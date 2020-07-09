@@ -1,12 +1,12 @@
-#ifndef AudioUtil_H
-#define AudioUtil_H
+#ifndef UTIL_H
+#define UTIL_H
 
 #include <QTime>
 #include <QFileInfo>
 
 class QString;
 
-class AudioUtil
+class Util
 {
 public:
     static QString get_display_time(uint p_time);
@@ -17,4 +17,4 @@ public:
 
 };
 
-#endif // AudioUtil_H
+#endif // UTIL_H

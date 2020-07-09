@@ -29,6 +29,7 @@ def main():
     menu['4'] = ['Run mobile', 'run_mobile']
     menu['5'] = ['Debug (GDB)', 'debug']
     menu['p'] = ['pkgbuild', 'pkgbuild']
+    menu['i'] = ['install', 'install']    
     menu['0'] = ['Requirements', 'requirements']
 
     print('\n********************')
@@ -47,6 +48,17 @@ def main():
         eval(selection)
 
     main()
+    return
+
+
+def install():
+    run('''
+    mkdir -p build
+    cd build
+    cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+    make
+    sudo make install
+    ''')
     return
 
 

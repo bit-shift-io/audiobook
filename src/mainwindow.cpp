@@ -3,7 +3,7 @@
 #include "library.h"
 #include "ui_mainwindow.h"
 #include "librarymodel.h"
-#include "audioutil.h"
+#include "util.h"
 #include "book.h"
 #include "stretchingheader.h"
 #include <QtWidgets>
@@ -203,7 +203,7 @@ void MainWindow::update_media_state() {
 void MainWindow::update_media_info() {
 
     const QString chapter = player->get_playing_chapter_title();
-    ui->label_track_time->setText(AudioUtil::get_display_time(player->get_playlist_length()));
+    ui->label_track_time->setText(Util::get_display_time(player->get_playlist_length()));
     ui->label_book_title->setText(chapter);
     setWindowTitle(chapter);
 
@@ -228,7 +228,7 @@ void MainWindow::update_volume() {
 void MainWindow::update_position(qint64 position) {
     if (!ui->slider_progress->isSliderDown()) {
         ui->slider_progress->setValue(player->get_progress());
-        ui->label_track_position->setText(AudioUtil::get_display_time(player->get_position()));
+        ui->label_track_position->setText(Util::get_display_time(player->get_position()));
     }
 }
 
@@ -249,7 +249,7 @@ void MainWindow::set_position() {
 
 
 void MainWindow::update_info() {
-    ui->label_track_time->setText(AudioUtil::get_display_time((player->duration())));
+    ui->label_track_time->setText(Util::get_display_time((player->duration())));
 }
 
 void MainWindow::pick_library_directory() {

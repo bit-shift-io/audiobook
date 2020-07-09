@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qtquickcontrols2.conf</file>
+        <file>qml/main.qml</file>
+        <file>qml/Style/qmldir</file>
+        <file>qml/Style/Style.qml</file>
+        <file>qml/Style/Button.qml</file>
+        <file>qml/Bounds.qml</file>
+        <file>qml/Spacer.qml</file>
+        <file>qml/MainPage.qml</file>
+        <file>qml/SettingsPage.qml</file>
+        <file>qml/NavigationPage.qml</file>
+        <file>qml/Style/Label.qml</file>
+        <file>qml/LibraryPage.qml</file>
+        <file>qml/ControlPage.qml</file>
+    </qresource>
+</RCC>

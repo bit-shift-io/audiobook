@@ -4,7 +4,7 @@
 #include <QtAlgorithms>
 #include "library.h"
 #include "book.h"
-#include "audioutil.h"
+#include "util.h"
 
 Library::Library(QObject *parent) : QObject(parent)
 {
@@ -71,7 +71,7 @@ void Library::update_library_list() {
 
             for (auto current_file : current_files) {
                 QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
-                uint current_length = AudioUtil::get_time_msec(abs_current_file.absoluteFilePath());
+                uint current_length = Util::get_time_msec(abs_current_file.absoluteFilePath());
 
                 book.chapter_files.append(abs_current_file.absoluteFilePath());
                 book.chapter_times.append(current_length);

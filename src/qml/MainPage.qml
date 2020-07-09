@@ -1,0 +1,60 @@
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.2
+import Qt.labs.settings 1.0
+
+import 'Style'
+
+Page {
+    id: root_main_page
+
+    header: TabBar {
+            id: bar
+            //anchors.fill: parent
+            TabButton {
+                text: qsTr("Playback")
+                onClicked: {
+                    swipe_view.currentIndex = 0
+                }
+            }
+            TabButton {
+                text: qsTr("Library")
+                onClicked: {
+                    swipe_view.currentIndex = 1
+                }
+            }
+        }
+
+
+    Rectangle {
+        id: background
+        color: Style.app.color
+        anchors.fill: parent
+    }
+
+
+    SwipeView {
+        id: swipe_view
+        anchors.fill: parent
+        currentIndex: 0
+
+        Item {
+            id: firstPage
+            ControlPage {
+
+            }
+        }
+
+        Item {
+            id: secondPage
+            LibraryPage {
+
+            }
+        }
+    }
+
+    // https://appbus.wordpress.com/2016/06/07/tab-pages-app-tabbar/
+    // https://github.com/ekke/tab_pages_x
+
+
+}

@@ -3,6 +3,6 @@
         <file alias="font_awesome">Font Awesome 5 Free-Solid-900.otf</file>
     </qresource>
     <qresource prefix="/icons">
-        <file alias="icon_audiobook">io.bitshift.audiobook.svg</file>
+        <file alias="icon_audiobook">bitshift.audiobook.svg</file>
     </qresource>
 </RCC>
