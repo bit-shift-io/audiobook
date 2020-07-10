@@ -3,75 +3,53 @@
 #include "util.h"
 
 
-LibraryModel::LibraryModel(QObject *parent, Library *p_library) :QAbstractTableModel(parent)
+LibraryModel::LibraryModel(QObject *parent)
+    : QAbstractListModel(parent)
 {
-    library = p_library;
     // connect this model to the library update function
-    connect(p_library, &Library::pathChanged, this, &LibraryModel::update_data);
+    //connect(Library::instance(), &Library::libraryUpdated, this, &LibraryModel::update_data);
 }
 
-void LibraryModel::update_data() {
+
+void LibraryModel::UpdateData() {
     beginResetModel();
     endResetModel();
 }
 
+
 int LibraryModel::rowCount(const QModelIndex & /*parent*/) const
 {
-   return library->getBooks().count();
+   return Library::instance()->size();
 }
 
-int LibraryModel::columnCount(const QModelIndex & /*parent*/) const
-{
-    return 3;
-}
 
 QVariant LibraryModel::data(const QModelIndex &index, int role) const
 {
-    if (role == Qt::TextAlignmentRole)
-    {
-        switch (index.column())
-        {
-        case 0:
-            return Qt::AlignLeft;
-        case 1:
-            return Qt::AlignCenter;
-        case 2:
-            return Qt::AlignCenter;
-        }
-    }
+    if (!index.isValid() || Library::instance()->isEmpty())
+            return QVariant();
 
-    if (role == Qt::DisplayRole)
-    {
-        const Book &book = library->getBooks().at(index.row());
-        switch (index.column())
-        {
-        case 0:
-            return book.title;
-        case 1:
-            return book.chapter_titles.count();
-        case 2:
-            return Util::get_display_time(book.time);
+    const Book &book = Library::instance()->getBooks().at(index.row());
+
+    switch (role) {
+        case TitleRole:
+            return QVariant(book.title);
+        case ChaptersRole: {
+            return QVariant(book.chapter_titles.count());
         }
+        case DurationRole:
+            return QVariant(Util::getDisplayTime(book.time));
     }
     return QVariant();
 }
 
 
-QVariant LibraryModel::headerData(int section, Qt::Orientation orientation, int role) const
+
+QHash<int, QByteArray> LibraryModel::roleNames() const
 {
-    if (role == Qt::DisplayRole)
-    {
-        if (orientation == Qt::Horizontal) {
-            switch (section)
-            {
-            case 0:
-                return QString("Title");
-            case 1:
-                return QString("Chapters");
-            case 2:
-                return QString("Time");
-            }
-        }
-    }
-    return QVariant();
+    // map/bind qml to cpp
+    QHash<int, QByteArray> names;
+    names[TitleRole] = "title";
+    names[ChaptersRole] = "chapters";
+    names[DurationRole] = "duration";
+    return names;
 }

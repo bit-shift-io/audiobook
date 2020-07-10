@@ -15,16 +15,30 @@ Page {
     header: TabBar {
             id: bar
 
+
             TabButton {
                 text: qsTr("Playback")
                 onClicked: {
                     swipe_view.currentIndex = 0
                 }
+
+                Image {
+                    source: 'qrc:/play-circle-solid.svg'
+                    sourceSize.width: parent.height
+                    sourceSize.height: parent.height
+                }
             }
+
             TabButton {
                 text: qsTr("Library")
                 onClicked: {
                     swipe_view.currentIndex = 1
+                }
+
+                Image {
+                    source: 'qrc:/photo-video-solid.svg'
+                    sourceSize.width: parent.height
+                    sourceSize.height: parent.height
                 }
             }
         }

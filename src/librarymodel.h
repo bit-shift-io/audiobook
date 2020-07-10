@@ -1,26 +1,32 @@
 #ifndef LIBRARYMODEL_H
 #define LIBRARYMODEL_H
 
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 
+class Book;
 class Library;
 
-class LibraryModel : public QAbstractTableModel
+class LibraryModel : public QAbstractListModel
 {
     Q_OBJECT
+
 public:
-    LibraryModel(QObject *parent, Library *p_library);
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override ;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    explicit LibraryModel(QObject *parent = nullptr);
+
+    // list of accesable properties/roles/map/bindings
+    enum {
+        TitleRole,
+        ChaptersRole,
+        DurationRole,
+    };
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    QString get_display_time(uint p_time);
 
-protected:
-    Library *library;
+    // hashmap to store properties/roles
+    virtual QHash<int, QByteArray> roleNames() const override;
 
-public slots:
-    void update_data();
+    void UpdateData();
 };
 
 #endif // LIBRARYMODEL_H

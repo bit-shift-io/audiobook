@@ -40,7 +40,6 @@ HEADERS += \
   src/library.h \
   src/librarymodel.h \
   src/player.h \
-  src/stretchingheader.h \
   src/settings.h \
   src/util.h
 
@@ -50,7 +49,6 @@ SOURCES += \
   src/librarymodel.cpp \
   src/main.cpp \
   src/player.cpp \
-  src/stretchingheader.cpp \
   src/settings.cpp \
   src/util.cpp
 

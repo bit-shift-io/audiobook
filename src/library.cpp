@@ -14,6 +14,7 @@ Library::Library(QObject *parent) :
 {
     // mPath from settings
     mPath = Settings::value("library_path", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath())).toString();
+    update();
 }
 
 Library *Library::instance()
@@ -43,24 +44,34 @@ void Library::setPath(QString &xPath) {
     emit pathChanged();
 }
 
+int Library::size() const
+{
+    return mLibraryItems.size();
+}
+
+bool Library::isEmpty() const
+{
+    return mLibraryItems.isEmpty();
+}
+
 
 const Book* Library::findByPath(const QString& dir) {
     Book b;
     b.directory=dir;
-    int i = book_list.indexOf(b);
+    int i = mLibraryItems.indexOf(b);
     if (i == -1)
         return NULL;
 
-    return &book_list[i];
+    return &mLibraryItems[i];
 }
 
 int Library::getBookIndex(const Book& book) {
-    int i = book_list.indexOf(book);
+    int i = mLibraryItems.indexOf(book);
     return i;
 }
 
 QVector<Book> Library::getBooks() {
-    return book_list;
+    return mLibraryItems;
 }
 
 
@@ -75,6 +86,7 @@ void Library::update() {
 
     QStringList file_filters;
     file_filters << "*.mp3" << "*.wav" << "*.ogg";
+
 
     while(directories.hasNext()){
         directories.next();
@@ -94,7 +106,7 @@ void Library::update() {
 
             for (auto current_file : current_files) {
                 QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
-                uint current_length = Util::get_time_msec(abs_current_file.absoluteFilePath());
+                uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
 
                 book.chapter_files.append(abs_current_file.absoluteFilePath());
                 book.chapter_times.append(current_length);
@@ -102,13 +114,13 @@ void Library::update() {
                 book.time += current_length;
             }
 
-            book_list.append(book);
+            mLibraryItems.append(book);
         }
 
     }
 
     // sort by title
-    qSort(book_list.begin(), book_list.end(), caseInsensitiveLessThan);
+    qSort(mLibraryItems.begin(), mLibraryItems.end(), caseInsensitiveLessThan);
 
     emit libraryUpdated();
 }

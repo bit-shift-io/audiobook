@@ -11,8 +11,6 @@ Page {
         color: Style.app.color
     }
 
-    Bounds {}
-
     Grid {
         anchors.fill: parent
         columns: 3

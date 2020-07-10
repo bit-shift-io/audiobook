@@ -52,4 +52,12 @@ QtObject {
         property int margin: app.margin
     }
 
+    property QtObject library: QtObject {
+        property int margin: app.margin
+        property int list_spacing: 10
+        property int radius_background: 0
+        property color color_background: '#464646'
+        property color color_highlight: '#646464'
+    }
+
 }

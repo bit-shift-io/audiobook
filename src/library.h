@@ -13,6 +13,7 @@ class Library : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
+    Q_PROPERTY(int size READ size)
 
 public:
     Library(const Library&) = delete; // disable copy for singleton
@@ -22,18 +23,22 @@ public:
     QString path() const;
     void setPath(QString &xPath);
 
+    int size() const;
+    bool isEmpty() const;
+
+    QVector<Book> getBooks();
+    const Book* findByPath(const QString &dir);
+    int getBookIndex(const Book &book);
+
 signals:
     void pathChanged();
     void libraryUpdated();
 
 public slots:
     void update();
-    QVector<Book> getBooks();
-    const Book* findByPath(const QString& dir);
-    int getBookIndex(const Book& book);
 
 private:
-    QVector<Book> book_list;
+    QVector<Book> mLibraryItems;
     QString mPath;
     explicit Library(QObject *parent = nullptr);
 
