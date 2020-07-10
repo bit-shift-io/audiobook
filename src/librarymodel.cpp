@@ -7,7 +7,7 @@ LibraryModel::LibraryModel(QObject *parent, Library *p_library) :QAbstractTableM
 {
     library = p_library;
     // connect this model to the library update function
-    connect(p_library, &Library::library_changed, this, &LibraryModel::update_data);
+    connect(p_library, &Library::pathChanged, this, &LibraryModel::update_data);
 }
 
 void LibraryModel::update_data() {
@@ -17,7 +17,7 @@ void LibraryModel::update_data() {
 
 int LibraryModel::rowCount(const QModelIndex & /*parent*/) const
 {
-   return library->get_book_list().count();
+   return library->getBooks().count();
 }
 
 int LibraryModel::columnCount(const QModelIndex & /*parent*/) const
@@ -42,7 +42,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        const Book &book = library->get_book_list().at(index.row());
+        const Book &book = library->getBooks().at(index.row());
         switch (index.column())
         {
         case 0:

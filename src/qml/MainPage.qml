@@ -8,9 +8,13 @@ import 'Style'
 Page {
     id: root_main_page
 
+    background: Rectangle {
+        color: Style.app.color
+    }
+
     header: TabBar {
             id: bar
-            //anchors.fill: parent
+
             TabButton {
                 text: qsTr("Playback")
                 onClicked: {
@@ -24,13 +28,6 @@ Page {
                 }
             }
         }
-
-
-    Rectangle {
-        id: background
-        color: Style.app.color
-        anchors.fill: parent
-    }
 
 
     SwipeView {

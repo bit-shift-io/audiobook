@@ -1,32 +1,42 @@
-#ifndef PLAYLIST_H
-#define PLAYLIST_H
+#ifndef LIBRARY_H
+#define LIBRARY_H
 
 #include <QObject>
 #include <QVector>
 #include "book.h"
 #include <QFileInfo>
 
+class QQmlEngine;
+class QJSEngine;
+
 class Library : public QObject
 {
     Q_OBJECT
-public:
-    explicit Library(QObject *parent = nullptr);
+    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
 
-protected:
-    QString library_directory;
-    QVector<Book> book_list;
+public:
+    Library(const Library&) = delete; // disable copy for singleton
+    static Library *instance();
+    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+
+    QString path() const;
+    void setPath(QString &xPath);
 
 signals:
-    void library_changed();
+    void pathChanged();
+    void libraryUpdated();
 
 public slots:
-    void set_library_directory(QString &dir);
-    void update_library_list();
-    QVector<Book> get_book_list();
-    QString get_library_directory();
-    const Book* find_by_directory(const QString& dir);
-    int get_book_index(const Book& book);
+    void update();
+    QVector<Book> getBooks();
+    const Book* findByPath(const QString& dir);
+    int getBookIndex(const Book& book);
+
+private:
+    QVector<Book> book_list;
+    QString mPath;
+    explicit Library(QObject *parent = nullptr);
 
 };
 
-#endif // PLAYLIST_H
+#endif // LIBRARY_H

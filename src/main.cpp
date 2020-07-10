@@ -6,6 +6,7 @@
 #include <QIcon>
 
 #include "settings.h"
+#include "library.h"
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroidExtras>
@@ -31,19 +32,10 @@ int main(int argc, char *argv[])
     //KirigamiPlugin::getInstance().registerTypes();
 #endif
 
-    // get instance in C++
-    //Settings *settings = Settings::instance();
-    //Database *database = Database::instance();
-    //FileIO *fileio = FileIO::instance();
-
     // register types
-    //qmlRegisterSingletonType<Database>("Database", 1, 0, "Database", &Database::qmlInstance);
-    //qmlRegisterSingletonType<Database>("FileIO", 1, 0, "FileIO", &FileIO::qmlInstance);
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
-
-    //qmlRegisterType<Weather>("Weather", 1, 0, "Weather");
-    //qmlRegisterType<ForecastModel>("Forecast", 1, 0, "ForecastModel");
-    //qmlRegisterType<RadarImage>("RadarImage", 1, 0, "RadarImage");
+    qmlRegisterSingletonType<Library>("Library", 1, 0, "Library", &Library::qmlInstance);
+    //qmlRegisterType<Library>("Library", 1, 0, "Library");
 
 
     // add imports

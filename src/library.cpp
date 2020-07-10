@@ -2,23 +2,49 @@
 #include <QDir>
 #include <QDebug>
 #include <QtAlgorithms>
+#include <QStandardPaths>
+
 #include "library.h"
 #include "book.h"
 #include "util.h"
+#include "settings.h"
 
-Library::Library(QObject *parent) : QObject(parent)
+Library::Library(QObject *parent) :
+    QObject(parent)
 {
-
+    // mPath from settings
+    mPath = Settings::value("library_path", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath())).toString();
 }
 
-void Library::set_library_directory(QString &dir) {
-    library_directory = dir;
-    update_library_list();
-    emit library_changed();
+Library *Library::instance()
+{
+    static Library* instance = new Library;
+    return instance;
+}
+
+QObject *Library::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    return Library::instance(); // C++ and QML instance
+}
+
+QString Library::path() const
+{
+    return mPath;
+}
+
+void Library::setPath(QString &xPath) {
+    if (xPath == mPath)
+        return;
+    mPath = xPath;
+    Settings::setValue("library_path", mPath);
+    update();
+    emit pathChanged();
 }
 
 
-const Book* Library::find_by_directory(const QString& dir) {
+const Book* Library::findByPath(const QString& dir) {
     Book b;
     b.directory=dir;
     int i = book_list.indexOf(b);
@@ -28,30 +54,27 @@ const Book* Library::find_by_directory(const QString& dir) {
     return &book_list[i];
 }
 
-int Library::get_book_index(const Book& book) {
+int Library::getBookIndex(const Book& book) {
     int i = book_list.indexOf(book);
     return i;
 }
 
-QVector<Book> Library::get_book_list() {
+QVector<Book> Library::getBooks() {
     return book_list;
 }
 
-QString Library::get_library_directory() {
-    return library_directory;
-}
 
 bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
     return s1.title.toLower() < s2.title.toLower();
 }
 
-void Library::update_library_list() {
+void Library::update() {
     //QStringList all_dirs;
-    QDir lib_dir(library_directory);
-    QDirIterator directories(library_directory, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QDir lib_dir(mPath);
+    QDirIterator directories(mPath, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
 
     QStringList file_filters;
-    file_filters << "*.mp3" << "*.wav";
+    file_filters << "*.mp3" << "*.wav" << "*.ogg";
 
     while(directories.hasNext()){
         directories.next();
@@ -87,6 +110,6 @@ void Library::update_library_list() {
     // sort by title
     qSort(book_list.begin(), book_list.end(), caseInsensitiveLessThan);
 
-
+    emit libraryUpdated();
 }
 

@@ -39,7 +39,6 @@ HEADERS += \
   src/book.h \
   src/library.h \
   src/librarymodel.h \
-  src/mainwindow.h \
   src/player.h \
   src/stretchingheader.h \
   src/settings.h \
@@ -50,14 +49,13 @@ SOURCES += \
   src/library.cpp \
   src/librarymodel.cpp \
   src/main.cpp \
-  src/mainwindow.cpp \
   src/player.cpp \
   src/stretchingheader.cpp \
   src/settings.cpp \
   src/util.cpp
 
 RESOURCES += \
-  res/resources.qrc \
+  res/res.qrc \
   src/qml.qrc
     
 # Install all files on Linux. For make install

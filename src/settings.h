@@ -18,9 +18,10 @@ public:
     static Settings *instance();
     static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
 
-    Q_INVOKABLE inline void setValue(const QString &key, const QVariant &value) { QSettings::setValue(key, value); }
-    Q_INVOKABLE inline QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const { return QSettings::value(key, defaultValue); }
-    Q_INVOKABLE inline bool valueBool(const QString &key, const QVariant &defaultValue = QVariant()) const { return QSettings::value(key, defaultValue).toBool(); }
+    // Q_INVOKABLE - allow qml to access non-slot functions
+    Q_INVOKABLE inline static void setValue(const QString &xKey, const QVariant &xValue) {instance()->setValueImp(xKey, xValue);};
+    Q_INVOKABLE inline static QVariant value(const QString &xKey, const QVariant &xDefaultValue = QVariant()) { return instance()->valueImp(xKey, xDefaultValue); }
+    Q_INVOKABLE inline static bool valueBool(const QString &xKey, const QVariant &xDefaultValue = QVariant()) { return instance()->valueImp(xKey, xDefaultValue).toBool(); }
 
 private:
     explicit Settings(QObject *parent = 0) : QSettings(QSettings::UserScope,
@@ -28,6 +29,10 @@ private:
         QCoreApplication::instance()->applicationName(),
         parent) {} // private for singleton
 
+    // implementations
+    inline void setValueImp(const QString &xKey, const QVariant &xValue) { QSettings::setValue(xKey, xValue); }
+    inline QVariant valueImp(const QString &xKey, const QVariant &xDefaultValue = QVariant()) const { return QSettings::value(xKey, xDefaultValue); }
+    inline bool valueBoolImp(const QString &xKey, const QVariant &xDefaultValue = QVariant()) const { return QSettings::value(xKey, xDefaultValue).toBool(); }
 };
 
 
