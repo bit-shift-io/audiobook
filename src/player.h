@@ -1,5 +1,4 @@
- 
-#ifndef PLAYER_H
+ #ifndef PLAYER_H
 #define PLAYER_H
 
 #include "book.h"
@@ -7,42 +6,53 @@
 #include <QMediaPlaylist>
 
 class Book;
+class QQmlEngine;
+class QJSEngine;
 
 class Player : public QMediaPlayer
 {
     Q_OBJECT
+    Q_PROPERTY(QString play READ play WRITE setPlay NOTIFY playChanged)
+
 public:
-    explicit Player(QMediaPlayer *parent = nullptr);
+    Player(const Player&) = delete; // disable copy for singleton
+    static Player *instance();
+    static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
+
     static QStringList supportedMimeTypes();
     static QStringList supportedSuffixes();
-    uint playlist_time;
-    float progress_scale;
-    uint get_playlist_length();
-    uint get_progress();
-    uint get_position();
-    const Book& get_playing_book();
-    const int get_playing_chapter_index();
-    const QString get_playing_chapter_title();
+
+    uint getPlaylistLength();
+    uint getProgress();
+    uint getPosition();
+    const Book& getPlayingItem();
+    int getPlayingChapterIndex();
+    const QString getPlayingChapterTitle();
 
 protected:
     Book book;
 
 public slots:
-    void play_url(const QUrl& url);
-    void set_playing_book(const Book &book);
-    void set_playing_chapter(QString p_chapter);
-    void set_position(uint p_position);
-    void seek_forward();
-    void seek_backward();
-    void increase_volume();
-    void decrease_volume();
-    void set_playback_mode(QMediaPlaylist::PlaybackMode mode);
-    void toggle_play_pause();
-    void currentIndexChanged();
+    void playUrl(const QUrl& url);
+    void setPlayingBook(const Book &book);
+    void setPlayingChapter(QString p_chapter);
+    void setPosition(uint p_position);
+    void skipForward();
+    void skipBackward();
+    void volumeUp();
+    void volumeDown();
+    void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
+    void togglePlayPause();
+    //void currentIndexChanged();
 
 
 signals:
-    void current_index_changed();
+    void currentIndexChanged();
+
+private:
+    uint mPlayListTime;
+    float mProgressScale;
+    explicit Player(QMediaPlayer *parent = nullptr);
 
 };
 

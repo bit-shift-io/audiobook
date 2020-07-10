@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "library.h"
 #include "librarymodel.h"
+#include "player.h"
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroidExtras>
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
     // register types
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
     qmlRegisterSingletonType<Library>("Library", 1, 0, "Library", &Library::qmlInstance);
+    qmlRegisterSingletonType<Player>("Player", 1, 0, "Player", &Player::qmlInstance);
 
     qmlRegisterType<LibraryModel>("LibraryModel", 1, 0, "LibraryModel");
 

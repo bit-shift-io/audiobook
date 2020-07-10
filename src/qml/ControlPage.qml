@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
+import Player 1.0
 import "Style"
 
 Page {
@@ -12,7 +13,6 @@ Page {
     }
 
     Grid {
-        anchors.fill: parent
         columns: 3
         spacing: 2
 
@@ -24,6 +24,9 @@ Page {
         ImageButton {
             id: play
             imageSource: 'qrc:/play-solid.svg'
+            onClicked: {
+                Player.playUrl();
+            }
         }
 
         ImageButton {
@@ -61,10 +64,7 @@ Page {
             id: volume_up
             imageSource: 'qrc:/volume-up-solid.svg'
         }
-
     }
-
-
 
 }
 

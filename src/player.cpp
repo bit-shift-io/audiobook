@@ -1,7 +1,9 @@
  
 #include "player.h"
 
-Player::Player(QMediaPlayer *parent) : QMediaPlayer(parent) {
+Player::Player(QMediaPlayer *parent)
+    : QMediaPlayer(parent)
+{
     QMediaPlaylist *playlist = new QMediaPlaylist;
     setPlaylist(playlist);
 
@@ -11,8 +13,24 @@ Player::Player(QMediaPlayer *parent) : QMediaPlayer(parent) {
 
 
 void Player::currentIndexChanged() {
-    emit current_index_changed();
+    emit currentIndexChanged();
 }
+
+
+Player *Player::instance()
+{
+    static Player* instance = new Player;
+    return instance;
+}
+
+
+QObject *Player::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    return Player::instance(); // C++ and QML instance
+}
+
 
 QStringList Player::supportedMimeTypes() {
     QStringList result = QMediaPlayer::supportedMimeTypes();
@@ -21,10 +39,10 @@ QStringList Player::supportedMimeTypes() {
     return result;
 }
 
-void Player::set_playing_book(const Book &p_book) {
+void Player::setPlayingBook(const Book &p_book) {
     book = p_book;
-    playlist_time = book.time;
-    progress_scale = 10000.0/playlist_time;
+    mPlayListTime = book.time;
+    mProgressScale = 10000.0/mPlayListTime;
 
     playlist()->clear();
 
@@ -37,52 +55,52 @@ void Player::set_playing_book(const Book &p_book) {
     playlist()->setCurrentIndex(0);
 }
 
-void Player::set_playing_chapter(QString p_chapter) {
+void Player::setPlayingChapter(QString p_chapter) {
     int i = book.chapter_titles.indexOf(p_chapter);
     playlist()->setCurrentIndex(i);
 }
 
 
-const Book& Player::get_playing_book() {
+const Book& Player::getPlayingItem() {
     return book;
 }
 
-const int Player::get_playing_chapter_index() {
+int Player::getPlayingChapterIndex() {
     return playlist()->currentIndex();
 }
 
-const QString Player::get_playing_chapter_title() {
-    if (get_playing_chapter_index() == -1)
+const QString Player::getPlayingChapterTitle() {
+    if (getPlayingChapterIndex() == -1)
         return "";
     else
-        return book.chapter_titles[get_playing_chapter_index()];
+        return book.chapter_titles[getPlayingChapterIndex()];
 }
 
-void Player::play_url(const QUrl &url) {
+void Player::playUrl(const QUrl &url) {
     setMedia(url);
     play();
 }
 
-void Player::toggle_play_pause() {
+void Player::togglePlayPause() {
     if (state() != QMediaPlayer::PlayingState)
         play();
     else
         pause();
 }
 
-void Player::set_playback_mode(QMediaPlaylist::PlaybackMode mode) {
+void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
     playlist()->setPlaybackMode(mode);
 }
 
-uint Player::get_playlist_length() {
-    return playlist_time;
+uint Player::getPlaylistLength() {
+    return mPlayListTime;
 }
 
-uint Player::get_progress() {
-    return progress_scale * get_position();
+uint Player::getProgress() {
+    return mProgressScale * getPosition();
 }
 
-uint Player::get_position() {
+uint Player::getPosition() {
     // account for chapters before current chapter
     int start_pos = 0;
     int idx = playlist()->currentIndex();
@@ -92,7 +110,7 @@ uint Player::get_position() {
     return start_pos + position();
 }
 
-void Player::set_position(uint p_position) {
+void Player::setPosition(uint p_position) {
     int idx = 0;
 
     // loop over chapters, reduce position by each chapter length till we are in the correct chapter
@@ -113,25 +131,25 @@ void Player::set_position(uint p_position) {
 
 
 
-void Player::seek_forward() {
-    int current_position = get_position();
+void Player::skipForward() {
+    int current_position = getPosition();
     current_position += 30000; // 30s
-    set_position(current_position);
+    setPosition(current_position);
 }
 
-void Player::seek_backward() {
-    int current_position = get_position();
+void Player::skipBackward() {
+    int current_position = getPosition();
     current_position -= 30000; // 30s
     if (current_position < 0)
         current_position = 0;
-    set_position(current_position);
+    setPosition(current_position);
 }
 
-void Player::increase_volume() {
+void Player::volumeUp() {
     setVolume(volume() + 10);
 }
 
-void Player::decrease_volume() {
+void Player::volumeDown() {
     setVolume(volume() - 10);
 }
 
