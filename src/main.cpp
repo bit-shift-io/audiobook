@@ -34,6 +34,10 @@ int main(int argc, char *argv[])
     //KirigamiPlugin::getInstance().registerTypes();
 #endif
 
+    // create singletons
+    Library* library = Library::instance();
+    Player* player = Player::instance();
+
     // register types
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
     qmlRegisterSingletonType<Library>("Library", 1, 0, "Library", &Library::qmlInstance);

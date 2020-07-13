@@ -3,6 +3,7 @@ import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
 import Library 1.0
 import LibraryModel 1.0
+import Player 1.0
 import "Style"
 
 Page {
@@ -93,6 +94,7 @@ Page {
                     anchors.fill: parent
                     onClicked: {
                         library_list.currentIndex = index;
+                        Library.activeItem = index;
                     }
                 }
             }

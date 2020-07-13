@@ -1,5 +1,5 @@
- 
 #include "player.h"
+#include "library.h"
 
 Player::Player(QMediaPlayer *parent)
     : QMediaPlayer(parent)
@@ -8,12 +8,22 @@ Player::Player(QMediaPlayer *parent)
     setPlaylist(playlist);
 
     // connect this playlist to our slots
-    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::currentIndexChanged);
+    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::superCurrentIndexChanged);
+
+    // connect library
+    connect(Library::instance(), &Library::activeItemChanged, this, &Player::libraryItemChanged);
 }
 
 
-void Player::currentIndexChanged() {
+void Player::superCurrentIndexChanged() {
     emit currentIndexChanged();
+}
+
+void Player::libraryItemChanged()
+{
+    const Book* book = Library::instance()->getActiveItem();
+    if (book != nullptr)
+        setPlayingBook(*book); // cannot be null at this point, so use ref
 }
 
 
@@ -79,6 +89,15 @@ const QString Player::getPlayingChapterTitle() {
 void Player::playUrl(const QUrl &url) {
     setMedia(url);
     play();
+}
+
+void Player::setPlayingBook(int xLibraryIndex)
+{
+    /*
+    const Book& book = Library::instance()->getLibraryItems().at(idx.row());
+    setPlayingBook(book);
+    play();
+    */
 }
 
 void Player::togglePlayPause() {

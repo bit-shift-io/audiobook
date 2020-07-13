@@ -12,7 +12,7 @@ class QJSEngine;
 class Player : public QMediaPlayer
 {
     Q_OBJECT
-    Q_PROPERTY(QString play READ play WRITE setPlay NOTIFY playChanged)
+    //Q_PROPERTY(QString play READ play WRITE setPlay NOTIFY playChanged)
 
 public:
     Player(const Player&) = delete; // disable copy for singleton
@@ -34,6 +34,7 @@ protected:
 
 public slots:
     void playUrl(const QUrl& url);
+    void setPlayingBook(int xLibraryIndex);
     void setPlayingBook(const Book &book);
     void setPlayingChapter(QString p_chapter);
     void setPosition(uint p_position);
@@ -43,8 +44,8 @@ public slots:
     void volumeDown();
     void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
     void togglePlayPause();
-    //void currentIndexChanged();
-
+    void superCurrentIndexChanged();
+    void libraryItemChanged();
 
 signals:
     void currentIndexChanged();

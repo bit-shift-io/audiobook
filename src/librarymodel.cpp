@@ -6,8 +6,6 @@
 LibraryModel::LibraryModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    // connect this model to the library update function
-    //connect(Library::instance(), &Library::libraryUpdated, this, &LibraryModel::update_data);
 }
 
 
@@ -28,7 +26,7 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || Library::instance()->isEmpty())
             return QVariant();
 
-    const Book &book = Library::instance()->getBooks().at(index.row());
+    const Book &book = Library::instance()->getLibraryItems().at(index.row());
 
     switch (role) {
         case TitleRole:

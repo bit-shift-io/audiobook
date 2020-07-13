@@ -26,16 +26,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         console.log('main.qml')
-        load();
-        //FileIO.clearCache();
-    }
-
-    function load() {
-        //station_list = QSettings.value('station_list', ["94672"]);
-    }
-
-    function save() {
-        //QSettings.setValue('station_list', root.station_list);
     }
 
 
