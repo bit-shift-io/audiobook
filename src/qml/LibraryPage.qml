@@ -94,6 +94,13 @@ Page {
                         console.log(model.title)
                         Library.activeItem = model.libraryIndex;
                     }
+                    onDoubleClicked: {
+                        library_list.currentIndex = index;
+                        console.log('double')
+                        Library.activeItem = model.libraryIndex;
+                        swipe_view.currentIndex = 0; // TODO: not working?!
+                        Player.play();
+                    }
                 }
             }
         }
