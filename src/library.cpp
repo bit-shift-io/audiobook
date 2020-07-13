@@ -36,10 +36,12 @@ QString Library::path() const
 }
 
 void Library::setPath(QString &xPath) {
+    xPath = xPath.replace("file://","");
     if (xPath == mPath)
         return;
     mPath = xPath;
     Settings::setValue("library_path", mPath);
+    qDebug() << mPath;
     update();
     emit pathChanged();
 }

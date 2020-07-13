@@ -2,11 +2,17 @@
 #include <taglib/fileref.h>
 
 
-QString Util::getDisplayTime(uint p_time) {
+QString Util::getDisplayTime(const QString &xFileName)
+{
+    uint t = getTimeMSec(xFileName);
+    return getDisplayTime(t);
+}
+
+QString Util::getDisplayTime(uint xTimeMSec) {
     //uint milliseconds = p_time%1000;
-    uint seconds = (p_time/1000)%60;
-    uint minutes = (p_time/(1000*60))%60;
-    uint hours = (p_time/(1000*60*60)); //%24;
+    uint seconds = (xTimeMSec/1000)%60;
+    uint minutes = (xTimeMSec/(1000*60))%60;
+    uint hours = (xTimeMSec/(1000*60*60)); //%24;
     QString str_hours = (hours < 10) ? "0" + QString::number(hours) : QString::number(hours);
     QString str_minutes = (minutes < 10) ? "0" + QString::number(minutes) : QString::number(minutes);
     QString str_seconds = (seconds < 10) ? "0" + QString::number(seconds) : QString::number(seconds);
@@ -15,11 +21,8 @@ QString Util::getDisplayTime(uint p_time) {
 }
 
 
-uint Util::getTimeMSec(const QString &p_filename) {
-    /*
-    TagLib::FileRef f(p_filename.toUtf8().constData());
+uint Util::getTimeMSec(const QString &xFileName) {
+    TagLib::FileRef f(xFileName.toUtf8().constData());
     uint len = f.file()->audioProperties()->lengthInMilliseconds();
     return len;
-    */
-    return 0;
 }

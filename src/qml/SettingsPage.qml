@@ -1,7 +1,9 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
+import QtQuick.Dialogs 1.0
 import QSettings 1.0
+import Library 1.0
 import 'Style'
 
 Page {
@@ -37,36 +39,46 @@ Page {
         color: Style.app.color
         anchors.fill: parent
 
+
+        FileDialog {
+            id: file_dialog
+            title: "Library"
+            folder: shortcuts.home
+            selectFolder: true
+            onAccepted: {
+                Library.path = folder;
+            }
+            onRejected: {
+            }
+            //Component.onCompleted: visible = true
+        }
+
         ColumnLayout {
             id: column_layout
             width: parent.width
 
 
             Rectangle {
-                id: font_scale
+                id: library_path
                 color: Style.search.color_background
                 implicitHeight: font_scale_spin.height
                 implicitWidth: content.width
 
                 Label {
-                    text: 'Font Scale'
+                    text: 'Library Path'
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignHCenter
                     anchors.fill: parent
                     anchors.margins: Style.settings.margin
                 }
 
-                SpinBox {
-                    id: font_scale_spin
-                    value: QSettings.value('font_scale', 100)
-                    from: 50
-                    to: 200
+                Button {
+                    id: library_path_picker
                     Layout.alignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.margins: Style.settings.margin
-                    onValueChanged: {
-                        Style.font_scale = value / 100;
-                        QSettings.setValue('font_scale', value);
+                    onClicked: {
+                        file_dialog.visible = true;
                     }
                 }
             }

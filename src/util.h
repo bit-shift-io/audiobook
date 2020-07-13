@@ -9,11 +9,9 @@ class QString;
 class Util
 {
 public:
-    static QString getDisplayTime(uint p_time);
-    static uint getTimeMSec(const QString &p_filename);
-
-    static QTime get_time(const QString &p_filename);
-    static QTime add_time(QTime &a, QTime &b);
+    static QString getDisplayTime(const QString &xFileName);
+    static QString getDisplayTime(uint xTimeMSec);
+    static uint getTimeMSec(const QString &xFileName);
 
 };
 

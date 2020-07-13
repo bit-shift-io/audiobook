@@ -47,6 +47,7 @@ Page {
         clip: true
         spacing: Style.library.list_spacing
         currentIndex: -1 // no selected default
+        ScrollBar.vertical: ScrollBar {}
 
         model:  LibraryModel {}
 
@@ -85,7 +86,7 @@ Page {
                         Layout.alignment: Qt.AlignRight
 
                         Label {
-                            text:  model.chapters + ' Chapters'
+                            text:  model.chapters + ' | ' + model.duration
                         }
                     }
                 }
