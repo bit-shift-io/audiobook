@@ -21,7 +21,7 @@ Page {
 
     Grid {
         columns: 3
-        spacing: 2
+        spacing: Style.control.spacing
 
         ImageButton {
             id: step_backward
@@ -34,13 +34,18 @@ Page {
         ImageButton {
             id: play
             imageSource: 'qrc:/play-solid.svg'
-            checkable: true
             onClicked: {
-                Player.togglePlayPause()
+                state = 'pause'
+
+                if (Player.audioAvailable)
+                    Player.togglePlayPause()
+
+                if (Player.state === Player.PlayingState)
+                    state = 'play'
             }
             states: [
                 State {
-                    name: "play"
+                    name: 'play'
                     when: play.checked
                     PropertyChanges {
                         target: play
@@ -48,7 +53,7 @@ Page {
                     }
                 },
                 State {
-                    name: "pause"
+                    name: 'pause'
                     when: !play.checked
                     PropertyChanges {
                         target: play

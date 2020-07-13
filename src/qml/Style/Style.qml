@@ -44,6 +44,12 @@ QtObject {
         property color color_down: '#646464'
     }
 
+    property QtObject image_button: QtObject {
+        property color color_foreground: app.font_color
+        property color color_background: '#464646'
+        property color color_down: '#646464'
+    }
+
     property QtObject label: QtObject {
 
     }
@@ -55,6 +61,14 @@ QtObject {
     property QtObject library: QtObject {
         property int margin: app.margin
         property int list_spacing: 10
+        property int radius_background: 0
+        property color color_background: '#464646'
+        property color color_highlight: '#646464'
+    }
+
+    property QtObject control: QtObject {
+        property int margin: app.margin
+        property int spacing: 10
         property int radius_background: 0
         property color color_background: '#464646'
         property color color_highlight: '#646464'
