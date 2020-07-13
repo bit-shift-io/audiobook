@@ -1,11 +1,6 @@
 CONFIG -= qt
-
 TEMPLATE = lib
-TARGET = taglib
-CONFIG += staticlib
-
 CONFIG += c++11
-
 DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += taglib \
@@ -264,13 +259,18 @@ DEFINES += WITH_MP4
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
     DESTDIR = ../taglib/debug
-    OBJECTS_DIR = ../taglib/debug
+    OBJECTS_DIR = ./debug-o
 } else {
     DESTDIR = ../taglib/release
-    OBJECTS_DIR = ../taglib/release
+    OBJECTS_DIR = ./release-o
 }
 
 win32 {
     CONFIG += dll
 }
 
+# Default rules for deployment.
+#unix {
+#    target.path = $$[QT_INSTALL_PLUGINS]/generic
+#}
+#!isEmpty(target.path): INSTALLS += target

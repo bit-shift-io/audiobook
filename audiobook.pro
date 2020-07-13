@@ -33,8 +33,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-
-
 HEADERS += \
   src/book.h \
   src/library.h \
@@ -83,3 +81,16 @@ DISTFILES += \
     android/gradlew.bat \
     android/res/values/libs.xml
 }
+
+
+# windows taglib needs to be build first!
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../taglib/release/ -ltaglib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../taglib/debug/ -ltaglib
+
+INCLUDEPATH += $$PWD/../taglib/debug
+DEPENDPATH += $$PWD/../taglib/debug
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../taglib/release/libtaglib.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../taglib/debug/libtaglib.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../taglib/release/taglib.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../taglib/debug/taglib.lib
