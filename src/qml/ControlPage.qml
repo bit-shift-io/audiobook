@@ -87,6 +87,9 @@ Page {
         ImageButton {
             id: menu
             imageSource: 'qrc:/bars-solid.svg'
+            onClicked: {
+                drawer.open();
+            }
         }
 
         ImageButton {
