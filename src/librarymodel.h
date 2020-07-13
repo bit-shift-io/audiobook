@@ -15,6 +15,7 @@ public:
 
     // list of accesable properties/roles/map/bindings
     enum {
+        LibraryIndexRole,
         TitleRole,
         ChaptersRole,
         DurationRole,
@@ -22,11 +23,20 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    void UpdateData();
 
     // hashmap to store properties/roles
-    virtual QHash<int, QByteArray> roleNames() const override;
+    // map/bind qml to cpp
+    virtual QHash<int, QByteArray> roleNames() const override {
+        QHash<int, QByteArray> names;
+        names[LibraryIndexRole] = "libraryIndex";
+        names[TitleRole] = "title";
+        names[ChaptersRole] = "chapters";
+        names[DurationRole] = "duration";
+        return names;
+    }
 
-    void UpdateData();
+
 };
 
 #endif // LIBRARYMODEL_H

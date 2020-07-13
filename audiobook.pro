@@ -64,6 +64,7 @@ INCLUDEPATH += \
 HEADERS += \
   src/book.h \
   src/library.h \
+  src/libraryfilterproxy.h \
   src/librarymodel.h \
   src/player.h \
   src/settings.h \
@@ -189,6 +190,7 @@ HEADERS += \
 SOURCES += \
   src/book.cpp \
   src/library.cpp \
+  src/libraryfilterproxy.cpp \
   src/librarymodel.cpp \
   src/main.cpp \
   src/player.cpp \

@@ -29,25 +29,14 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
     const Book &book = Library::instance()->getLibraryItems().at(index.row());
 
     switch (role) {
+        case LibraryIndexRole:
+            return QVariant(index.row());
         case TitleRole:
             return QVariant(book.title);
-        case ChaptersRole: {
+        case ChaptersRole:
             return QVariant(book.chapter_titles.count());
-        }
         case DurationRole:
             return QVariant(Util::getDisplayTime(book.time));
     }
     return QVariant();
-}
-
-
-
-QHash<int, QByteArray> LibraryModel::roleNames() const
-{
-    // map/bind qml to cpp
-    QHash<int, QByteArray> names;
-    names[TitleRole] = "title";
-    names[ChaptersRole] = "chapters";
-    names[DurationRole] = "duration";
-    return names;
 }

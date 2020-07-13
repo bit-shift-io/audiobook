@@ -2,8 +2,8 @@ import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
 import Library 1.0
-import LibraryModel 1.0
 import Player 1.0
+//import LibraryModel 1.0
 import "Style"
 
 Page {
@@ -26,12 +26,8 @@ Page {
         focus: true
 
         onTextChanged: {
-            if (text.length < 2)
-                return;
-
-            library_list.currentIndex = -1;
-            Library.filter(text);
-
+            //library_list.currentIndex = -1;
+            LibraryFilterProxy.setFilterRegExp(text);
         }
     }
 
@@ -49,14 +45,14 @@ Page {
         currentIndex: -1 // no selected default
         ScrollBar.vertical: ScrollBar {}
 
-        model:  LibraryModel {}
+        model: LibraryFilterProxy
 
         delegate: Component {
             id: search_delegate
 
             Rectangle {
                 id: background
-                color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background
+                color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background // TODO: model.isCurrentItem for active item
                 radius: Style.library.radius_background
                 implicitHeight: row_layout.height
                 implicitWidth: parent.width
@@ -95,7 +91,8 @@ Page {
                     anchors.fill: parent
                     onClicked: {
                         library_list.currentIndex = index;
-                        Library.activeItem = index;
+                        console.log(model.title)
+                        Library.activeItem = model.libraryIndex;
                     }
                 }
             }

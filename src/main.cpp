@@ -4,10 +4,12 @@
 #include <QDebug>
 #include <QQmlDebuggingEnabler>
 #include <QIcon>
+#include <QQmlContext>
 
 #include "settings.h"
 #include "library.h"
 #include "librarymodel.h"
+#include "libraryfilterproxy.h"
 #include "player.h"
 
 #ifdef Q_OS_ANDROID
@@ -38,13 +40,19 @@ int main(int argc, char *argv[])
     Library* library = Library::instance();
     Player* player = Player::instance();
 
+    LibraryModel lm;
+    LibraryModel *library_model = new LibraryModel();
+    LibraryFilterProxy *filter_proxy = new LibraryFilterProxy();
+    filter_proxy->setSourceModel(library_model);
+
     // register types
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
     qmlRegisterSingletonType<Library>("Library", 1, 0, "Library", &Library::qmlInstance);
     qmlRegisterSingletonType<Player>("Player", 1, 0, "Player", &Player::qmlInstance);
 
-    qmlRegisterType<LibraryModel>("LibraryModel", 1, 0, "LibraryModel");
-
+    //qmlRegisterType<LibraryModel>("LibraryModel", 1, 0, "LibraryModel");
+    engine.rootContext()->setContextProperty("LibraryModel", &lm);
+    engine.rootContext()->setContextProperty("LibraryFilterProxy", filter_proxy);
 
     // add imports
     engine.addImportPath(".");
