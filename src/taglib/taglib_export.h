@@ -26,6 +26,11 @@
 #ifndef TAGLIB_EXPORT_H
 #define TAGLIB_EXPORT_H
 
+// Note: Brons set this value for windows to build
+#define TAGLIB_STATIC 1
+
+
+
 #if defined(TAGLIB_STATIC)
 #define TAGLIB_EXPORT
 #elif (defined(_WIN32) || defined(_WIN64))

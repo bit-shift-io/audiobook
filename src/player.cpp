@@ -4,14 +4,18 @@
 Player::Player(QMediaPlayer *parent)
     : QMediaPlayer(parent)
 {
+    // TODO: use parent playlist? parent->playlist()
     QMediaPlaylist *playlist = new QMediaPlaylist;
     setPlaylist(playlist);
 
-    // connect this playlist to our slots
-    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::superCurrentIndexChanged);
+    // connects
+    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::currentIndexChanged);
+    connect(this, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
+
 
     // connect library
     connect(Library::instance(), &Library::activeItemChanged, this, &Player::libraryItemChanged);
+
 }
 
 
@@ -53,6 +57,7 @@ void Player::setPlayingBook(const Book &p_book) {
     book = p_book;
     mPlayListTime = book.time;
     mProgressScale = 10000.0/mPlayListTime;
+    mProgress = 0;
 
     playlist()->clear();
 
@@ -86,19 +91,24 @@ const QString Player::getPlayingChapterTitle() {
         return book.chapter_titles[getPlayingChapterIndex()];
 }
 
+void Player::positionChanged(qint64 xPosition)
+{
+    // parent position has changed
+    // account for chapters before current chapter
+    qint64 start_pos = 0;
+    int idx = playlist()->currentIndex();
+    for(int i = 0; i < idx ; ++i) {
+        start_pos += book.chapter_times[i];
+    }
+    mProgress = start_pos + xPosition;
+    emit progressChanged();
+}
+
 void Player::playUrl(const QUrl &url) {
     setMedia(url);
     play();
 }
 
-void Player::setPlayingBook(int xLibraryIndex)
-{
-    /*
-    const Book& book = Library::instance()->getLibraryItems().at(idx.row());
-    setPlayingBook(book);
-    play();
-    */
-}
 
 void Player::togglePlayPause() {
     if (state() != QMediaPlayer::PlayingState)
@@ -115,11 +125,13 @@ uint Player::getPlaylistLength() {
     return mPlayListTime;
 }
 
-uint Player::getProgress() {
-    return mProgressScale * getPosition();
+uint Player::progress() const {
+    // multiply by scale of the slider
+    return mProgress * mProgressScale;
 }
 
-uint Player::getPosition() {
+/*
+uint Player::getPosition() const {
     // account for chapters before current chapter
     int start_pos = 0;
     int idx = playlist()->currentIndex();
@@ -127,6 +139,11 @@ uint Player::getPosition() {
         start_pos += book.chapter_times[i];
     }
     return start_pos + position();
+}*/
+
+void Player::setProgress(qint64 xPosition)
+{
+    qDebug() << xPosition;
 }
 
 void Player::setPosition(uint p_position) {
@@ -151,14 +168,13 @@ void Player::setPosition(uint p_position) {
 
 
 void Player::skipForward() {
-    int current_position = getPosition();
-    current_position += 30000; // 30s
+    qint64 current_position = mProgress + mSkip;
+    //if (current_position >= mPlayListTime) // TODO: check skip end of book
     setPosition(current_position);
 }
 
 void Player::skipBackward() {
-    int current_position = getPosition();
-    current_position -= 30000; // 30s
+    qint64 current_position = mProgress - mSkip;
     if (current_position < 0)
         current_position = 0;
     setPosition(current_position);

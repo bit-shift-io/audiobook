@@ -13,6 +13,7 @@ class Player : public QMediaPlayer
 {
     Q_OBJECT
     //Q_PROPERTY(QString play READ play WRITE setPlay NOTIFY playChanged)
+    Q_PROPERTY(uint progress READ progress WRITE setProgress NOTIFY progressChanged)
 
 public:
     Player(const Player&) = delete; // disable copy for singleton
@@ -22,9 +23,12 @@ public:
     static QStringList supportedMimeTypes();
     static QStringList supportedSuffixes();
 
+    uint progress() const;
+    uint getPosition() const;
+    void setProgress(qint64 xPosition);
+
     uint getPlaylistLength();
-    uint getProgress();
-    uint getPosition();
+
     const Book& getPlayingItem();
     int getPlayingChapterIndex();
     const QString getPlayingChapterTitle();
@@ -33,8 +37,11 @@ protected:
     Book book;
 
 public slots:
+    void positionChanged(qint64 xPosition);
+    void libraryItemChanged();
+
+    // old
     void playUrl(const QUrl& url);
-    void setPlayingBook(int xLibraryIndex);
     void setPlayingBook(const Book &book);
     void setPlayingChapter(QString p_chapter);
     void setPosition(uint p_position);
@@ -45,14 +52,17 @@ public slots:
     void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
     void togglePlayPause();
     void superCurrentIndexChanged();
-    void libraryItemChanged();
+
 
 signals:
     void currentIndexChanged();
+    void progressChanged();
 
 private:
-    uint mPlayListTime;
-    float mProgressScale;
+    qint64 mProgress = 0;
+    int mSkip = 30000; // 30 sec
+    qint64 mPlayListTime;
+    qint64 mProgressScale;
     explicit Player(QMediaPlayer *parent = nullptr);
 
 };

@@ -13,15 +13,12 @@ public:
     Book();
     QString title;
     QString directory;
-
     QStringList chapter_titles;
     QStringList chapter_files;
     QVector<uint> chapter_times;
-
-    uint time;
+    qint64 time;
 
     bool operator==(const Book& rhs);
-
 };
 
 #endif // BOOK_H

@@ -12,14 +12,45 @@ Page {
         color: Style.app.color
     }
 
-    Slider {
-        id: progress
-        from: 0
-        value: Player.position
-        to: 10000
+    Item {
+        id: timeline
+        height: progress.height
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        anchors.top: parent.top
+        anchors.topMargin: 0
+
+        Label {
+            id: track_position
+            text: "00:00:00"
+        }
+
+        Slider {
+            id: progress
+            width: parent.width
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.left: parent.left
+            value: Player.progress
+            from: 0
+            to: 10000
+        }
+
+        Label {
+            id: track_time
+            text: "00:00:00"
+            anchors.right: parent.right
+        }
     }
 
+
+
     Grid {
+        x: 0
+        anchors.top: timeline.bottom
+        anchors.topMargin: 6
         columns: 3
         spacing: Style.control.spacing
 

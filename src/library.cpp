@@ -56,43 +56,36 @@ bool Library::isEmpty() const
     return mLibraryItems.isEmpty();
 }
 
-/*
-const Book* Library::findByPath(const QString& dir) {
-    Book b;
-    b.directory=dir;
-    int i = mLibraryItems.indexOf(b);
-    if (i == -1)
-        return NULL;
 
-    return &mLibraryItems[i];
+const Book* Library::getLibraryItem(const QString &xTitle) {
+    for (int i=0; i < mLibraryItems.size(); ++i) {
+        const Book &book = mLibraryItems[i];
+        if (book.title == xTitle) {
+            return &book;
+        }
+    }
+    return nullptr;
 }
-*/
 
-/*
-int Library::getBookIndex(const Book& book) {
-    int i = mLibraryItems.indexOf(book);
-    return i;
-}*/
-
-void Library::setActiveItem(int xIndex)
+void Library::setActiveItem(QString xTitle)
 {
-    if (mActiveItem == xIndex)
+    if (mActiveItem != nullptr && mActiveItem->title == xTitle)
         return;
-    mActiveItem = xIndex;
-    emit activeItemChanged();
+
+    mActiveItem = getLibraryItem(xTitle);
+
+    if (mActiveItem != nullptr)
+        emit activeItemChanged();
 }
 
-int Library::activeItem()
+const Book* Library::activeItem()
 {
     return mActiveItem;
 }
 
 const Book* Library::getActiveItem()
 {
-    if (mActiveItem == -1 || mLibraryItems.isEmpty() || mActiveItem >= mLibraryItems.size())
-        return nullptr;
-
-    return &mLibraryItems[mActiveItem];
+    return mActiveItem;
 }
 
 

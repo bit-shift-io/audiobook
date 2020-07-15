@@ -92,12 +92,12 @@ Page {
                     onClicked: {
                         library_list.currentIndex = index;
                         console.log(model.title)
-                        Library.activeItem = model.libraryIndex;
+                        Library.activeItem = model.title;
                     }
                     onDoubleClicked: {
                         library_list.currentIndex = index;
                         console.log('double')
-                        Library.activeItem = model.libraryIndex;
+                        Library.activeItem = model.title;
                         swipe_view.currentIndex = 0; // TODO: not working?!
                         Player.play();
                     }
