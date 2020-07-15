@@ -19,19 +19,52 @@ Page {
         anchors.left: parent.left
         anchors.top: parent.top
 
+        ComboBox {
+            id: bookmark_button
+            anchors.left: parent.left
+            currentIndex: 0
+            model: 30
+            onActivated: {
+            }
+        }
 
+        /*
         ImageButton {
             id: bookmark_button
             anchors.left: parent.left
             imageSource: 'qrc:/bookmark-solid.svg'
-        }
+            onClicked: {
+                chapter_dialog.open();
+            }
 
-        ImageButton {
+            Dialog {
+                id: chapter_dialog
+                modal: true
+                standardButtons: DialogButtonBox.Ok | DialogButtonBox.Cancel
+                focus: true
+                closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                contentItem:
+                    ListView {
+                        id: hour_tumbler
+                        model: 12
+                        onCurrentIndexChanged:{}
+                    }
+
+            }
+        }*/
+
+        ComboBox {
             id: mode_button
             anchors.left: bookmark_button.right
-            imageSource: 'qrc:/long-arrow-alt-right-solid.svg'
-            onClicked: {
-                //Player.setPlaybackMode();
+            currentIndex: 0
+            model: ListModel {
+                id: mode_items
+                ListElement { text: 'Sequential'; image: 'qrc:/bookmark-solid.svg' }
+                ListElement { text: 'CurrentItemInLoop'; image: 'qrc:/bookmark-solid.svg' }
+                ListElement { text: 'Loop'; image: 'qrc:/bookmark-solid.svg' }
+            }
+            onActivated: {
+                Player.setPlaybackMode(model[index].text);
             }
         }
 
