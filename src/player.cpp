@@ -10,19 +10,14 @@ Player::Player(QMediaPlayer *parent)
     setPlaylist(playlist);
 
     // connects
-    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::currentIndexChanged);
+    connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::playlistIndexChanged);
     connect(this, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
 
 
     // connect library
     connect(Library::instance(), &Library::activeItemChanged, this, &Player::libraryItemChanged);
-
 }
 
-
-void Player::superCurrentIndexChanged() {
-    emit currentIndexChanged();
-}
 
 void Player::libraryItemChanged()
 {
@@ -44,14 +39,6 @@ QObject *Player::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
     return Player::instance(); // C++ and QML instance
-}
-
-
-QStringList Player::supportedMimeTypes() {
-    QStringList result = QMediaPlayer::supportedMimeTypes();
-    if (result.isEmpty())
-        result.append(QStringLiteral("audio/mpeg"));
-    return result;
 }
 
 
@@ -80,20 +67,13 @@ void Player::setPlayingChapter(QString p_chapter) {
 }
 
 
-const Book& Player::getPlayingItem() {
-    return mBook;
-}
-
-int Player::getPlayingChapterIndex() {
-    return playlist()->currentIndex();
-}
-
-const QString Player::getPlayingChapterTitle() {
-    if (getPlayingChapterIndex() == -1)
+QString Player::chapterText() const {
+    if (playlist()->currentIndex() == -1)
         return "";
     else
-        return mBook.chapter_titles[getPlayingChapterIndex()];
+        return mBook.chapter_titles[playlist()->currentIndex()];
 }
+
 
 void Player::positionChanged(qint64 xPosition)
 {
@@ -108,9 +88,10 @@ void Player::positionChanged(qint64 xPosition)
     emit progressChanged();
 }
 
-void Player::playUrl(const QUrl &url) {
-    setMedia(url);
-    play();
+
+void Player::playlistIndexChanged(int xIndex)
+{
+    qDebug() << "new chapter" << xIndex;
 }
 
 
@@ -125,9 +106,6 @@ void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
     playlist()->setPlaybackMode(mode);
 }
 
-qint64 Player::getPlaylistLength() {
-    return mPlayListTime;
-}
 
 qint64 Player::progress() const {
     // multiply by scale of the slider
@@ -152,6 +130,12 @@ QString Player::positionText() const
 QString Player::timeText() const
 {
     return Util::getDisplayTime(mPlayListTime);
+}
+
+
+QString Player::titleText() const
+{
+    return mBook.title;
 }
 
 

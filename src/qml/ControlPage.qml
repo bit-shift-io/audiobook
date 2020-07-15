@@ -13,14 +13,49 @@ Page {
     }
 
     Item {
-        id: timeline
+        id: player_navigation
+        height: bookmark_button.height
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: parent.top
+
+
+        ImageButton {
+            id: bookmark_button
+            anchors.left: parent.left
+            imageSource: 'qrc:/bookmark-solid.svg'
+        }
+
+        ImageButton {
+            id: mode_button
+            anchors.left: bookmark_button.right
+            imageSource: 'qrc:/long-arrow-alt-right-solid.svg'
+            onClicked: {
+                //Player.setPlaybackMode();
+            }
+        }
+
+        Label {
+            id: title
+            font.pixelSize: Style.control.font_size_title
+            anchors.left: mode_button.right
+            text: Player.titleText
+        }
+
+        Label {
+            id: chapter
+            font.pixelSize: Style.control.font_size_chapter
+            anchors.left: menu_button.right
+            text: Player.chapterText
+        }
+    }
+
+    Item {
+        id: player_timeline
         height: progress.height
         anchors.right: parent.right
-        anchors.rightMargin: 0
         anchors.left: parent.left
-        anchors.leftMargin: 0
-        anchors.top: parent.top
-        anchors.topMargin: 0
+        anchors.top: player_navigation.bottom
 
         Label {
             id: track_position
@@ -52,11 +87,9 @@ Page {
         }
     }
 
-
-
     Grid {
-        x: 0
-        anchors.top: timeline.bottom
+        id: playback_control
+        anchors.top: player_timeline.bottom
         anchors.topMargin: 6
         columns: 3
         spacing: Style.control.spacing
@@ -108,28 +141,19 @@ Page {
                 Player.skipForward()
             }
         }
+    }
 
-        ImageButton {
-            id: bookmark
-            imageSource: 'qrc:/bookmark-solid.svg'
+    Item {
+        id: volume_control
+        anchors.top: playback_control.bottom
+        Slider {
+            id: volume_slider
+            value: Player.volume
+            from: 0
+            to: 100
         }
 
-        ImageButton {
-            id: mode
-            imageSource: 'qrc:/long-arrow-alt-right-solid.svg'
-            onClicked: {
-                //Player.setPlaybackMode();
-            }
-        }
-
-        ImageButton {
-            id: menu
-            imageSource: 'qrc:/bars-solid.svg'
-            onClicked: {
-                drawer.open();
-            }
-        }
-
+        /*
         ImageButton {
             id: volume_down
             imageSource: 'qrc:/volume-down-solid.svg'
@@ -145,6 +169,7 @@ Page {
                 Player.volumeUp();
             }
         }
+        */
     }
 
 }

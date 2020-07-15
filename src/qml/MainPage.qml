@@ -41,6 +41,21 @@ Page {
                     sourceSize.height: parent.height
                 }
             }
+
+
+            TabButton {
+                id: menu_button
+                width: height
+                Image {
+                    id: menu_icon
+                    source: 'qrc:/ellipsis-v-solid.svg'
+                    sourceSize.width: parent.height
+                    sourceSize.height: parent.height
+                }
+                onClicked: {
+                    drawer.open();
+                }
+            }
         }
 
 

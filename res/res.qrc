@@ -1,29 +1,30 @@
 <RCC>
     <qresource prefix="/">
         <file>bitshift.audiobook.svg</file>
-		<file>bitshift.audiobook.png</file>
+        <file>bitshift.audiobook.png</file>
         <file>backward-solid.svg</file>
-		<file>bars-solid.svg</file>
+        <file>bars-solid.svg</file>
         <file>bed-solid.svg</file>
-		<file>bell-solid.svg</file>
+        <file>bell-solid.svg</file>
         <file>bookmark-solid.svg</file>
         <file>book-open-solid.svg</file>
         <file>book-solid.svg</file>
         <file>fast-backward-solid.svg</file>
         <file>forward-solid.svg</file>
         <file>gamepad-solid.svg</file>
-		<file>hourglass-solid.svg</file>
-		<file>long-arrow-alt-right-solid.svg</file>
+        <file>hourglass-solid.svg</file>
+        <file>long-arrow-alt-right-solid.svg</file>
         <file>pause-solid.svg</file>
         <file>photo-video-solid.svg</file>
         <file>play-circle-solid.svg</file>
         <file>play-solid.svg</file>
         <file>share-alt-solid.svg</file>
         <file>step-backward-solid.svg</file>
-		<file>step-forward-solid.svg</file>
+        <file>step-forward-solid.svg</file>
         <file>undo-alt-solid.svg</file>
         <file>volume-down-solid.svg</file>
         <file>volume-mute-solid.svg</file>
         <file>volume-up-solid.svg</file>
+        <file>ellipsis-v-solid.svg</file>
     </qresource>
 </RCC>

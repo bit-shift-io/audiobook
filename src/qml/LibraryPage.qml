@@ -10,11 +10,6 @@ Page {
     id: root_library_page
     anchors.fill: parent
 
-    Component.onCompleted: {
-        console.log(Library.path);
-        console.log(Library.size);
-    }
-
     background: Rectangle {
         color: Style.app.color
     }

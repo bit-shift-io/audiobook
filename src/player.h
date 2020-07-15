@@ -16,6 +16,8 @@ class Player : public QMediaPlayer
     Q_PROPERTY(qint64 progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(QString positionText READ positionText NOTIFY progressChanged)
     Q_PROPERTY(QString timeText READ timeText NOTIFY playlistChanged)
+    Q_PROPERTY(QString titleText READ titleText NOTIFY playlistChanged)
+    Q_PROPERTY(QString chapterText READ chapterText NOTIFY playlistChanged)
 
 public:
     Player(const Player&) = delete; // disable copy for singleton
@@ -23,47 +25,31 @@ public:
     static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     qint64 progress() const;
-
-
     QString positionText() const;
     QString timeText() const;
-
-    // old
-    static QStringList supportedMimeTypes();
-    static QStringList supportedSuffixes();
-    qint64 getPlaylistLength();
-    const Book& getPlayingItem();
-    int getPlayingChapterIndex();
-    const QString getPlayingChapterTitle();
-
-protected:
-
+    QString titleText() const;
+    QString chapterText() const;
 
 public slots:
     void positionChanged(qint64 xPosition);
+    void playlistIndexChanged(int xIndex);
     void libraryItemChanged();
     void setHeadPosition(qint64 xPosition);
     void setProgress(qint64 xPosition);
-
-    // old
-    void playUrl(const QUrl& url);
     void setPlayingBook(const Book &mBook);
     void setPlayingChapter(QString p_chapter);
+    void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
+    void togglePlayPause();
     void skipForward();
     void skipBackward();
     void volumeUp();
     void volumeDown();
-    void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
-    void togglePlayPause();
-    void superCurrentIndexChanged();
 
 
 signals:
     void progressChanged();
     void playlistChanged();
 
-    // old
-    void currentIndexChanged();
 
 private:
     Book mBook;
@@ -72,7 +58,6 @@ private:
     qint64 mPlayListTime = 0;
     float mProgressScale; // decimal
     explicit Player(QMediaPlayer *parent = nullptr);
-
 };
 
-#endif // AUDIOPLAYER_H
+#endif // PLAYER_H

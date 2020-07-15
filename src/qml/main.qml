@@ -2,19 +2,23 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.2
 import Qt.labs.settings 1.0
-
+import Player 1.0
 import Library 1.0
 import QSettings 1.0
 import 'Style'
 
 ApplicationWindow {
     id: root
-    title: Qt.application.name
+    title: {
+        if (Player.titleText === '')
+            Qt.application.name;
+        else
+            Qt.application.name + ' | ' + Player.titleText;
+    }
     width: 350
     height: 500
     visible: true
     color: Style.app.color
-
 
     Settings {
         category: "window"
