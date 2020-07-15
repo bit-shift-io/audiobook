@@ -1,5 +1,6 @@
 #include "player.h"
 #include "library.h"
+#include "util.h"
 
 Player::Player(QMediaPlayer *parent)
     : QMediaPlayer(parent)
@@ -53,31 +54,34 @@ QStringList Player::supportedMimeTypes() {
     return result;
 }
 
-void Player::setPlayingBook(const Book &p_book) {
-    book = p_book;
-    mPlayListTime = book.time;
+
+void Player::setPlayingBook(const Book &xBook) {
+    mBook = xBook;
+    mPlayListTime = mBook.time;
     mProgressScale = 10000.0/mPlayListTime;
     mProgress = 0;
 
     playlist()->clear();
 
-    for(auto file_name: book.chapter_files)
+    for(auto file_name: mBook.chapter_files)
     {
         QUrl url = QUrl::fromLocalFile(file_name);
         playlist()->addMedia(url);
     }
 
     playlist()->setCurrentIndex(0);
+    emit playlistChanged();
 }
 
+
 void Player::setPlayingChapter(QString p_chapter) {
-    int i = book.chapter_titles.indexOf(p_chapter);
+    int i = mBook.chapter_titles.indexOf(p_chapter);
     playlist()->setCurrentIndex(i);
 }
 
 
 const Book& Player::getPlayingItem() {
-    return book;
+    return mBook;
 }
 
 int Player::getPlayingChapterIndex() {
@@ -88,7 +92,7 @@ const QString Player::getPlayingChapterTitle() {
     if (getPlayingChapterIndex() == -1)
         return "";
     else
-        return book.chapter_titles[getPlayingChapterIndex()];
+        return mBook.chapter_titles[getPlayingChapterIndex()];
 }
 
 void Player::positionChanged(qint64 xPosition)
@@ -98,7 +102,7 @@ void Player::positionChanged(qint64 xPosition)
     qint64 start_pos = 0;
     int idx = playlist()->currentIndex();
     for(int i = 0; i < idx ; ++i) {
-        start_pos += book.chapter_times[i];
+        start_pos += mBook.chapter_times[i];
     }
     mProgress = start_pos + xPosition;
     emit progressChanged();
@@ -121,48 +125,54 @@ void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
     playlist()->setPlaybackMode(mode);
 }
 
-uint Player::getPlaylistLength() {
+qint64 Player::getPlaylistLength() {
     return mPlayListTime;
 }
 
-uint Player::progress() const {
+qint64 Player::progress() const {
     // multiply by scale of the slider
     return mProgress * mProgressScale;
 }
 
-/*
-uint Player::getPosition() const {
-    // account for chapters before current chapter
-    int start_pos = 0;
-    int idx = playlist()->currentIndex();
-    for(int i = 0; i < idx ; ++i) {
-        start_pos += book.chapter_times[i];
-    }
-    return start_pos + position();
-}*/
 
 void Player::setProgress(qint64 xPosition)
 {
-    qDebug() << xPosition;
+    // convert from slider pos to playlisttime
+    qint64 pos = mPlayListTime * xPosition / 10000.0;
+    setHeadPosition(pos);
 }
 
-void Player::setPosition(uint p_position) {
+
+QString Player::positionText() const
+{
+    return Util::getDisplayTime(mProgress);
+}
+
+
+QString Player::timeText() const
+{
+    return Util::getDisplayTime(mPlayListTime);
+}
+
+
+void Player::setHeadPosition(qint64 xPosition) {
+    // a wrapper for qmediaplayer::setPosition()
     int idx = 0;
 
     // loop over chapters, reduce position by each chapter length till we are in the correct chapter
-    for(int i = 0; i < book.chapter_times.length(); ++i) {
-        if (p_position < book.chapter_times[i]) {
+    for(int i = 0; i < mBook.chapter_times.length(); ++i) {
+        if (xPosition < mBook.chapter_times[i]) {
             idx = i;
             break;
         }
-        p_position -= book.chapter_times[i];
+        xPosition -= mBook.chapter_times[i];
     }
 
     // set chapter and position
     if (idx != playlist()->currentIndex())
         playlist()->setCurrentIndex(idx);
-    //QMetaObject::invokeMethod(this, "setPosition", Qt::QueuedConnection, Q_ARG(qlonglong, p_position));
-    setPosition(p_position);
+
+    setPosition(xPosition);
 }
 
 
@@ -170,21 +180,21 @@ void Player::setPosition(uint p_position) {
 void Player::skipForward() {
     qint64 current_position = mProgress + mSkip;
     //if (current_position >= mPlayListTime) // TODO: check skip end of book
-    setPosition(current_position);
+    setHeadPosition(current_position);
 }
 
 void Player::skipBackward() {
     qint64 current_position = mProgress - mSkip;
     if (current_position < 0)
         current_position = 0;
-    setPosition(current_position);
+    setHeadPosition(current_position);
 }
 
 void Player::volumeUp() {
-    setVolume(volume() + 10);
+    setVolume(volume() + 25);
 }
 
 void Player::volumeDown() {
-    setVolume(volume() - 10);
+    setVolume(volume() - 25);
 }
 

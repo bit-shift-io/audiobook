@@ -24,7 +24,7 @@ Page {
 
         Label {
             id: track_position
-            text: "00:00:00"
+            text: Player.positionText
         }
 
         Slider {
@@ -33,14 +33,21 @@ Page {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.left: parent.left
-            value: Player.progress
+            value: {
+                if (!pressed)
+                    Player.progress;
+            }
             from: 0
             to: 10000
+            onPressedChanged: {
+                if(!pressed)
+                    Player.setProgress(value);
+            }
         }
 
         Label {
             id: track_time
-            text: "00:00:00"
+            text: Player.timeText
             anchors.right: parent.right
         }
     }
@@ -127,7 +134,7 @@ Page {
             id: volume_down
             imageSource: 'qrc:/volume-down-solid.svg'
             onClicked: {
-                Player.volumeUp();
+                Player.volumeDown();
             }
         }
 
@@ -135,7 +142,7 @@ Page {
             id: volume_up
             imageSource: 'qrc:/volume-up-solid.svg'
             onClicked: {
-                Player.volumeDown();
+                Player.volumeUp();
             }
         }
     }
