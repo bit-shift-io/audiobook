@@ -8,8 +8,8 @@ FileProxyModel::FileProxyModel(QObject *parent)
 {
     mFileSystemModel = new QFileSystemModel();
     mFileSystemModel->setFilter(QDir::AllDirs | QDir::NoDot); // | QDir::NoDotAndDotDot |
-    mFileSystemModel->setResolveSymlinks(true);
-    mFileSystemModel->setRootPath(Util::getHomeLocation());
+    //mFileSystemModel->setResolveSymlinks(true);
+    mFileSystemModel->setRootPath(Util::getHomeLocation()); // TODO: this returns a model!
 
     connect(mFileSystemModel, &QAbstractItemModel::rowsInserted, this, &FileProxyModel::inserted);
     connect(mFileSystemModel, &QAbstractItemModel::rowsRemoved, this, &FileProxyModel::removed);
