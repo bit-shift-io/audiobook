@@ -1,6 +1,9 @@
 #include <QStandardPaths>
+#include <QProcess>
+#include <QDebug>
 #include "util.h"
 #include "taglib/fileref.h"
+
 
 
 QString Util::getDisplayTime(const QString &xFileName)
@@ -45,5 +48,12 @@ QString Util::getMusicLocation()
 
 QString Util::getHomeLocation()
 {
+#ifdef Q_OS_ANDROID
+    // GenericDataLocation = user folder
+    QStringList systemEnvironment = QProcess::systemEnvironment();
+    qDebug() << systemEnvironment;
+    qDebug() << QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
+    return QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
+#endif
     return QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
 }

@@ -18,6 +18,11 @@
 #include <QtAndroidExtras>
 #include <QtSvg>    //Because deployment sometimes just forgets to include this lib otherwise
 //#include "./3rdparty/kirigami/src/kirigamiplugin.h"
+#include <QtAndroid>
+
+// these also need to be in the android manifest xml
+const QVector<QString> permissions({"android.permission.WRITE_EXTERNAL_STORAGE",
+                                    "android.permission.READ_EXTERNAL_STORAGE"});
 #endif
 
 int main(int argc, char *argv[])
@@ -36,8 +41,18 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/bitshift.audiobook.png"));
 
 #ifdef Q_OS_ANDROID
+    //Request requiered permissions at runtime
+    for(const QString &permission : permissions){
+        auto result = QtAndroid::checkPermission(permission);
+        if(result == QtAndroid::PermissionResult::Denied){
+            auto resultHash = QtAndroid::requestPermissionsSync(QStringList({permission}));
+            if(resultHash[permission] == QtAndroid::PermissionResult::Denied)
+                return 0;
+        }
+    }
     //KirigamiPlugin::getInstance().registerTypes();
 #endif
+
 
     // create singletons
     Library* library = Library::instance();
@@ -61,14 +76,12 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<Player>("Player", 1, 0, "Player", &Player::qmlInstance);
 
 
-
     //qmlRegisterType<LibraryModel>("LibraryModel", 1, 0, "LibraryModel");
     engine.rootContext()->setContextProperty("LibraryModel", &lm);
     engine.rootContext()->setContextProperty("LibraryFilterProxy", filter_proxy);
 
     //qmlRegisterUncreatableType<FileProxyModel>("FileProxyModel", 1, 0, "FileProxyModel", "Cannot create a FileSystemModel instance.");
     engine.rootContext()->setContextProperty("FileProxyModel", file_proxy_model);
-    //engine.rootContext()->setContextProperty("rootPathIndex", file_proxy_model->index(file_proxy_model->rootPath()));
 
     // add imports
     engine.addImportPath(".");
