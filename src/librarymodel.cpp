@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "librarymodel.h"
 #include "library.h"
 #include "util.h"
@@ -17,7 +18,7 @@ void LibraryModel::UpdateData() {
 
 int LibraryModel::rowCount(const QModelIndex & /*parent*/) const
 {
-   return Library::instance()->size();
+    return Library::instance()->size();
 }
 
 

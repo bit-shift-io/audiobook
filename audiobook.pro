@@ -63,6 +63,7 @@ INCLUDEPATH += \
 
 HEADERS += \
   src/book.h \
+  src/fileproxymodel.h \
   src/library.h \
   src/libraryfilterproxy.h \
   src/librarymodel.h \
@@ -189,6 +190,7 @@ HEADERS += \
 
 SOURCES += \
   src/book.cpp \
+  src/fileproxymodel.cpp \
   src/library.cpp \
   src/libraryfilterproxy.cpp \
   src/librarymodel.cpp \
@@ -329,5 +331,10 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml
+}
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
 }
 

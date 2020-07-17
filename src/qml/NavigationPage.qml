@@ -7,15 +7,6 @@ ColumnLayout {
     width: parent.width
 
     Button {
-        text: "Search"
-        implicitWidth: parent.width
-        onClicked: {
-            stack_view.push("SearchPage.qml");
-            drawer.close();
-        }
-    }
-
-    Button {
         text: "Settings"
         implicitWidth: parent.width
         onClicked: {

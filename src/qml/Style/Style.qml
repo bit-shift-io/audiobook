@@ -54,8 +54,16 @@ QtObject {
 
     }
 
+    property QtObject spacer: QtObject {
+        property int margin: app.margin
+        property color color: '#464646'
+    }
+
     property QtObject settings: QtObject {
         property int margin: app.margin
+        property color color_background: app.color
+        property int size_heading: app.font_size * 1.2
+        property int weight_heading: app.font_weight + 1
     }
 
     property QtObject library: QtObject {

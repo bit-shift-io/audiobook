@@ -1,3 +1,4 @@
+#include <QStandardPaths>
 #include "util.h"
 #include "taglib/fileref.h"
 
@@ -25,4 +26,24 @@ uint Util::getTimeMSec(const QString &xFileName) {
     TagLib::FileRef f(xFileName.toUtf8().constData());
     uint len = f.file()->audioProperties()->lengthInMilliseconds();
     return len;
+}
+
+QString Util::getAppConfigLocation()
+{
+    return QStandardPaths::locate(QStandardPaths::AppConfigLocation, QString(), QStandardPaths::LocateDirectory);
+}
+
+QString Util::getCacheLocation()
+{
+    return QStandardPaths::locate(QStandardPaths::CacheLocation, QString(), QStandardPaths::LocateDirectory);
+}
+
+QString Util::getMusicLocation()
+{
+    return QStandardPaths::locate(QStandardPaths::MusicLocation, QString(), QStandardPaths::LocateDirectory);
+}
+
+QString Util::getHomeLocation()
+{
+    return QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
 }
