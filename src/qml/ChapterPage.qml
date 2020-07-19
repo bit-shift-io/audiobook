@@ -7,7 +7,6 @@ import "Style"
 
 Page {
     id: root_chapter_page
-    padding: Style.app.margin
     anchors.fill: parent
 
     background: Rectangle {
@@ -16,7 +15,7 @@ Page {
 
     header: Item {
         id: player_header
-        height: title_label.height + chapter_label.height
+        height: title_label.height
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: parent.top
@@ -25,13 +24,6 @@ Page {
             id: title_label
             font.pixelSize: Style.control.font_size_title
             text: Player.titleText
-        }
-
-        Label {
-            id: chapter_label
-            anchors.top: title_label.buttom
-            font.pixelSize: Style.control.font_size_chapter
-            text: Player.chapterText
         }
 
         ImageButton {
@@ -60,7 +52,9 @@ Page {
         currentIndex: -1 // no selected default
         ScrollBar.vertical: ScrollBar {}
 
-        model: ChapterModel
+        model: ChapterModel {
+
+        }
 
         delegate: Component {
             id: chapter_delegate

@@ -61,13 +61,15 @@ int main(int argc, char *argv[])
 
     // library model proxy for filtering search
     // https://doc.qt.io/archives/qt-5.10/qtquickcontrols-filesystembrowser-example.html
-    LibraryModel lm;
     LibraryModel *library_model = new LibraryModel();
     LibraryFilterProxy *filter_proxy = new LibraryFilterProxy();
     filter_proxy->setSourceModel(library_model);
 
     // filesystem model for file picker
     FileProxyModel *file_proxy_model = new FileProxyModel;
+
+    ChapterModel *chapter_model = new ChapterModel();
+
 
 
 
@@ -78,8 +80,9 @@ int main(int argc, char *argv[])
 
 
     qmlRegisterType<ChapterModel>("ChapterModel", 1, 0, "ChapterModel");
-    engine.rootContext()->setContextProperty("LibraryModel", &lm);
+    //engine.rootContext()->setContextProperty("LibraryModel", &lm);
     engine.rootContext()->setContextProperty("LibraryFilterProxy", filter_proxy);
+    //engine.rootContext()->setContextProperty("ChapterModel", chapter_model);
 
     //qmlRegisterUncreatableType<FileProxyModel>("FileProxyModel", 1, 0, "FileProxyModel", "Cannot create a FileSystemModel instance.");
     engine.rootContext()->setContextProperty("FileProxyModel", file_proxy_model);

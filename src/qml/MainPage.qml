@@ -17,6 +17,7 @@ Page {
 
     SwipeView {
         id: swipe_view
+        clip: true
         anchors.top: parent.top
         anchors.bottom: player_timeline.top
         anchors.right: parent.right
@@ -138,7 +139,7 @@ Page {
             states: [
                 State {
                     name: 'play'
-                    when: play.checked
+                    when: play_button.checked
                     PropertyChanges {
                         target: play_button
                         imageSource: 'qrc:/pause-solid.svg'
@@ -146,7 +147,7 @@ Page {
                 },
                 State {
                     name: 'pause'
-                    when: !play.checked
+                    when: !play_button.checked
                     PropertyChanges {
                         target: play_button
                         imageSource: 'qrc:/play-circle-solid.svg'

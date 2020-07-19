@@ -9,13 +9,18 @@ ChapterModel::ChapterModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     // connect library
-    //connect(Library::instance(), &Library::activeItemChanged, this, &ChapterModel::libraryItemChanged);
+    connect(Player::instance(), &Player::currentIndexChanged, this, &ChapterModel::chapterIndexChanged);
 }
 
 
-void ChapterModel::UpdateData() {
+void ChapterModel::refresh() {
     beginResetModel();
     endResetModel();
+}
+
+void ChapterModel::chapterIndexChanged(int xIndex)
+{
+    refresh();
 }
 
 
@@ -23,7 +28,7 @@ int ChapterModel::rowCount(const QModelIndex & /*parent*/) const
 {
     qDebug() << "chapter!";
     const Book *book = Library::instance()->getActiveItem();
-    if (book = nullptr)
+    if (book == nullptr)
         return 0;
     return Library::instance()->getActiveItem()->chapter_files.size();
 }
@@ -46,7 +51,7 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
         case FileNameRole:
             return QVariant(book->chapter_files.at(index.row()));
         case DurationRole:
-            return QVariant(book->chapter_times.at(index.row()));
+            return QVariant(Util::getDisplayTime(book->chapter_times.at(index.row())));
     }
     return QVariant();
 }

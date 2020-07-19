@@ -8,7 +8,6 @@ import "Style"
 
 Page {
     id: root_library_page
-    padding: Style.app.margin
     anchors.fill: parent
 
     background: Rectangle {

@@ -23,7 +23,7 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    void UpdateData();
+    void refresh();
 
     // hashmap to store properties/roles
     // map/bind qml to cpp
@@ -35,6 +35,9 @@ public:
         names[DurationRole] = "duration";
         return names;
     }
+
+public slots:
+    void chapterIndexChanged(int xIndex);
 
 
 };

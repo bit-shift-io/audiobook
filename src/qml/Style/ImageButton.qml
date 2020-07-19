@@ -12,7 +12,7 @@ AbstractButton {
 
     contentItem: Image {
         id: image
-        fillMode: Image.Pad
+        fillMode: Image.PreserveAspectFit
         visible: true
         smooth: true
         sourceSize {

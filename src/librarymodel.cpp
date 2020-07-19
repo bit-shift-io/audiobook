@@ -10,7 +10,7 @@ LibraryModel::LibraryModel(QObject *parent)
 }
 
 
-void LibraryModel::UpdateData() {
+void LibraryModel::refresh() {
     beginResetModel();
     endResetModel();
 }
