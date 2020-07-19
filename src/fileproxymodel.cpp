@@ -6,18 +6,24 @@
 FileProxyModel::FileProxyModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    mFileSystemModel = new QFileSystemModel();
-    mFileSystemModel->setFilter(QDir::AllDirs | QDir::NoDot); // | QDir::NoDotAndDotDot |
-    //mFileSystemModel->setResolveSymlinks(true);
-    mFileSystemModel->setRootPath(Util::getHomeLocation()); // TODO: this returns a model!
+    mFileSystemModel = new QFileSystemModel(this);
+    mFileSystemModel->setFilter(QDir::AllDirs | QDir::AllEntries); //QDir::AllDirs | QDir::NoDot); // | QDir::NoDotAndDotDot |
+    mFileSystemModel->setResolveSymlinks(true);
+    QString path = Util::getHomeLocation();
+    path = Util::appendFile(path);
+    path = QString("file:///home");
+    path = QString("/");
+    qDebug() << path;
+    mFileSystemModel->setRootPath(path); // TODO: this returns a model!
 
     connect(mFileSystemModel, &QAbstractItemModel::rowsInserted, this, &FileProxyModel::inserted);
     connect(mFileSystemModel, &QAbstractItemModel::rowsRemoved, this, &FileProxyModel::removed);
     connect(mFileSystemModel, &QAbstractItemModel::dataChanged, this, &FileProxyModel::handleDataChanged);
-    connect(mFileSystemModel, &QAbstractItemModel::modelReset, this, &FileProxyModel::refresh);
-    connect(mFileSystemModel, &QAbstractItemModel::layoutChanged, this, &FileProxyModel::refresh);
+    //connect(mFileSystemModel, &QAbstractItemModel::modelReset, this, &FileProxyModel::refresh);
+    //connect(mFileSystemModel, &QAbstractItemModel::layoutChanged, this, &FileProxyModel::refresh);
+    connect(mFileSystemModel, &QFileSystemModel::directoryLoaded, this, &FileProxyModel::refresh);
 
-    setFolder(QUrl(Util::getHomeLocation()));
+    setFolder(QUrl(path));
 }
 
 
@@ -88,7 +94,6 @@ QVariant FileProxyModel::data(const QModelIndex &index, int role) const
         else if (role == FilePathRole)
             rv = QUrl::fromLocalFile(mFileSystemModel->data(modelIndex, Roles::FilePathRole).toString());
     }
-    qDebug() << rv;
     return rv;
 }
 
@@ -96,12 +101,14 @@ QVariant FileProxyModel::data(const QModelIndex &index, int role) const
 void FileProxyModel::refresh()
 {
     qDebug() << "refresh";
+
     mFolderIndex = QModelIndex();
     if (mCount) {
         emit beginRemoveRows(QModelIndex(), 0,mCount-1);
         mCount = 0;
         emit endRemoveRows();
     }
+
     mFolderIndex = mFileSystemModel->index(mFolder.toLocalFile());
     int newcount = mFileSystemModel->rowCount(mFolderIndex);
     if (newcount) {
@@ -113,10 +120,10 @@ void FileProxyModel::refresh()
 
 void FileProxyModel::inserted(const QModelIndex &index, int start, int end)
 {
-    qDebug() << "inserted";
     if (index == mFolderIndex) {
         emit beginInsertRows(QModelIndex(), start, end);
         mCount = mFileSystemModel->rowCount(mFolderIndex);
+        qDebug() << "inserted" << mCount << mFolderIndex;
         emit endInsertRows();
     }
 }

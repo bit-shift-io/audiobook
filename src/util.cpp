@@ -50,10 +50,14 @@ QString Util::getHomeLocation()
 {
 #ifdef Q_OS_ANDROID
     // GenericDataLocation = user folder
-    QStringList systemEnvironment = QProcess::systemEnvironment();
-    qDebug() << systemEnvironment;
-    qDebug() << QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
+    //QStringList systemEnvironment = QProcess::systemEnvironment();
+    //qDebug() << systemEnvironment;
+    //qDebug() << QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
     return QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
 #endif
     return QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
+}
+
+QString Util::appendFile(QString &xString) {
+    return QString("file://" + xString);
 }

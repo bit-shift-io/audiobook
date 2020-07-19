@@ -16,6 +16,7 @@ public:
     Q_INVOKABLE static QString getCacheLocation();
     Q_INVOKABLE static QString getMusicLocation();
     Q_INVOKABLE static QString getHomeLocation();
+    Q_INVOKABLE static QString appendFile(QString &xString);
 };
 
 #endif // UTIL_H

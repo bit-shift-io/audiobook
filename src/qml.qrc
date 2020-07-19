@@ -14,5 +14,6 @@
         <file>qml/ControlPage.qml</file>
         <file>qml/Style/ImageButton.qml</file>
         <file>qml/Style/Spacer.qml</file>
+        <file>qml/FilePicker.qml</file>
     </qresource>
 </RCC>
