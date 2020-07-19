@@ -70,8 +70,18 @@ void Player::setPlayingChapter(QString p_chapter) {
 QString Player::chapterText() const {
     if (playlist()->currentIndex() == -1)
         return "";
-    else
-        return mBook.chapter_titles[playlist()->currentIndex()];
+
+    return mBook.chapter_titles[playlist()->currentIndex()];
+}
+
+QString Player::chapterProgressText() const
+{
+    if (playlist()->currentIndex() == -1)
+        return "";
+
+    QString index = QString::number(playlist()->currentIndex() +1);
+    QString total = QString::number(playlist()->mediaCount());
+    return QString("Chapter %1/%2").arg(index, total);
 }
 
 

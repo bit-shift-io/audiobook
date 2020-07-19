@@ -18,6 +18,7 @@ class Player : public QMediaPlayer
     Q_PROPERTY(QString timeText READ timeText NOTIFY playlistChanged)
     Q_PROPERTY(QString titleText READ titleText NOTIFY playlistChanged)
     Q_PROPERTY(QString chapterText READ chapterText NOTIFY currentIndexChanged)
+    Q_PROPERTY(QString chapterProgressText READ chapterProgressText NOTIFY currentIndexChanged)
 
 public:
     Player(const Player&) = delete; // disable copy for singleton
@@ -29,6 +30,7 @@ public:
     QString timeText() const;
     QString titleText() const;
     QString chapterText() const;
+    QString chapterProgressText() const;
 
 public slots:
     void positionChanged(qint64 xPosition);

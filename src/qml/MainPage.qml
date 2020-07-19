@@ -53,16 +53,14 @@ Page {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.left: parent.left
+            live: false
 
             handle: Item { // hide handle
                 id: pill
                 width: 0
                 height: 0
             }
-            value: {
-                if (!pressed)
-                    Player.progress;
-            }
+            value: Player.progress;
             from: 0
             to: 10000
             onPressedChanged: {
@@ -85,7 +83,8 @@ Page {
 
             Label {
                 id: chapter_progress
-                text: Player.positionText
+                text: Player.chapterProgressText
+                anchors.centerIn: parent
             }
 
             Label {
