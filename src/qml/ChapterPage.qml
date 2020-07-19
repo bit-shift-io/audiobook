@@ -1,13 +1,12 @@
-import QtQuick 2.11
-import QtQuick.Controls 2.4
-import QtQuick.Layouts 1.2
-import Library 1.0
+import QtQuick 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.12
 import Player 1.0
-//import LibraryModel 1.0
+import ChapterModel 1.0
 import "Style"
 
 Page {
-    id: root_library_page
+    id: root_chapter_page
     padding: Style.app.margin
     anchors.fill: parent
 
@@ -15,21 +14,41 @@ Page {
         color: Style.app.color
     }
 
-    header: TextField {
-        id: library_filter
-        placeholderText: qsTr("Search")
-        cursorVisible: true
-        focus: true
+    header: Item {
+        id: player_header
+        height: title_label.height + chapter_label.height
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: parent.top
 
-        onTextChanged: {
-            //library_list.currentIndex = -1;
-            LibraryFilterProxy.setFilterRegExp(text);
+        Label {
+            id: title_label
+            font.pixelSize: Style.control.font_size_title
+            text: Player.titleText
+        }
+
+        Label {
+            id: chapter_label
+            anchors.top: title_label.buttom
+            font.pixelSize: Style.control.font_size_chapter
+            text: Player.chapterText
+        }
+
+        ImageButton {
+            id: menu_button
+            imageSource: 'qrc:/ellipsis-v-solid.svg'
+            anchors.top: parent.top
+            anchors.right: parent.right
+            onClicked: {
+                drawer.open();
+            }
         }
     }
 
 
+
     ListView {
-        id: library_list
+        id: chapter_list
         anchors.fill: parent
 
         boundsBehavior: Flickable.DragOverBounds
@@ -41,10 +60,10 @@ Page {
         currentIndex: -1 // no selected default
         ScrollBar.vertical: ScrollBar {}
 
-        model: LibraryFilterProxy
+        model: ChapterModel
 
         delegate: Component {
-            id: search_delegate
+            id: chapter_delegate
 
             Rectangle {
                 id: background
@@ -78,7 +97,7 @@ Page {
                         Layout.alignment: Qt.AlignRight
 
                         Label {
-                            text:  model.chapters + ' | ' + model.duration
+                            text:  model.duration
                         }
                     }
                 }
@@ -86,20 +105,15 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        library_list.currentIndex = index;
+                        chapter_list.currentIndex = index;
                         console.log(model.title)
-                        Library.activeItem = model.title;
-                    }
-                    onDoubleClicked: {
-                        library_list.currentIndex = index;
-                        console.log('double')
-                        Library.activeItem = model.title;
-                        swipe_view.currentIndex = 0; // TODO: not working?!
-                        Player.play();
+                        // TODO: player.chapter
                     }
                 }
             }
         }
     }
 
+
 }
+

@@ -10,13 +10,17 @@ import 'Style'
 
 Page {
     id: root_settings
+    padding: Style.app.margin
     title: qsTr("Settings")
 
-    header: Rectangle {
+    background: Rectangle {
+        color: Style.app.color
+    }
+
+    header: Item {
         id: tool_bar
         Layout.fillWidth: true
         height: back_button.height
-        color: Style.app.color
 
         RowLayout {
             id: tool_row
@@ -36,9 +40,8 @@ Page {
         }
     }
 
-    Rectangle {
+    Item {
         id: content
-        color: Style.app.color
         anchors.fill: parent
 
         ColumnLayout {

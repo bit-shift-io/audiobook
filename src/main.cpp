@@ -11,6 +11,7 @@
 #include "library.h"
 #include "librarymodel.h"
 #include "libraryfilterproxy.h"
+#include "chaptermodel.h"
 #include "player.h"
 #include "fileproxymodel.h"
 
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<Player>("Player", 1, 0, "Player", &Player::qmlInstance);
 
 
-    //qmlRegisterType<LibraryModel>("LibraryModel", 1, 0, "LibraryModel");
+    qmlRegisterType<ChapterModel>("ChapterModel", 1, 0, "ChapterModel");
     engine.rootContext()->setContextProperty("LibraryModel", &lm);
     engine.rootContext()->setContextProperty("LibraryFilterProxy", filter_proxy);
 

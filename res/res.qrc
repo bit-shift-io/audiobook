@@ -26,5 +26,6 @@
         <file>volume-mute-solid.svg</file>
         <file>volume-up-solid.svg</file>
         <file>ellipsis-v-solid.svg</file>
+        <file>stopwatch-solid.svg</file>
     </qresource>
 </RCC>
