@@ -1,24 +1,24 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
-import QtQuick.Dialogs 1.0
-import QSettings 1.0
-import QtQml.Models 2.2
-
+import Qt.labs.folderlistmodel 2.1
+import QtGraphicalEffects 1.0
 import Library 1.0
 import 'Style'
 
 Page {
-    property string current_path: Library.path
-
     id: root_file_picker
     title: qsTr("File Picker")
+    padding: Style.app.margin
 
-    header: Rectangle {
+    background: Rectangle {
+        color: Style.app.color
+    }
+
+    header: Item {
         id: tool_bar
         Layout.fillWidth: true
         height: cancel_button.height
-        color: Style.app.color
 
         RowLayout {
             id: tool_row
@@ -29,81 +29,93 @@ Page {
                 text: "Cancel"
                 Layout.fillWidth: true
                 onClicked: {
-                    current_path = Library.path;
-                    file_list_view.model.folder = Library.path;
+                    file_list_view.model.folder = "file://" + Library.path
                     stack_view.pop()
                 }
             }
+
             Button {
                 id: okay_button
                 text: "Okay"
                 Layout.fillWidth: true
                 onClicked: {
-                    Library.path = current_path
+                    Library.path = folder_list_model.folder
                     stack_view.pop()
                 }
             }
         }
     }
 
-    Rectangle {
-        color: Style.app.color
+
+    ListView {
+        id: file_list_view
         anchors.fill: parent
+        ScrollBar.vertical: ScrollBar {}
 
-        ListView {
-            id: file_list_view
-            anchors.fill: parent
-            model: FileProxyModel
-            delegate: Component {
-                id: file_delegate
+        model: FolderListModel {
+            id:  folder_list_model
+            showDotAndDotDot: true
+            showHidden: false
+            showDirsFirst: true
+            showFiles: true
+            folder: "file://" + Library.path
+            nameFilters: "*.*"
+        }
 
-                Item {
-                    id: background
+        delegate: Component {
+            id: file_delegate
 
-                    implicitHeight: row_layout.height
-                    implicitWidth: parent.width
+            Item {
+                id: file_row
+                implicitHeight: file_name_label.height + Style.app.margin * 2
+                implicitWidth: parent.width
+                anchors.margins: Style.app.margin
 
-                    RowLayout {
-                        id: row_layout
-                        Layout.fillWidth: true
-                        width: parent.width
+                Image {
+                    id: icon_type
+                    anchors.margins: Style.app.margin
+                    source: folder_list_model.isFolder(model.index) ? "qrc:/folder-solid.svg" : "qrc:/file-alt-solid.svg"
+                    fillMode: Image.PreserveAspectFit
+                    visible: true
+                    smooth: true
 
-                        ColumnLayout {
-                            id: test
-                            implicitWidth: parent.width
-                            Layout.margins: Style.library.margin
-                            spacing: 10
-                            Layout.alignment: Qt.AlignLeft
-
-                            Label {
-                                text: model.fileName
-                            }
-                        }
-
-                        ColumnLayout {
-                            id: test2
-                            implicitWidth: parent.width
-                            Layout.margins: Style.app.margin
-                            spacing: 10
-                            Layout.alignment: Qt.AlignRight
-
-                            Label {
-                                text:  model.filePath
-                            }
-                        }
+                    sourceSize {
+                        width: file_name_label.height
+                        height: file_name_label.height
                     }
 
-                    MouseArea {
+                    ColorOverlay {
                         anchors.fill: parent
-                        onClicked: {
-                            file_list_view.model.folder = filePath
-                            root_file_picker.current_path = filePath
-                        }
+                        source: parent
+                        color: Style.image_button.color_foreground
+                    }
+                }
 
+                Label {
+                    id: file_name_label
+                    text: model.fileName
+                    anchors.left: icon_type.right
+                    anchors.leftMargin: Style.app.margin
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        if(model.fileName === ".." && model.folder !== "file:///") {
+                            folder_list_model.folder = folder_list_model.parentFolder
+                        } else if (fileName !== ".") {
+                            if(folder_list_model.folder === "file:///") {
+                                folder_list_model.folder += fileName
+                            } else {
+                                folder_list_model.folder += "/" + fileName
+                            }
+                        }
                     }
                 }
             }
+
         }
+
     }
 }
 
