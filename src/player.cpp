@@ -107,7 +107,6 @@ void Player::positionChanged(qint64 xPosition)
 
 void Player::playlistIndexChanged(int xIndex)
 {
-    qDebug() << "new chapter" << xIndex;
     // pass from playlist to signal
     emit currentIndexChanged(xIndex);
 }

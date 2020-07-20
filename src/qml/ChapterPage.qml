@@ -35,6 +35,9 @@ Page {
 
         boundsBehavior: Flickable.DragOverBounds
         //snapMode: ListView.SnapToItem
+        preferredHighlightBegin: height / 2
+        preferredHighlightEnd: height / 2
+        highlightRangeMode: ListView.ApplyRange
         Layout.fillHeight: true
         Layout.fillWidth: true
         clip: true
