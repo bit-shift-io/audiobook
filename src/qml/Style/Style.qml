@@ -48,6 +48,8 @@ QtObject {
         property color color_foreground: app.font_color
         property color color_background: '#464646'
         property color color_down: '#646464'
+        property int padding: 2
+        property int padding_small: 10
     }
 
     property QtObject label: QtObject {

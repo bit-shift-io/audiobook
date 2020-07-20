@@ -9,21 +9,30 @@ AbstractButton {
     height: 40
 
     property alias imageSource: image.source
+    property int imagePadding: Style.image_button.padding
 
-    contentItem: Image {
-        id: image
-        fillMode: Image.PreserveAspectFit
-        visible: true
-        smooth: true
-        sourceSize {
-            width: button.width
-            height: button.height
-        }
+    contentItem: Item {
+        id: button_content
+        anchors.fill: parent
+        anchors.margins: imagePadding
 
-        ColorOverlay {
-            anchors.fill: parent
-            source: parent
-            color: Style.image_button.color_foreground
+        Image {
+            id: image
+            fillMode: Image.PreserveAspectFit
+            visible: true
+            smooth: true
+            anchors.centerIn: parent
+
+            sourceSize {
+                width: parent.width
+                height: parent.height
+            }
+
+            ColorOverlay {
+                anchors.fill: parent
+                source: parent
+                color: Style.image_button.color_foreground
+            }
         }
     }
 

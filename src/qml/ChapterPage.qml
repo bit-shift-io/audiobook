@@ -15,7 +15,7 @@ Page {
 
     header: Item {
         id: player_header
-        height: title_label.height
+        height: title_label.height + Style.app.margin
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: parent.top
@@ -24,16 +24,6 @@ Page {
             id: title_label
             font.pixelSize: Style.control.font_size_title
             text: Player.titleText
-        }
-
-        ImageButton {
-            id: menu_button
-            imageSource: 'qrc:/ellipsis-v-solid.svg'
-            anchors.top: parent.top
-            anchors.right: parent.right
-            onClicked: {
-                drawer.open();
-            }
         }
     }
 
@@ -80,6 +70,7 @@ Page {
 
                         Label {
                             text: model.title
+                            font.pixelSize: Style.control.font_size_chapter
                         }
                     }
 

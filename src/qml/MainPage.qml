@@ -42,7 +42,7 @@ Page {
 
     Item {
         id: player_timeline
-        height: progress.height + time_row.height
+        height: progress.height + time_row.height + Style.app.margin * 2
         anchors.bottom: playback_control.top
         anchors.right: parent.right
         anchors.left: parent.left
@@ -53,6 +53,7 @@ Page {
             anchors.top: parent.top
             anchors.right: parent.right
             anchors.left: parent.left
+            anchors.topMargin: Style.app.margin
             live: false
 
             handle: Item { // hide handle
@@ -69,7 +70,7 @@ Page {
             }
         }
 
-        Row {
+        Item {
             id: time_row
             height: track_time.height
             anchors.top: progress.bottom
@@ -97,7 +98,7 @@ Page {
 
     }
 
-    Row {
+    Item {
         id: playback_control
         width: parent.width
         height: play_button.height
@@ -107,6 +108,7 @@ Page {
             id: timmer_button
             anchors.left: parent.left
             imageSource: 'qrc:/stopwatch-solid.svg'
+            imagePadding: Style.image_button.padding_small
             onClicked: {
                 Player.skipBackward()
             }
@@ -115,7 +117,9 @@ Page {
         ImageButton {
             id: step_backward_button
             anchors.right: play_button.left
+            anchors.rightMargin: play_button.width * 0.2
             imageSource: 'qrc:/step-backward-solid.svg'
+            imagePadding: Style.image_button.padding_small
             onClicked: {
                 Player.skipBackward()
             }
@@ -158,18 +162,21 @@ Page {
         ImageButton {
             id: step_forward_button
             anchors.left: play_button.right
+            anchors.leftMargin: play_button.width * 0.2
             imageSource: 'qrc:/step-forward-solid.svg'
+            imagePadding: Style.image_button.padding_small
             onClicked: {
                 Player.skipForward()
             }
         }
 
         ImageButton {
-            id: speed_button
+            id: menu_button
+            imageSource: 'qrc:/bars-solid.svg'
+            imagePadding: Style.image_button.padding_small
             anchors.right: parent.right
-            imageSource: 'qrc:/step-forward-solid.svg'
             onClicked: {
-                Player.skipForward()
+                drawer.open();
             }
         }
     }
