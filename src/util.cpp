@@ -31,6 +31,28 @@ uint Util::getTimeMSec(const QString &xFileName) {
     return len;
 }
 
+
+QString Util::getTagTitle(const QString &xFileName) {
+    TagLib::FileRef f(xFileName.toUtf8().constData());
+    QString len = QString(f.file()->tag()->title().toCString());
+    return len;
+}
+
+
+QString Util::getTagAlbum(const QString &xFileName) {
+    TagLib::FileRef f(xFileName.toUtf8().constData());
+    QString len = QString(f.file()->tag()->album().toCString());
+    return len;
+}
+
+
+QString Util::getTagArtist(const QString &xFileName) {
+    TagLib::FileRef f(xFileName.toUtf8().constData());
+    QString len = QString(f.file()->tag()->artist().toCString());
+    return len;
+}
+
+
 QString Util::getAppConfigLocation()
 {
     return QStandardPaths::locate(QStandardPaths::AppConfigLocation, QString(), QStandardPaths::LocateDirectory);

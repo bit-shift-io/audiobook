@@ -12,6 +12,7 @@ class Book
 public:
     Book();
     QString title;
+    QString artist;
     QString directory;
     QStringList chapter_titles;
     QStringList chapter_files;

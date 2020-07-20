@@ -49,49 +49,42 @@ Page {
                 id: background
                 color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background // TODO: model.isCurrentItem for active item
                 radius: Style.library.radius_background
-                implicitHeight: row_layout.height
+                implicitHeight: library_title.height + library_artist.height + Style.library.margin * 3
                 implicitWidth: parent.width
 
-                RowLayout {
-                    id: row_layout
-                    Layout.fillWidth: true
-                    width: parent.width
+                Label {
+                    id: library_title
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.margins: Style.library.margin
+                    text: model.title
+                    font.pixelSize: Style.library.size_heading
+                }
 
-                    ColumnLayout {
-                        id: test
-                        implicitWidth: parent.width
-                        Layout.margins: Style.library.margin
-                        spacing: 10
-                        Layout.alignment: Qt.AlignLeft
+                Label {
+                    id: library_artist
+                    anchors.top: library_title.bottom
+                    anchors.left: parent.left
+                    anchors.margins: Style.library.margin
+                    text: model.artist
+                }
 
-                        Label {
-                            text: model.title
-                        }
-                    }
-
-                    ColumnLayout {
-                        id: test2
-                        implicitWidth: parent.width
-                        Layout.margins: Style.app.margin
-                        spacing: 10
-                        Layout.alignment: Qt.AlignRight
-
-                        Label {
-                            text:  model.chapters + ' | ' + model.duration
-                        }
-                    }
+                Label {
+                    id: library_duration
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: Style.library.margin
+                    text:  model.chapters + ' | ' + model.duration
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         library_list.currentIndex = index;
-                        console.log(model.title)
                         Library.activeItem = model.title;
                     }
                     onDoubleClicked: {
                         library_list.currentIndex = index;
-                        console.log('double')
                         Library.activeItem = model.title;
                         swipe_view.currentIndex = 0; // TODO: not working?!
                         Player.play();

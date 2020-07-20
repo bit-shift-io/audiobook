@@ -19,6 +19,7 @@ public:
         TitleRole,
         ChaptersRole,
         DurationRole,
+        ArtistRole,
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -33,6 +34,7 @@ public:
         names[TitleRole] = "title";
         names[ChaptersRole] = "chapters";
         names[DurationRole] = "duration";
+        names[ArtistRole] = "artist";
         return names;
     }
 

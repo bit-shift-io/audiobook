@@ -98,6 +98,7 @@ bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
     return s1.title.toLower() < s2.title.toLower();
 }
 
+
 void Library::update() {
     //QStringList all_dirs;
     QDir lib_dir(mPath);
@@ -112,25 +113,31 @@ void Library::update() {
 
         // does folder contain any audio files? if we have audio files, this is a book
         QDir current_dir(directories.filePath());
-        QStringList current_files = current_dir.entryList(file_filters, QDir::NoDotAndDotDot | QDir::Files);
+        QStringList dir_list = current_dir.entryList(file_filters, QDir::NoDotAndDotDot | QDir::Files);
 
-        if (current_files.count() > 0) {
+        if (dir_list.count() > 0) {
             Book book;
-
-            book.title = lib_dir.relativeFilePath(directories.filePath());
             book.directory = lib_dir.relativeFilePath(directories.filePath());
+
+            // get some info from first file
+            QFileInfo first_file = current_dir.absoluteFilePath(dir_list[0]);
+            book.artist = Util::getTagArtist(first_file.absoluteFilePath());
+            book.title = Util::getTagAlbum(first_file.absoluteFilePath());
+            if (book.title.isEmpty())
+                book.title = lib_dir.relativeFilePath(directories.filePath()).replace("_", " ");
 
             // get abs paths and file times
             QStringList abs_current_files;
 
-            for (auto current_file : current_files) {
+            for (auto current_file : dir_list) {
                 QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
                 uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
 
                 book.chapter_files.append(abs_current_file.absoluteFilePath());
                 book.chapter_times.append(current_length);
-                book.chapter_titles.append(abs_current_file.baseName());
+                book.chapter_titles.append(Util::getTagTitle(abs_current_file.absoluteFilePath())); // abs_current_file.baseName()
                 book.time += current_length;
+
             }
 
             mLibraryItems.append(book);

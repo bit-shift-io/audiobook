@@ -14,6 +14,7 @@ class Player : public QMediaPlayer
     Q_OBJECT
     //Q_PROPERTY(QString play READ play WRITE setPlay NOTIFY playChanged)
     Q_PROPERTY(qint64 progress READ progress NOTIFY progressChanged)
+    Q_PROPERTY(int chapterIndex READ chapterIndex WRITE setChapterIndex NOTIFY progressChanged)
     Q_PROPERTY(QString positionText READ positionText NOTIFY progressChanged)
     Q_PROPERTY(QString timeText READ timeText NOTIFY playlistChanged)
     Q_PROPERTY(QString titleText READ titleText NOTIFY playlistChanged)
@@ -31,6 +32,7 @@ public:
     QString titleText() const;
     QString chapterText() const;
     QString chapterProgressText() const;
+    int chapterIndex() const;
 
 public slots:
     void positionChanged(qint64 xPosition);
@@ -39,7 +41,7 @@ public slots:
     void setHeadPosition(qint64 xPosition);
     void setProgress(qint64 xPosition);
     void setPlayingBook(const Book &mBook);
-    void setPlayingChapter(QString p_chapter);
+    void setChapterIndex(int xIndex);
     void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
     void togglePlayPause();
     void skipForward();

@@ -49,7 +49,7 @@ Page {
         Layout.fillWidth: true
         clip: true
         spacing: Style.library.list_spacing
-        currentIndex: -1 // no selected default
+        currentIndex: Player.chapterIndex
         ScrollBar.vertical: ScrollBar {}
 
         model: ChapterModel {
@@ -61,10 +61,10 @@ Page {
 
             Rectangle {
                 id: background
-                color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background // TODO: model.isCurrentItem for active item
+                color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background
                 radius: Style.library.radius_background
                 implicitHeight: row_layout.height
-                implicitWidth: parent.width
+                implicitWidth: chapter_list.width
 
                 RowLayout {
                     id: row_layout
@@ -99,9 +99,7 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        chapter_list.currentIndex = index;
-                        console.log(model.title)
-                        // TODO: player.chapter
+                        Player.chapterIndex = index;
                     }
                 }
             }

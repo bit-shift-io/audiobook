@@ -38,6 +38,8 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
             return QVariant(book.chapter_titles.count());
         case DurationRole:
             return QVariant(Util::getDisplayTime(book.time));
+        case ArtistRole:
+            return QVariant(book.artist);
     }
     return QVariant();
 }

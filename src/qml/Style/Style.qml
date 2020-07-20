@@ -68,6 +68,7 @@ QtObject {
 
     property QtObject library: QtObject {
         property int margin: app.margin
+        property int size_heading: app.font_size * 1.2
         property int list_spacing: 10
         property int radius_background: 0
         property color color_background: '#464646'

@@ -61,9 +61,8 @@ void Player::setPlayingBook(const Book &xBook) {
 }
 
 
-void Player::setPlayingChapter(QString p_chapter) {
-    int i = mBook.chapter_titles.indexOf(p_chapter);
-    playlist()->setCurrentIndex(i);
+void Player::setChapterIndex(int xIndex) {
+    playlist()->setCurrentIndex(xIndex);
 }
 
 
@@ -74,6 +73,7 @@ QString Player::chapterText() const {
     return mBook.chapter_titles[playlist()->currentIndex()];
 }
 
+
 QString Player::chapterProgressText() const
 {
     if (playlist()->currentIndex() == -1)
@@ -82,6 +82,12 @@ QString Player::chapterProgressText() const
     QString index = QString::number(playlist()->currentIndex() +1);
     QString total = QString::number(playlist()->mediaCount());
     return QString("Chapter %1/%2").arg(index, total);
+}
+
+
+int Player::chapterIndex() const
+{
+    return playlist()->currentIndex();
 }
 
 

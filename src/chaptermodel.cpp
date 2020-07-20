@@ -26,7 +26,6 @@ void ChapterModel::chapterIndexChanged(int xIndex)
 
 int ChapterModel::rowCount(const QModelIndex & /*parent*/) const
 {
-    qDebug() << "chapter!";
     const Book *book = Library::instance()->getActiveItem();
     if (book == nullptr)
         return 0;
