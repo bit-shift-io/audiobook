@@ -12,7 +12,9 @@ Player::Player(QMediaPlayer *parent)
     // connects
     connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::playlistIndexChanged);
     connect(this, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
-
+    connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
+    connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
+    //connect(this, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
 
     // connect library
     connect(Library::instance(), &Library::activeItemChanged, this, &Player::libraryItemChanged);
@@ -90,6 +92,16 @@ int Player::chapterIndex() const
     return playlist()->currentIndex();
 }
 
+int Player::volume() const
+{
+    return QMediaPlayer::volume();
+}
+
+qreal Player::speed() const
+{
+    return QMediaPlayer::playbackRate();
+}
+
 
 void Player::positionChanged(qint64 xPosition)
 {
@@ -107,18 +119,19 @@ void Player::positionChanged(qint64 xPosition)
 
 void Player::playlistIndexChanged(int xIndex)
 {
-    qDebug() << "new chapter" << xIndex;
     // pass from playlist to signal
     emit currentIndexChanged(xIndex);
 }
 
 
 void Player::togglePlayPause() {
-    if (state() != QMediaPlayer::PlayingState)
-        play();
-    else
-        pause();
+    if (state() != QMediaPlayer::PlayingState) {
+        QMediaPlayer::play();
+    } else {
+        QMediaPlayer::pause();
+    }
 }
+
 
 void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
     playlist()->setPlaybackMode(mode);
@@ -198,5 +211,15 @@ void Player::volumeUp() {
 
 void Player::volumeDown() {
     setVolume(volume() - 25);
+}
+
+void Player::setVolume(int xVolume)
+{
+    QMediaPlayer::setVolume(xVolume);
+}
+
+void Player::setSpeed(qreal xSpeed)
+{
+    QMediaPlayer::setPlaybackRate(xSpeed);
 }
 

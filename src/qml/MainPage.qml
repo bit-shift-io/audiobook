@@ -14,6 +14,16 @@ Page {
         color: Style.app.color
     }
 
+    Connections {
+        target: Player
+        onStateChanged: {
+            console.log(Player.state)
+            console.log(swipe_view.currentIndex)
+            if (Player.state === Player.PlayingState) {
+                root.active_swipe_view = 0;
+            }
+        }
+    }
 
     SwipeView {
         id: swipe_view
@@ -22,20 +32,15 @@ Page {
         anchors.bottom: player_timeline.top
         anchors.right: parent.right
         anchors.left: parent.left
+        currentIndex: root.active_swipe_view
 
 
         Item {
-            id: firstPage
-            ChapterPage {
-
-            }
+            ChapterPage {}
         }
 
         Item {
-            id: secondPage
-            LibraryPage {
-
-            }
+            LibraryPage {}
         }
     }
 
@@ -55,12 +60,6 @@ Page {
             anchors.left: parent.left
             anchors.topMargin: Style.app.margin
             live: false
-
-            handle: Item { // hide handle
-                id: pill
-                width: 0
-                height: 0
-            }
             value: Player.progress;
             from: 0
             to: 10000
