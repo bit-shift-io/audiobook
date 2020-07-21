@@ -100,7 +100,8 @@ bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
 
 
 void Library::update() {
-    //QStringList all_dirs;
+    // TODO: delete old books
+
     QDir lib_dir(mPath);
     QDirIterator directories(mPath, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
 
@@ -132,12 +133,14 @@ void Library::update() {
             for (auto current_file : dir_list) {
                 QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
                 uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
-
+                book.time += current_length;
                 book.chapter_files.append(abs_current_file.absoluteFilePath());
                 book.chapter_times.append(current_length);
-                book.chapter_titles.append(Util::getTagTitle(abs_current_file.absoluteFilePath())); // abs_current_file.baseName()
-                book.time += current_length;
 
+                QString chapter_title = Util::getTagTitle(abs_current_file.absoluteFilePath());
+                if (chapter_title.isEmpty())
+                    chapter_title = abs_current_file.baseName().replace("_", " ");
+                book.chapter_titles.append(chapter_title);
             }
 
             mLibraryItems.append(book);

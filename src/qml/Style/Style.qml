@@ -44,6 +44,13 @@ QtObject {
         property color color_down: '#646464'
     }
 
+    property QtObject slider: QtObject {
+        property color color_handle: '#ffffff'
+        property color color_handle_pressed: '#464646'
+        property color color_background: '#464646'
+        property color color_progress: '#646464'
+    }
+
     property QtObject image_button: QtObject {
         property color color_foreground: app.font_color
         property color color_background: '#464646'

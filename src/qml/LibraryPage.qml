@@ -79,6 +79,7 @@ Page {
 
                 MouseArea {
                     anchors.fill: parent
+
                     onClicked: {
                         library_list.currentIndex = index;
                         Library.activeItem = model.title;
@@ -86,7 +87,6 @@ Page {
                     onDoubleClicked: {
                         library_list.currentIndex = index;
                         Library.activeItem = model.title;
-                        swipe_view.currentIndex = 0; // TODO: not working?!
                         Player.play();
                     }
                 }

@@ -1,24 +1,27 @@
 # audiobook
-Minimal audio book reader for desktop.
+Minimal audio book reader for mobile and desktop.
 
 # requirements:
-QT5
-c++
+Install qt5-charts && qt5-graphicaleffects
+Install gdb && valgrind
 
-# build and run:
-./install.sh
+# android
+https://wiki.qt.io/Android
 
-# build and install taglib:
+Install gradle 
+Install jdk8 or jdk8-openjdk (preferred)  
+JDK directory: /usr/lib/jvm/default
 
-cmake -DBUILD_EXAMPLES=ON .
+Enable adb run command: adb devices  
 
-or to a path: cmake -DCMAKE_INSTALL_PREFIX=/usr/
+Install qt from here, dont use the aur version  
+wget http://download.qt.io/official_releases/qt/5.12/5.12.9/qt-opensource-linux-x64-5.12.9.run
 
-make
+When installing android tools, will warn no space on device, exec the following:  
+sudo mount -o remount,size=8G /tmp/
 
-sudo make install
-
-should install to /usr/local/include/taglib/
-
-# screenshots
+# screenshots - qml
 ![ScreenShot](screenshots/main_linux.png)
+
+# screenshots - qt5
+![ScreenShot](screenshots/qt5_linux.png)

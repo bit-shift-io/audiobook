@@ -13,7 +13,7 @@
 #include "libraryfilterproxy.h"
 #include "chaptermodel.h"
 #include "player.h"
-#include "fileproxymodel.h"
+
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroidExtras>
@@ -65,13 +65,8 @@ int main(int argc, char *argv[])
     LibraryFilterProxy *filter_proxy = new LibraryFilterProxy();
     filter_proxy->setSourceModel(library_model);
 
-    // filesystem model for file picker
-    FileProxyModel *file_proxy_model = new FileProxyModel;
 
     ChapterModel *chapter_model = new ChapterModel();
-
-
-
 
     // register types
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
@@ -80,12 +75,10 @@ int main(int argc, char *argv[])
 
 
     qmlRegisterType<ChapterModel>("ChapterModel", 1, 0, "ChapterModel");
-    //engine.rootContext()->setContextProperty("LibraryModel", &lm);
     engine.rootContext()->setContextProperty("LibraryFilterProxy", filter_proxy);
-    //engine.rootContext()->setContextProperty("ChapterModel", chapter_model);
 
     //qmlRegisterUncreatableType<FileProxyModel>("FileProxyModel", 1, 0, "FileProxyModel", "Cannot create a FileSystemModel instance.");
-    engine.rootContext()->setContextProperty("FileProxyModel", file_proxy_model);
+    //engine.rootContext()->setContextProperty("FileProxyModel", file_proxy_model);
 
     // add imports
     engine.addImportPath(".");
@@ -98,7 +91,6 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QLatin1String("qrc:/qml/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
-
 
 
     // debug, print qrc resources

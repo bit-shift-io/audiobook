@@ -20,6 +20,8 @@ ApplicationWindow {
     visible: true
     color: Style.app.color
 
+    property int active_swipe_view: 0 // 0 = chapter, 1 = library
+
     Settings {
         category: "window"
         property alias x: root.x
@@ -35,11 +37,8 @@ ApplicationWindow {
 
     Drawer {
         id: drawer
-        width: 0.66 * root.width
+        width: root.width * 0.66
         height: root.height
-        background: Rectangle {
-            color: Style.drawer.color
-        }
 
         NavigationPage {}
     }

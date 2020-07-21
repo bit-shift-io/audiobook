@@ -15,5 +15,6 @@
         <file>qml/Style/ImageButton.qml</file>
         <file>qml/Style/Spacer.qml</file>
         <file>qml/FilePicker.qml</file>
+        <file>qml/Style/Slider.qml</file>
     </qresource>
 </RCC>
