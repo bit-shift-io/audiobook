@@ -1,8 +1,6 @@
 TEMPLATE = app
 
-QT += charts qml quick svg 
-QT += widgets multimedia core
-#LIBS += -ltag -lz
+QT += widgets multimedia core sql charts qml quick svg
 
 android: {
     QT += androidextras
@@ -64,6 +62,7 @@ INCLUDEPATH += \
 HEADERS += \
   src/book.h \
   src/chaptermodel.h \
+  src/database.h \
   src/library.h \
   src/libraryfilterproxy.h \
   src/librarymodel.h \
@@ -191,6 +190,7 @@ HEADERS += \
 SOURCES += \
   src/book.cpp \
   src/chaptermodel.cpp \
+  src/database.cpp \
   src/library.cpp \
   src/libraryfilterproxy.cpp \
   src/librarymodel.cpp \
