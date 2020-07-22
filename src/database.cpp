@@ -2,6 +2,7 @@
 
 #include <QSqlDriver>
 #include <QSqlQuery>
+#include <QSqlError>
 #include <QDebug>
 #include "database.h"
 #include "util.h"
@@ -51,7 +52,7 @@ Database::~Database()
 void Database::initDatabase()
 {
     QStringList tables = mDatabase.tables();
-    QSqlQuery query;
+    QSqlQuery query(mDatabase);
 
     // check if database contains data
     if (tables.contains("info", Qt::CaseInsensitive) && tables.contains("files", Qt::CaseInsensitive)) {
@@ -79,9 +80,10 @@ void Database::initDatabase()
     query.exec("create table files "
         "(path text primary key, "
         "title text, "
+        "size integer, "
         "duration integer, "
         "artist text, "
-        "size integer, "
+        "genre text, "
         "year integer)");
 }
 
@@ -89,15 +91,18 @@ void Database::initDatabase()
 
 void Database::addChapter(const Chapter xChapter)
 {
-    QSqlQuery query;
-    query.prepare("INSERT INTO files (path, size, duration, artist, genre, year) VALUES (?, ?, ?, ?, ?, ?)");
+    QSqlQuery query(mDatabase);
+    query.prepare("INSERT INTO files (path, title, size, duration, artist, genre, year) VALUES (?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(xChapter.filePath);
+    query.addBindValue(xChapter.title);
     query.addBindValue(xChapter.size);
     query.addBindValue(xChapter.duration);
     query.addBindValue(xChapter.artist);
     query.addBindValue(xChapter.genre);
     query.addBindValue(xChapter.year);
-    query.exec();
+    if(!query.exec()) {
+        qDebug() << "error adding chapter" << mDatabase.lastError().text();
+    }
 }
 
 
