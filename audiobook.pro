@@ -61,6 +61,7 @@ INCLUDEPATH += \
 
 HEADERS += \
   src/book.h \
+  src/chapter.h \
   src/chaptermodel.h \
   src/database.h \
   src/library.h \
@@ -189,6 +190,7 @@ HEADERS += \
 
 SOURCES += \
   src/book.cpp \
+  src/chapter.cpp \
   src/chaptermodel.cpp \
   src/database.cpp \
   src/library.cpp \

@@ -46,15 +46,15 @@ QObject *Player::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 
 void Player::setPlayingBook(const Book &xBook) {
     mBook = xBook;
-    mPlayListTime = mBook.time;
+    mPlayListTime = mBook.duration;
     mProgressScale = 10000.0/mPlayListTime;
     mProgress = 0;
 
     playlist()->clear();
 
-    for(auto file_name: mBook.chapter_files)
+    for(auto chapter: mBook.chapters)
     {
-        QUrl url = QUrl::fromLocalFile(file_name);
+        QUrl url = QUrl::fromLocalFile(chapter.filePath);
         playlist()->addMedia(url);
     }
 
@@ -72,7 +72,7 @@ QString Player::chapterText() const {
     if (playlist()->currentIndex() == -1)
         return "";
 
-    return mBook.chapter_titles[playlist()->currentIndex()];
+    return mBook.chapters[playlist()->currentIndex()].title;
 }
 
 
@@ -110,7 +110,7 @@ void Player::positionChanged(qint64 xPosition)
     qint64 start_pos = 0;
     int idx = playlist()->currentIndex();
     for(int i = 0; i < idx ; ++i) {
-        start_pos += mBook.chapter_times[i];
+        start_pos += mBook.chapters[i].duration;
     }
     mProgress = start_pos + xPosition;
     emit progressChanged();
@@ -175,12 +175,12 @@ void Player::setHeadPosition(qint64 xPosition) {
     int idx = 0;
 
     // loop over chapters, reduce position by each chapter length till we are in the correct chapter
-    for(int i = 0; i < mBook.chapter_times.length(); ++i) {
-        if (xPosition < mBook.chapter_times[i]) {
+    for(int i = 0; i < mBook.chapters.length(); ++i) {
+        if (xPosition < mBook.chapters[i].duration) {
             idx = i;
             break;
         }
-        xPosition -= mBook.chapter_times[i];
+        xPosition -= mBook.chapters[i].duration;
     }
 
     // set chapter and position

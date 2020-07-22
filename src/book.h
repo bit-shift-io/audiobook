@@ -2,9 +2,8 @@
 #define BOOK_H
 
 #include <QString>
-#include <QStringList>
-#include <QTime>
 #include <QVector>
+#include "chapter.h"
 
 class Book
 {
@@ -14,10 +13,8 @@ public:
     QString title;
     QString artist;
     QString directory;
-    QStringList chapter_titles;
-    QStringList chapter_files;
-    QVector<uint> chapter_times;
-    qint64 time;
+    QVector<Chapter> chapters;
+    qint64 duration;
 
     bool operator==(const Book& rhs);
 };

@@ -2,6 +2,9 @@
 #define DATABASE_H
 
 #include <QObject>
+#include "book.h"
+
+class QSqlDatabase;
 
 class Database : public QObject
 {
@@ -15,8 +18,13 @@ public:
     void initDatabase();
     void initRequest();
     void reloadExistingDatabase();
+    void addFileInfo(const QString xPath, const int xFileSize, const int xDuration, const QString xArtist, const QString xYear);
+
 
 signals:
+
+private:
+    QSqlDatabase *mDatabase = nullptr;
 
 };
 

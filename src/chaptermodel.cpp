@@ -29,7 +29,7 @@ int ChapterModel::rowCount(const QModelIndex & /*parent*/) const
     const Book *book = Library::instance()->getActiveItem();
     if (book == nullptr)
         return 0;
-    return Library::instance()->getActiveItem()->chapter_files.size();
+    return book->chapters.size();
 }
 
 
@@ -42,15 +42,17 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
     if (book == nullptr)
         return QVariant();
 
+    const Chapter c = book->chapters.at(index.row());
+
     switch (role) {
         case ChapterIndexRole:
             return QVariant(index.row());
         case TitleRole:
-            return QVariant(book->chapter_titles.at(index.row()));
+            return QVariant(c.title);
         case FileNameRole:
-            return QVariant(book->chapter_files.at(index.row()));
+            return QVariant(c.filePath);
         case DurationRole:
-            return QVariant(Util::getDisplayTime(book->chapter_times.at(index.row())));
+            return QVariant(Util::getDisplayTime(c.duration));
     }
     return QVariant();
 }

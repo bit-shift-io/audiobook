@@ -60,35 +60,27 @@ bool Library::isEmpty() const
 }
 
 
-const Book* Library::getLibraryItem(const QString &xTitle) {
-    for (int i=0; i < mLibraryItems.size(); ++i) {
-        const Book &book = mLibraryItems[i];
-        if (book.title == xTitle) {
-            return &book;
-        }
-    }
-    return nullptr;
-}
-
-void Library::setActiveItem(QString xTitle)
+void Library::setActiveIndex(int xIndex)
 {
-    if (mActiveItem != nullptr && mActiveItem->title == xTitle)
+    if (mActiveIndex == xIndex || xIndex < 0 || xIndex >= size())
         return;
 
-    mActiveItem = getLibraryItem(xTitle);
-
-    if (mActiveItem != nullptr)
-        emit activeItemChanged();
+    mActiveIndex = xIndex;
+    emit activeItemChanged();
 }
 
-const Book* Library::activeItem()
+
+int Library::activeIndex()
 {
-    return mActiveItem;
+    return mActiveIndex;
 }
 
 const Book* Library::getActiveItem()
 {
-    return mActiveItem;
+    if (mActiveIndex == -1)
+        return nullptr;
+
+    return &mLibraryItems[mActiveIndex];
 }
 
 
@@ -136,14 +128,20 @@ void Library::update() {
             for (auto current_file : dir_list) {
                 QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
                 uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
-                book.time += current_length;
-                book.chapter_files.append(abs_current_file.absoluteFilePath());
-                book.chapter_times.append(current_length);
+                book.duration += current_length;
+                Chapter c;
+                c.filePath = abs_current_file.absoluteFilePath();
+                c.duration = current_length;
 
-                QString chapter_title = Util::getTagTitle(abs_current_file.absoluteFilePath());
-                if (chapter_title.isEmpty())
-                    chapter_title = abs_current_file.baseName().replace("_", " ");
-                book.chapter_titles.append(chapter_title);
+                c.title = Util::getTagTitle(abs_current_file.absoluteFilePath());
+                if (c.title.isEmpty())
+                    c.title = abs_current_file.baseName().replace("_", " ");
+
+                c.year = Util::getTagYear(abs_current_file.absoluteFilePath());
+                if (c.year == -1)
+                    c.year = abs_current_file.birthTime().date().year();
+
+                book.chapters.append(c);
             }
 
             mLibraryItems.append(book);

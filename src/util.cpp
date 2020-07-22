@@ -52,6 +52,18 @@ QString Util::getTagArtist(const QString &xFileName) {
     return len;
 }
 
+QString Util::getTagGenre(const QString &xFileName) {
+    TagLib::FileRef f(xFileName.toUtf8().constData());
+    QString len = QString(f.file()->tag()->genre().toCString());
+    return len;
+}
+
+int Util::getTagYear(const QString &xFileName) {
+    TagLib::FileRef f(xFileName.toUtf8().constData());
+    int len = f.file()->tag()->year();
+    return len;
+}
+
 
 QString Util::getAppConfigLocation()
 {

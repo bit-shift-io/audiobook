@@ -17,10 +17,9 @@ Page {
     Connections {
         target: Player
         onStateChanged: {
-            console.log(Player.state)
-            console.log(swipe_view.currentIndex)
             if (Player.state === Player.PlayingState) {
                 root.active_swipe_view = 0;
+                console.log("change swipe view");
             }
         }
     }

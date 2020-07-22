@@ -2,7 +2,7 @@
 
 Book::Book()
 {
-    time = 0;
+    duration = 0;
 }
 
 bool Book::operator==(const Book& rhs) {
