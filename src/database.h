@@ -2,29 +2,27 @@
 #define DATABASE_H
 
 #include <QObject>
+#include <QSqlDatabase>
 #include "book.h"
 
-class QSqlDatabase;
 
 class Database : public QObject
 {
     Q_OBJECT
+    const static int DB_VERSION = 1;
+
 public:
     explicit Database(QObject *parent = nullptr);
     ~Database() override;
 
     // init database
-    Q_INVOKABLE void init(const QString &dbName, const QString &dbFileName = {});
     void initDatabase();
-    void initRequest();
-    void reloadExistingDatabase();
-    void addFileInfo(const QString xPath, const int xFileSize, const int xDuration, const QString xArtist, const QString xYear);
-
+    void addChapter(const Chapter xChapter);
 
 signals:
 
 private:
-    QSqlDatabase *mDatabase = nullptr;
+    QSqlDatabase mDatabase;
 
 };
 

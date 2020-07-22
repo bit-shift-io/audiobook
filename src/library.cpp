@@ -14,9 +14,7 @@ Library::Library(QObject *parent) :
 {
     // mPath from settings
     mPath = Settings::value("library_path", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath())).toString();
-    QString database_name = Util::getAppConfigLocation() + "library.db";
     mDatabase = new Database();
-    mDatabase->init(mPath, database_name);
     update();
 }
 
@@ -142,6 +140,9 @@ void Library::update() {
                     c.year = abs_current_file.birthTime().date().year();
 
                 book.chapters.append(c);
+
+                // append to database
+                mDatabase->addChapter(c);
             }
 
             mLibraryItems.append(book);
