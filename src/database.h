@@ -17,7 +17,10 @@ public:
 
     // init database
     void initDatabase();
-    void addChapter(const Chapter xChapter);
+    void setInfo(const QString &xKey, const QString &xValue);
+    QVariant getInfo(const QString &xKey);
+    void setChapter(const Chapter &xChapter);
+    const Chapter getChapter(const QString &xPath);
 
 signals:
 

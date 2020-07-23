@@ -40,6 +40,8 @@ QVariant LibraryModel::data(const QModelIndex &index, int role) const
             return QVariant(Util::getDisplayTime(book.duration));
         case ArtistRole:
             return QVariant(book.artist);
+    case PathRole:
+        return QVariant(book.path);
     }
     return QVariant();
 }

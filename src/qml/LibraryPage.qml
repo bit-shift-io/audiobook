@@ -82,11 +82,12 @@ Page {
 
                     onClicked: {
                         library_list.currentIndex = index;
-                        Library.activeIndex = index;
+                        Library.currentItem = model.path;
+                        console.log(model.path);
                     }
                     onDoubleClicked: {
                         library_list.currentIndex = index;
-                        Library.activeIndex = index;
+                        Library.currentItem = model.path;
                         Player.play();
                     }
                 }

@@ -15,7 +15,7 @@ class Library : public QObject
     Q_OBJECT
     Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
     Q_PROPERTY(int size READ size)
-    Q_PROPERTY(int activeIndex WRITE setActiveIndex NOTIFY activeItemChanged)
+    Q_PROPERTY(QString currentItem WRITE setCurrentItem NOTIFY currentItemChanged)
 
 public:
     Library(const Library&) = delete; // disable copy for singleton
@@ -32,15 +32,15 @@ public:
 
     QVector<Book> getLibraryItems();
 
-    // active library item
-    void setActiveIndex(int xIndex);
-    int activeIndex();
-    const Book* getActiveItem();
+    // current/active library item
+    void setCurrentItem(QString &xIndex);
+    QString currentItem();
+    const Book* getCurrentItem();
 
 signals:
     void pathChanged();
     void libraryUpdated();
-    void activeItemChanged();
+    void currentItemChanged();
 
 public slots:
     void update();
@@ -49,9 +49,9 @@ protected:
 
 private:
     QVector<Book> mLibraryItems;
-    int mActiveIndex = -1;
+    QString mCurrentItem;
     QString mPath;
-    Database *mDatabase = nullptr;
+    Database mDatabase;
     explicit Library(QObject *parent = nullptr);
 
 };

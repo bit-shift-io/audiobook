@@ -189,8 +189,6 @@ HEADERS += \
   src/util.h
 
 SOURCES += \
-  src/book.cpp \
-  src/chapter.cpp \
   src/chaptermodel.cpp \
   src/database.cpp \
   src/library.cpp \

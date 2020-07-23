@@ -26,7 +26,7 @@ void ChapterModel::chapterIndexChanged(int xIndex)
 
 int ChapterModel::rowCount(const QModelIndex & /*parent*/) const
 {
-    const Book *book = Library::instance()->getActiveItem();
+    const Book *book = Library::instance()->getCurrentItem();
     if (book == nullptr)
         return 0;
     return book->chapters.size();
@@ -38,7 +38,7 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || Library::instance()->isEmpty())
             return QVariant();
 
-    const Book *book = Library::instance()->getActiveItem();
+    const Book *book = Library::instance()->getCurrentItem();
     if (book == nullptr)
         return QVariant();
 
@@ -50,7 +50,7 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
         case TitleRole:
             return QVariant(c.title);
         case FileNameRole:
-            return QVariant(c.filePath);
+            return QVariant(c.path);
         case DurationRole:
             return QVariant(Util::getDisplayTime(c.duration));
     }

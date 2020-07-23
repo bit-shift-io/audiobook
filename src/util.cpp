@@ -1,6 +1,8 @@
 #include <QStandardPaths>
 #include <QProcess>
 #include <QDebug>
+#include <QApplication>
+#include <QDir>
 #include "util.h"
 #include "taglib/fileref.h"
 
@@ -58,6 +60,14 @@ QString Util::getTagGenre(const QString &xFileName) {
     return len;
 }
 
+QString Util::toCamelCase(const QString &xString)
+{
+    QStringList parts = xString.split(' ', QString::SkipEmptyParts);
+    for (int i = 0; i < parts.size(); ++i)
+        parts[i].replace(0, 1, parts[i][0].toUpper());
+    return parts.join(" ");
+}
+
 int Util::getTagYear(const QString &xFileName) {
     TagLib::FileRef f(xFileName.toUtf8().constData());
     int len = f.file()->tag()->year();
@@ -67,7 +77,11 @@ int Util::getTagYear(const QString &xFileName) {
 
 QString Util::getAppConfigLocation()
 {
-    return QStandardPaths::locate(QStandardPaths::AppConfigLocation, QString(), QStandardPaths::LocateDirectory);
+    // find + create the folder
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+    if (!dir.exists())
+        dir.mkpath(".");
+    return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
 }
 
 QString Util::getCacheLocation()

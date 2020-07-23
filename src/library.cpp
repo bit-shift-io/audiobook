@@ -14,7 +14,6 @@ Library::Library(QObject *parent) :
 {
     // mPath from settings
     mPath = Settings::value("library_path", QStandardPaths::standardLocations(QStandardPaths::MusicLocation).value(0, QDir::homePath())).toString();
-    mDatabase = new Database();
     update();
 }
 
@@ -58,27 +57,29 @@ bool Library::isEmpty() const
 }
 
 
-void Library::setActiveIndex(int xIndex)
+void Library::setCurrentItem(QString &xIndex)
 {
-    if (mActiveIndex == xIndex || xIndex < 0 || xIndex >= size())
+    if (mCurrentItem == xIndex || xIndex.isEmpty())
         return;
 
-    mActiveIndex = xIndex;
-    emit activeItemChanged();
+    mCurrentItem = xIndex;
+    emit currentItemChanged();
 }
 
 
-int Library::activeIndex()
+QString Library::currentItem()
 {
-    return mActiveIndex;
+    return mCurrentItem;
 }
 
-const Book* Library::getActiveItem()
+const Book* Library::getCurrentItem()
 {
-    if (mActiveIndex == -1)
-        return nullptr;
+    for (Book &item: mLibraryItems){
+        if (item.path == mCurrentItem)
+            return &item;
+    }
 
-    return &mLibraryItems[mActiveIndex];
+    return nullptr;
 }
 
 
@@ -101,6 +102,8 @@ void Library::update() {
     QStringList file_filters;
     file_filters << "*.mp3" << "*.wav" << "*.ogg";
 
+    // set library path
+    mDatabase.setInfo("library_path", mPath);
 
     while(directories.hasNext()){
         directories.next();
@@ -110,8 +113,9 @@ void Library::update() {
         QStringList dir_list = current_dir.entryList(file_filters, QDir::NoDotAndDotDot | QDir::Files);
 
         if (dir_list.count() > 0) {
+            // new book for each directory
             Book book;
-            book.directory = lib_dir.relativeFilePath(directories.filePath());
+            book.path = "/" + lib_dir.relativeFilePath(directories.filePath());
 
             // get some info from first file
             QFileInfo first_file = current_dir.absoluteFilePath(dir_list[0]);
@@ -124,27 +128,36 @@ void Library::update() {
             QStringList abs_current_files;
 
             for (auto current_file : dir_list) {
-                QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
-                uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
-                book.duration += current_length;
-                Chapter c;
-                c.filePath = abs_current_file.absoluteFilePath();
-                c.duration = current_length;
+                // access from db
+                Chapter c = mDatabase.getChapter(book.path + "/" + current_file);
 
-                c.title = Util::getTagTitle(abs_current_file.absoluteFilePath());
-                if (c.title.isEmpty())
-                    c.title = abs_current_file.baseName().replace("_", " ");
+                if (c.duration == -1) {
+                    qDebug() << "new file found";
+                    // scan file and update db
+                    QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
+                    uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
+                    book.duration += current_length;
 
-                c.year = Util::getTagYear(abs_current_file.absoluteFilePath());
-                if (c.year == -1)
-                    c.year = abs_current_file.birthTime().date().year();
 
+                    c.path = abs_current_file.absoluteFilePath().replace(mPath, "");
+                    c.duration = current_length;
+
+                    c.title = Util::getTagTitle(abs_current_file.absoluteFilePath());
+                    if (c.title.isEmpty())
+                        c.title = Util::toCamelCase(abs_current_file.baseName().replace("_", " "));
+
+                    c.year = Util::getTagYear(abs_current_file.absoluteFilePath());
+                    if (c.year == -1)
+                        c.year = abs_current_file.birthTime().date().year();
+
+                    mDatabase.setChapter(c);
+                }
+
+                // assign chapter to book
                 book.chapters.append(c);
-
-                // append to database
-                mDatabase->addChapter(c);
             }
 
+            // assign book to library
             mLibraryItems.append(book);
         }
 

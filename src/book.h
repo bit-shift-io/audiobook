@@ -9,14 +9,21 @@ class Book
 {
 
 public:
-    Book();
+    Book() {};
     QString title;
     QString artist;
-    QString directory;
+    QString path;
     QVector<Chapter> chapters;
-    qint64 duration;
+    qint64 duration = 0;
 
-    bool operator==(const Book& rhs);
+    //void addChapter(const Chapter &xChapter);
+    //bool isEmpty();
+
+    bool operator==(const Book& rhs) {
+        if (path == rhs.path)
+                return true;
+        return false;
+    };
 };
 
 #endif // BOOK_H

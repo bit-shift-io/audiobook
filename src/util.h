@@ -17,6 +17,7 @@ public:
     static QString getTagArtist(const QString &xFileName);
     static int getTagYear(const QString &xFileName);
     static QString getTagGenre(const QString &xFileName);
+    static QString toCamelCase(const QString &xString);
     Q_INVOKABLE static QString getAppConfigLocation();
     Q_INVOKABLE static QString getCacheLocation();
     Q_INVOKABLE static QString getMusicLocation();

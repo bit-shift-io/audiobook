@@ -17,13 +17,13 @@ Player::Player(QMediaPlayer *parent)
     //connect(this, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
 
     // connect library
-    connect(Library::instance(), &Library::activeItemChanged, this, &Player::libraryItemChanged);
+    connect(Library::instance(), &Library::currentItemChanged, this, &Player::libraryItemChanged);
 }
 
 
 void Player::libraryItemChanged()
 {
-    const Book* book = Library::instance()->getActiveItem();
+    const Book* book = Library::instance()->getCurrentItem();
     if (book != nullptr)
         setPlayingBook(*book); // cannot be null at this point, so use ref
 }
@@ -52,9 +52,10 @@ void Player::setPlayingBook(const Book &xBook) {
 
     playlist()->clear();
 
+    QString lib_path = Library::instance()->path();
     for(auto chapter: mBook.chapters)
     {
-        QUrl url = QUrl::fromLocalFile(chapter.filePath);
+        QUrl url = QUrl::fromLocalFile(lib_path + chapter.path);
         playlist()->addMedia(url);
     }
 
