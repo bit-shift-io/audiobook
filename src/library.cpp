@@ -136,8 +136,6 @@ void Library::update() {
                     // scan file and update db
                     QFileInfo abs_current_file = current_dir.absoluteFilePath(current_file);
                     uint current_length = Util::getTimeMSec(abs_current_file.absoluteFilePath());
-                    book.duration += current_length;
-
 
                     c.path = abs_current_file.absoluteFilePath().replace(mPath, "");
                     c.duration = current_length;
@@ -154,7 +152,7 @@ void Library::update() {
                 }
 
                 // assign chapter to book
-                book.chapters.append(c);
+                book.addChapter(c);
             }
 
             // assign book to library

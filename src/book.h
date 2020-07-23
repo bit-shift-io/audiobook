@@ -24,6 +24,11 @@ public:
                 return true;
         return false;
     };
+
+    void addChapter(const Chapter &xChapter) {
+        duration += xChapter.duration;
+        chapters.append(xChapter);
+    }
 };
 
 #endif // BOOK_H
