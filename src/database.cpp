@@ -29,6 +29,19 @@ Database::Database(QObject *parent)
     initDatabase();
 }
 
+Database *Database::instance()
+{
+    static Database* instance = new Database;
+    return instance;
+}
+
+QObject *Database::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    return Database::instance(); // C++ and QML instance
+}
+
 Database::~Database()
 {
     if (mDatabase.isOpen())
@@ -71,6 +84,11 @@ void Database::initDatabase()
         "artist text, "
         "genre text, "
         "year integer)");
+
+    // create books table
+    query.exec("create table books "
+        "(path text primary key, "
+        "progress integer)");
 }
 
 
@@ -138,6 +156,60 @@ const Chapter Database::getChapter(const QString &xPath)
     }
 
     return c;
+}
+
+
+void Database::setBook(const Book &xBook)
+{
+    QSqlQuery query(mDatabase);
+    query.prepare("REPLACE INTO books (path, progress) VALUES (?, ?)");
+    query.addBindValue(xBook.path);
+    query.addBindValue(xBook.progress);
+    if(!query.exec()) {
+        qDebug() << "error adding book" << mDatabase.lastError().text();
+    }
+}
+
+
+const Book Database::getBook(const QString &xPath)
+{
+    Book b;
+    b.path = xPath;
+
+    QSqlQuery query(mDatabase);
+
+    // get books
+    query.prepare("SELECT * FROM books WHERE path = ?");
+    query.addBindValue(xPath);
+
+    if (query.exec()) {
+        while (query.next()) { // get first result
+            b.progress = query.value("progress").toInt();
+        }
+    }
+    qDebug() << query.executedQuery();
+
+    // get chapter files
+    query = QSqlQuery(mDatabase);
+    query.prepare("SELECT * FROM files WHERE path LIKE '?/%'"); // TODO: fix this bind value
+    query.addBindValue(xPath);
+
+    if (query.exec()) {
+        while (query.next()) { // get first result
+            Chapter c;
+            c.path = query.value("path").toString();
+            c.title = query.value("title").toString();
+            c.duration = query.value("duration").toInt();
+            c.artist = query.value("artist").toString();
+            c.genre = query.value("genre").toString();
+            c.year = query.value("year").toInt();
+            b.addChapter(c);
+        }
+    }
+    qDebug() << query.executedQuery();
+    qDebug() << mDatabase.lastError().text();
+
+    return b;
 }
 
 

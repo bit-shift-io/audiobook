@@ -1,6 +1,7 @@
 #include "player.h"
 #include "library.h"
 #include "util.h"
+#include "database.h"
 
 Player::Player(QMediaPlayer *parent)
     : QMediaPlayer(parent)

@@ -8,6 +8,7 @@
 #include "book.h"
 #include "util.h"
 #include "settings.h"
+#include "database.h"
 
 Library::Library(QObject *parent) :
     QObject(parent)
@@ -96,28 +97,33 @@ bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
 void Library::update() {
     // TODO: delete old books
 
+    // set library path
+    Database::instance()->instance()->setInfo("library_path", mPath);
+
+    // loop dirs
     QDir lib_dir(mPath);
     QDirIterator directories(mPath, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-
     QStringList file_filters;
     file_filters << "*.mp3" << "*.wav" << "*.ogg";
 
-    // set library path
-    mDatabase.setInfo("library_path", mPath);
-
-    while(directories.hasNext()){
+    while(directories.hasNext()) {
         directories.next();
 
         // does folder contain any audio files? if we have audio files, this is a book
         QDir current_dir(directories.filePath());
         QStringList dir_list = current_dir.entryList(file_filters, QDir::NoDotAndDotDot | QDir::Files);
+        if (dir_list.count() == 0)
+            continue;
 
-        if (dir_list.count() > 0) {
-            // new book for each directory
-            Book book;
-            book.path = "/" + lib_dir.relativeFilePath(directories.filePath());
 
-            // get some info from first file
+        // new book for each directory
+        QString book_path = "/" + lib_dir.relativeFilePath(directories.filePath());
+        Book book = Database::instance()->getBook(book_path);
+
+        if (book.isEmpty()) {
+            qDebug() << "new book";
+
+            // get book from file
             QFileInfo first_file = current_dir.absoluteFilePath(dir_list[0]);
             book.artist = Util::getTagArtist(first_file.absoluteFilePath());
             book.title = Util::getTagAlbum(first_file.absoluteFilePath());
@@ -129,7 +135,7 @@ void Library::update() {
 
             for (auto current_file : dir_list) {
                 // access from db
-                Chapter c = mDatabase.getChapter(book.path + "/" + current_file);
+                Chapter c = Database::instance()->instance()->getChapter(book.path + "/" + current_file);
 
                 if (c.duration == -1) {
                     qDebug() << "new file found";
@@ -148,18 +154,21 @@ void Library::update() {
                     if (c.year == -1)
                         c.year = abs_current_file.birthTime().date().year();
 
-                    mDatabase.setChapter(c);
+                    Database::instance()->instance()->setChapter(c);
                 }
 
                 // assign chapter to book
                 book.addChapter(c);
             }
 
-            // assign book to library
-            mLibraryItems.append(book);
+            // write new database entry
+            Database::instance()->setBook(book);
         }
 
-    }
+        // assign book to library
+        mLibraryItems.append(book);
+
+    } // end dir loop
 
     // sort by title
     qSort(mLibraryItems.begin(), mLibraryItems.end(), caseInsensitiveLessThan);

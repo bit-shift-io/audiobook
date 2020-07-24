@@ -9,15 +9,17 @@ class Book
 {
 
 public:
-    Book() {};
+    Book() {}
     QString title;
     QString artist;
+    QString year;
+    QString genre;
     QString path;
     QVector<Chapter> chapters;
     qint64 duration = 0;
+    qint64 progress = 0;
 
-    //void addChapter(const Chapter &xChapter);
-    //bool isEmpty();
+    bool isEmpty() { return chapters.isEmpty(); }
 
     bool operator==(const Book& rhs) {
         if (path == rhs.path)

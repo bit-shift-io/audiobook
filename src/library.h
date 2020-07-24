@@ -5,7 +5,6 @@
 #include <QVector>
 #include <QFileInfo>
 #include "book.h"
-#include "database.h"
 
 class QQmlEngine;
 class QJSEngine;
@@ -51,7 +50,6 @@ private:
     QVector<Book> mLibraryItems;
     QString mCurrentItem;
     QString mPath;
-    Database mDatabase;
     explicit Library(QObject *parent = nullptr);
 
 };
