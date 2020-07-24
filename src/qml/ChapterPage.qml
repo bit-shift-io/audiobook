@@ -63,39 +63,30 @@ Page {
                 id: background
                 color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background
                 radius: Style.library.radius_background
-                implicitHeight: row_layout.height
+                implicitHeight: chapter_title.height + Style.library.margin * 2
                 implicitWidth: chapter_list.width
 
-                RowLayout {
-                    id: row_layout
-                    Layout.fillWidth: true
-                    width: parent.width
-
-                    ColumnLayout {
-                        id: test
-                        implicitWidth: parent.width
-                        Layout.margins: Style.library.margin
-                        spacing: 10
-                        Layout.alignment: Qt.AlignLeft
-
-                        Label {
-                            text: model.title
-                            font.pixelSize: Style.control.font_size_chapter
-                        }
-                    }
-
-                    ColumnLayout {
-                        id: test2
-                        implicitWidth: parent.width
-                        Layout.margins: Style.app.margin
-                        spacing: 10
-                        Layout.alignment: Qt.AlignRight
-
-                        Label {
-                            text:  model.duration
-                        }
-                    }
+                ListSeparator {
+                    listView: chapter_list
                 }
+
+                Label {
+                    id: chapter_title
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.margins: Style.library.margin
+                    text: model.title
+                    font.pixelSize: Style.control.font_size_chapter
+                }
+
+                Label {
+                    id: chapter_duration
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.margins: Style.library.margin
+                    text: model.duration
+                }
+
 
                 MouseArea {
                     anchors.fill: parent

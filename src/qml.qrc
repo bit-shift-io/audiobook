@@ -17,5 +17,6 @@
         <file>qml/FilePicker.qml</file>
         <file>qml/Style/Slider.qml</file>
         <file>qml/Style/TextField.qml</file>
+        <file>qml/Style/ListSeparator.qml</file>
     </qresource>
 </RCC>

@@ -67,6 +67,10 @@ Page {
                 implicitHeight: library_title.height + library_artist.height + Style.library.margin * 3
                 implicitWidth: library_list.width
 
+                ListSeparator {
+                    listView: library_list
+                }
+
                 Label {
                     id: library_title
                     anchors.top: parent.top

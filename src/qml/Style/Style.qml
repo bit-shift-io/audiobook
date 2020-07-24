@@ -97,6 +97,12 @@ QtObject {
         property int radius_background: 0
         property color color_background: app.color_2
         property color color_highlight: app.color_highlight
+
+    }
+
+    property QtObject list_separator: QtObject {
+        property color color: app.color
+        property int height: 4
     }
 
     property QtObject control: QtObject {
