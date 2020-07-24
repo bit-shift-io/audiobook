@@ -11,20 +11,35 @@ Page {
     anchors.fill: parent
 
     background: Rectangle {
-        color: Style.app.color
+        color: Style.app.color_2
     }
 
-    header: TextField {
-        id: library_filter
-        placeholderText: qsTr("Search")
-        cursorVisible: true
-        focus: true
+    header:
+        Rectangle {
+            id: library_header
+            height: library_filter.height + Style.app.margin * 2
+            color: Style.app.color
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.top: parent.top
 
-        onTextChanged: {
-            //library_list.currentIndex = -1;
-            LibraryFilterProxy.setFilterRegExp(text);
+            TextField {
+                id: library_filter
+                placeholderText: qsTr("Search")
+                cursorVisible: true
+                focus: true
+                anchors.margins: Style.app.margin
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+
+                onTextChanged: {
+                    //library_list.currentIndex = -1;
+                    LibraryFilterProxy.setFilterRegExp(text);
+                }
+            }
         }
-    }
+
 
 
     ListView {
@@ -50,7 +65,7 @@ Page {
                 color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background // TODO: model.isCurrentItem for active item
                 radius: Style.library.radius_background
                 implicitHeight: library_title.height + library_artist.height + Style.library.margin * 3
-                implicitWidth: parent.width
+                implicitWidth: library_list.width
 
                 Label {
                     id: library_title

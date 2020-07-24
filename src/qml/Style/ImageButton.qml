@@ -36,7 +36,9 @@ AbstractButton {
         }
     }
 
+    /*
     background: Rectangle {
         color: Style.image_button.color_background
     }
+    */
 }

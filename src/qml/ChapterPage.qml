@@ -10,22 +10,29 @@ Page {
     anchors.fill: parent
 
     background: Rectangle {
-        color: Style.app.color
+        color: Style.app.color_2
     }
 
-    header: Item {
-        id: player_header
-        height: title_label.height + Style.app.margin
-        anchors.right: parent.right
-        anchors.left: parent.left
-        anchors.top: parent.top
+    header:
+        Rectangle {
+            id: player_header
+            height: title_label.height + Style.app.margin * 2
+            color: Style.app.color
+            anchors.right: parent.right
+            anchors.left: parent.left
+            anchors.top: parent.top
 
-        Label {
-            id: title_label
-            font.pixelSize: Style.control.font_size_title
-            text: Player.titleText
+            Label {
+                id: title_label
+                font.pixelSize: Style.control.font_size_title
+                text: Player.titleText
+                anchors.margins: Style.app.margin
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                elide: Text.ElideRight
+            }
         }
-    }
 
 
 
