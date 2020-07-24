@@ -108,7 +108,7 @@ QtObject {
     property QtObject control: QtObject {
         property int margin: app.margin
         property int font_size_title: app.font_size * 2
-        property int font_size_chapter: app.font_size * 1.4
+        property int font_size_chapter: app.font_size * 1.2
         property int spacing: 10
         property int radius_background: 0
         property color color_background: '#464646'
