@@ -75,9 +75,11 @@ Page {
                     id: library_title
                     anchors.top: parent.top
                     anchors.left: parent.left
+                    anchors.right: parent.right
                     anchors.margins: Style.library.margin
                     text: model.title
                     font.pixelSize: Style.library.size_heading
+                    elide: Text.ElideRight
                 }
 
                 Label {
