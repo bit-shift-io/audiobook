@@ -187,12 +187,11 @@ const Book Database::getBook(const QString &xPath)
             b.progress = query.value("progress").toInt();
         }
     }
-    qDebug() << query.executedQuery();
 
     // get chapter files
     query = QSqlQuery(mDatabase);
-    query.prepare("SELECT * FROM files WHERE path LIKE '?/%'"); // TODO: fix this bind value
-    query.addBindValue(xPath);
+    QString q = QString("SELECT * FROM files WHERE path LIKE '%1/%'").arg(xPath);
+    query.prepare(q); // Note: binds are broken here, so use string arg
 
     if (query.exec()) {
         while (query.next()) { // get first result
@@ -206,8 +205,6 @@ const Book Database::getBook(const QString &xPath)
             b.addChapter(c);
         }
     }
-    qDebug() << query.executedQuery();
-    qDebug() << mDatabase.lastError().text();
 
     return b;
 }
