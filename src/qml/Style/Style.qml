@@ -8,9 +8,9 @@ QtObject {
     property double font_scale: QSettings.value('font_scale', 100) / 100
 
     property QtObject app: QtObject {
-        property color color: '#1b2634'
-        property color color_2: '#161f2b'
-        property color color_highlight: '#46566b'
+        property color color: '#2e2921'
+        property color color_2: '#26221b'
+        property color color_highlight: '#524837'
         property int margin: 10
         property color font_color: '#ffffff'
         property color font_color_2: '#d1d4c3'

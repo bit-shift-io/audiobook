@@ -25,7 +25,6 @@ Page {
         }
     }
 
-
     SwipeView {
         id: swipe_view
         clip: true

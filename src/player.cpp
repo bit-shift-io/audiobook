@@ -1,7 +1,10 @@
+
+#include <QApplication>
 #include "player.h"
 #include "database.h"
 #include "util.h"
 #include "database.h"
+#include "settings.h"
 
 Player::Player(QMediaPlayer *parent)
     : QMediaPlayer(parent)
@@ -10,12 +13,19 @@ Player::Player(QMediaPlayer *parent)
     QMediaPlaylist *playlist = new QMediaPlaylist;
     setPlaylist(playlist);
 
+    // load settings
+    QString current_item = Settings::value("current_item", "").toString();
+    setCurrentItem(current_item);
+
     // connects
     connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::playlistIndexChanged);
     connect(this, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
     connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
     connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
     //connect(this, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
+
+    // exit app
+    connect(qApp, &QApplication::aboutToQuit, this, &Player::exitHandler);
 }
 
 
@@ -98,6 +108,11 @@ qreal Player::speed() const
 }
 
 
+void Player::exitHandler()
+{
+}
+
+
 void Player::positionChanged(qint64 xPosition)
 {
     // parent position has changed
@@ -108,6 +123,7 @@ void Player::positionChanged(qint64 xPosition)
         start_pos += mCurrentBook->chapters[i].duration;
     }
     mCurrentBook->progress = start_pos + xPosition;
+    Database::instance()->writeBook(*mCurrentBook);
     emit progressChanged();
 }
 
@@ -145,8 +161,8 @@ qint64 Player::progress() const {
 void Player::setProgress(qint64 xPosition)
 {
     // convert from slider pos to playlisttime
-    qint64 pos = mCurrentBook->duration * xPosition / 10000.0;
-    setHeadPosition(pos);
+    mCurrentBook->progress = mCurrentBook->duration * xPosition / 10000.0;
+    setHeadPosition(mCurrentBook->progress);
 }
 
 
@@ -194,7 +210,11 @@ void Player::setHeadPosition(qint64 xPosition) {
     if (idx != playlist()->currentIndex())
         playlist()->setCurrentIndex(idx);
 
-    setPosition(xPosition);
+    // TODO: when the user click the timeline, we need to setPosition(),
+    // if its changing between chapters, we
+    // then wait for the signal QMediaPlayer::currentMediaChanged
+    // then apply the new position
+    QMediaPlayer::setPosition(xPosition);
 }
 
 
@@ -233,11 +253,16 @@ void Player::setSpeed(qreal xSpeed)
 
 void Player::setCurrentItem(QString &xIndex)
 {
+    if (xIndex.isEmpty())
+        return;
+
     if (mCurrentBook != nullptr && mCurrentBook->path == xIndex)
         return;
 
     mCurrentBook = Database::instance()->getLibraryItem(xIndex);
+    Settings::setValue("current_item", xIndex);
     loadBook();
+    setHeadPosition(mCurrentBook->progress);
 }
 
 

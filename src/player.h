@@ -38,6 +38,7 @@ public:
     int chapterIndex() const;
     int volume() const;
     qreal speed() const;
+    void exitHandler();
 
     // current/active item
     void setCurrentItem(QString &xIndex);
