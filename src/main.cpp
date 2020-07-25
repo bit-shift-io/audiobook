@@ -8,7 +8,7 @@
 #include <QQmlContext>
 
 #include "settings.h"
-#include "library.h"
+#include "database.h"
 #include "librarymodel.h"
 #include "libraryfilterproxy.h"
 #include "chaptermodel.h"
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
 
     // create singletons
-    Library* library = Library::instance();
+    Database* database = Database::instance();
     Player* player = Player::instance();
 
     // library model proxy for filtering search
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 
     // register types
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
-    qmlRegisterSingletonType<Library>("Library", 1, 0, "Library", &Library::qmlInstance);
+    qmlRegisterSingletonType<Database>("Database", 1, 0, "Database", &Database::qmlInstance);
     qmlRegisterSingletonType<Player>("Player", 1, 0, "Player", &Player::qmlInstance);
 
 

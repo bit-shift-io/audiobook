@@ -14,6 +14,8 @@ public:
     QString title;
     qint64 duration = -1;
 
+    bool isEmpty() { return duration == -1; };
+
     bool operator==(const Chapter& rhs) {
         if (path == rhs.path)
                 return true;

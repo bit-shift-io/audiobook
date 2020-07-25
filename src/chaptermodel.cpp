@@ -1,7 +1,6 @@
 #include <QDebug>
 #include "chaptermodel.h"
 #include "player.h"
-#include "library.h"
 #include "util.h"
 
 
@@ -26,7 +25,7 @@ void ChapterModel::chapterIndexChanged(int xIndex)
 
 int ChapterModel::rowCount(const QModelIndex & /*parent*/) const
 {
-    const Book *book = Library::instance()->getCurrentItem();
+    Book * book = Player::instance()->getCurrentItem();
     if (book == nullptr)
         return 0;
     return book->chapters.size();
@@ -35,10 +34,10 @@ int ChapterModel::rowCount(const QModelIndex & /*parent*/) const
 
 QVariant ChapterModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || Library::instance()->isEmpty())
+    if (!index.isValid())
             return QVariant();
 
-    const Book *book = Library::instance()->getCurrentItem();
+    const Book *book = Player::instance()->getCurrentItem();
     if (book == nullptr)
         return QVariant();
 

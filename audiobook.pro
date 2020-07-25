@@ -64,7 +64,6 @@ HEADERS += \
   src/chapter.h \
   src/chaptermodel.h \
   src/database.h \
-  src/library.h \
   src/libraryfilterproxy.h \
   src/librarymodel.h \
   src/player.h \
@@ -191,7 +190,6 @@ HEADERS += \
 SOURCES += \
   src/chaptermodel.cpp \
   src/database.cpp \
-  src/library.cpp \
   src/libraryfilterproxy.cpp \
   src/librarymodel.cpp \
   src/main.cpp \

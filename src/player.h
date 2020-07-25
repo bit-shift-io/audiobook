@@ -12,7 +12,7 @@ class QJSEngine;
 class Player : public QMediaPlayer
 {
     Q_OBJECT
-    //Q_PROPERTY(QString play READ play WRITE setPlay NOTIFY playChanged)
+    Q_PROPERTY(QString currentItem WRITE setCurrentItem NOTIFY currentItemChanged)
     Q_PROPERTY(qint64 progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(int chapterIndex READ chapterIndex WRITE setChapterIndex NOTIFY progressChanged)
     Q_PROPERTY(QString positionText READ positionText NOTIFY progressChanged)
@@ -24,6 +24,7 @@ class Player : public QMediaPlayer
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
 public:
+    ~Player();
     Player(const Player&) = delete; // disable copy for singleton
     static Player *instance();
     static QObject *qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine);
@@ -38,13 +39,17 @@ public:
     int volume() const;
     qreal speed() const;
 
+    // current/active item
+    void setCurrentItem(QString &xIndex);
+    QString currentItem();
+    Book * getCurrentItem();
+
 public slots:
     void positionChanged(qint64 xPosition);
     void playlistIndexChanged(int xIndex);
-    void libraryItemChanged();
     void setHeadPosition(qint64 xPosition);
     void setProgress(qint64 xPosition);
-    void setPlayingBook(const Book &mBook);
+    void loadBook();
     void setChapterIndex(int xIndex);
     void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
     void togglePlayPause();
@@ -64,10 +69,8 @@ signals:
 
 
 private:
-    Book mBook;
-    qint64 mProgress = 0;
+    Book * mCurrentBook = nullptr;
     int mSkip = 30000; // 30 sec
-    qint64 mPlayListTime = 0;
     float mProgressScale; // decimal
     explicit Player(QMediaPlayer *parent = nullptr);
 };

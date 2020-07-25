@@ -3,8 +3,6 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.2
 import Qt.labs.settings 1.0
 import Player 1.0
-import Library 1.0
-import QSettings 1.0
 import 'Style'
 
 ApplicationWindow {
@@ -46,7 +44,6 @@ ApplicationWindow {
     StackView {
         id: stack_view
         anchors.fill: parent
-        initialItem: MainPage {
-        }
+        initialItem: MainPage {}
     }
 }

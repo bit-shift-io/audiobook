@@ -1,5 +1,5 @@
 #include "player.h"
-#include "library.h"
+#include "database.h"
 #include "util.h"
 #include "database.h"
 
@@ -16,17 +16,13 @@ Player::Player(QMediaPlayer *parent)
     connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
     connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
     //connect(this, &QMediaPlayer::stateChanged, this, &Player::stateChanged);
-
-    // connect library
-    connect(Library::instance(), &Library::currentItemChanged, this, &Player::libraryItemChanged);
 }
 
 
-void Player::libraryItemChanged()
+Player::~Player()
 {
-    const Book* book = Library::instance()->getCurrentItem();
-    if (book != nullptr)
-        setPlayingBook(*book); // cannot be null at this point, so use ref
+    mCurrentBook = nullptr;
+    delete mCurrentBook;
 }
 
 
@@ -45,16 +41,13 @@ QObject *Player::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 }
 
 
-void Player::setPlayingBook(const Book &xBook) {
-    mBook = xBook;
-    mPlayListTime = mBook.duration;
-    mProgressScale = 10000.0/mPlayListTime;
-    mProgress = 0;
+void Player::loadBook() {
+    mProgressScale = 10000.0/mCurrentBook->duration;
 
     playlist()->clear();
 
-    QString lib_path = Library::instance()->path();
-    for(auto chapter: mBook.chapters)
+    QString lib_path = Database::instance()->libraryPath();
+    for(auto chapter: mCurrentBook->chapters)
     {
         QUrl url = QUrl::fromLocalFile(lib_path + chapter.path);
         playlist()->addMedia(url);
@@ -74,7 +67,7 @@ QString Player::chapterText() const {
     if (playlist()->currentIndex() == -1)
         return "";
 
-    return mBook.chapters[playlist()->currentIndex()].title;
+    return mCurrentBook->chapters[playlist()->currentIndex()].title;
 }
 
 
@@ -112,9 +105,9 @@ void Player::positionChanged(qint64 xPosition)
     qint64 start_pos = 0;
     int idx = playlist()->currentIndex();
     for(int i = 0; i < idx ; ++i) {
-        start_pos += mBook.chapters[i].duration;
+        start_pos += mCurrentBook->chapters[i].duration;
     }
-    mProgress = start_pos + xPosition;
+    mCurrentBook->progress = start_pos + xPosition;
     emit progressChanged();
 }
 
@@ -141,34 +134,46 @@ void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
 
 
 qint64 Player::progress() const {
+    if (mCurrentBook == nullptr)
+        return 0;
+
     // multiply by scale of the slider
-    return mProgress * mProgressScale;
+    return mCurrentBook->progress * mProgressScale;
 }
 
 
 void Player::setProgress(qint64 xPosition)
 {
     // convert from slider pos to playlisttime
-    qint64 pos = mPlayListTime * xPosition / 10000.0;
+    qint64 pos = mCurrentBook->duration * xPosition / 10000.0;
     setHeadPosition(pos);
 }
 
 
 QString Player::positionText() const
 {
-    return Util::getDisplayTime(mProgress);
+    if (mCurrentBook == nullptr)
+        return QString();
+
+    return Util::getDisplayTime(mCurrentBook->progress);
 }
 
 
 QString Player::timeText() const
 {
-    return Util::getDisplayTime(mPlayListTime);
+    if (mCurrentBook == nullptr)
+        return QString();
+
+    return Util::getDisplayTime(mCurrentBook->duration);
 }
 
 
 QString Player::titleText() const
 {
-    return mBook.title;
+    if (mCurrentBook == nullptr)
+        return QString();
+
+    return mCurrentBook->title;
 }
 
 
@@ -177,12 +182,12 @@ void Player::setHeadPosition(qint64 xPosition) {
     int idx = 0;
 
     // loop over chapters, reduce position by each chapter length till we are in the correct chapter
-    for(int i = 0; i < mBook.chapters.length(); ++i) {
-        if (xPosition < mBook.chapters[i].duration) {
+    for(int i = 0; i < mCurrentBook->chapters.length(); ++i) {
+        if (xPosition < mCurrentBook->chapters[i].duration) {
             idx = i;
             break;
         }
-        xPosition -= mBook.chapters[i].duration;
+        xPosition -= mCurrentBook->chapters[i].duration;
     }
 
     // set chapter and position
@@ -195,13 +200,13 @@ void Player::setHeadPosition(qint64 xPosition) {
 
 
 void Player::skipForward() {
-    qint64 current_position = mProgress + mSkip;
+    qint64 current_position = mCurrentBook->progress + mSkip;
     //if (current_position >= mPlayListTime) // TODO: check skip end of book
     setHeadPosition(current_position);
 }
 
 void Player::skipBackward() {
-    qint64 current_position = mProgress - mSkip;
+    qint64 current_position = mCurrentBook->progress - mSkip;
     if (current_position < 0)
         current_position = 0;
     setHeadPosition(current_position);
@@ -223,5 +228,27 @@ void Player::setVolume(int xVolume)
 void Player::setSpeed(qreal xSpeed)
 {
     QMediaPlayer::setPlaybackRate(xSpeed);
+}
+
+
+void Player::setCurrentItem(QString &xIndex)
+{
+    if (mCurrentBook != nullptr && mCurrentBook->path == xIndex)
+        return;
+
+    mCurrentBook = Database::instance()->getLibraryItem(xIndex);
+    loadBook();
+}
+
+
+QString Player::currentItem()
+{
+    return mCurrentBook->path;
+}
+
+
+Book * Player::getCurrentItem()
+{
+    return mCurrentBook;
 }
 

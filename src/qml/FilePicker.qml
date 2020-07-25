@@ -3,7 +3,7 @@ import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
 import Qt.labs.folderlistmodel 2.1
 import QtGraphicalEffects 1.0
-import Library 1.0
+import Database 1.0
 import 'Style'
 
 Page {
@@ -29,7 +29,7 @@ Page {
                 text: "Cancel"
                 Layout.fillWidth: true
                 onClicked: {
-                    file_list_view.model.folder = "file://" + Library.path
+                    file_list_view.model.folder = "file://" + Database.libraryPath
                     stack_view.pop()
                 }
             }
@@ -39,7 +39,7 @@ Page {
                 text: "Okay"
                 Layout.fillWidth: true
                 onClicked: {
-                    Library.path = folder_list_model.folder
+                    Database.libraryPath = folder_list_model.folder
                     stack_view.pop()
                 }
             }

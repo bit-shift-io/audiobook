@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QVector>
+#include <QFileInfo>
 #include "chapter.h"
 
 class Book
@@ -30,6 +31,24 @@ public:
     void addChapter(const Chapter &xChapter) {
         duration += xChapter.duration;
         chapters.append(xChapter);
+    }
+
+    void ready() {
+        if (!isEmpty()) {
+            if (chapters.size() == 1) {
+                title = chapters[0].title;
+            } else {
+                if (chapters[0].title == chapters[1].title)
+                    title = chapters[0].title;
+            }
+
+            artist = chapters[0].artist;
+            genre = chapters[0].genre;
+            year = chapters[0].year;
+        }
+
+        if (title.isEmpty())
+            title = QFileInfo(path).baseName().replace("_", " ");
     }
 };
 

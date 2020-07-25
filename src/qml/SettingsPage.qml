@@ -5,7 +5,7 @@ import QtQuick.Dialogs 1.0
 import QSettings 1.0
 import QtQml.Models 2.2
 
-import Library 1.0
+import Database 1.0
 import 'Style'
 
 Page {
@@ -70,7 +70,7 @@ Page {
                 Label {
                     id: library_path
                     anchors.top: library_path_label.bottom
-                    text: Library.path
+                    text: Database.libraryPath
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignHCenter
                     anchors.margins: Style.settings.margin

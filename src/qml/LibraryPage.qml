@@ -1,9 +1,8 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Layouts 1.2
-import Library 1.0
+import Database 1.0
 import Player 1.0
-//import LibraryModel 1.0
 import "Style"
 
 Page {
@@ -103,12 +102,11 @@ Page {
 
                     onClicked: {
                         library_list.currentIndex = index;
-                        Library.currentItem = model.path;
-                        console.log(model.path);
+                        Player.currentItem = model.path;
                     }
                     onDoubleClicked: {
-                        library_list.currentIndex = index;
-                        Library.currentItem = model.path;
+                        //library_list.currentIndex = index;
+                        //Player.currentItem = model.path;
                         Player.play();
                     }
                 }

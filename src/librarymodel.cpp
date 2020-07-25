@@ -1,6 +1,6 @@
 #include <QDebug>
 #include "librarymodel.h"
-#include "library.h"
+#include "database.h"
 #include "util.h"
 
 
@@ -18,16 +18,16 @@ void LibraryModel::refresh() {
 
 int LibraryModel::rowCount(const QModelIndex & /*parent*/) const
 {
-    return Library::instance()->size();
+    return Database::instance()->size();
 }
 
 
 QVariant LibraryModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || Library::instance()->isEmpty())
+    if (!index.isValid() || Database::instance()->isEmpty())
             return QVariant();
 
-    const Book &book = Library::instance()->getLibraryItems().at(index.row());
+    const Book &book = Database::instance()->getLibraryItems().at(index.row());
 
     switch (role) {
         case LibraryIndexRole:

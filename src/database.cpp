@@ -4,14 +4,17 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
-#include "library.h"
 #include "database.h"
 #include "util.h"
+#include "settings.h"
 
 
 Database::Database(QObject *parent)
     : QObject(parent)
 {
+    // Library path from settings
+    mLibraryPath = Settings::value("library_path", Util::getMusicLocation()).toString();
+
     QString database_path = Util::getAppConfigLocation() + "/library.db";
     QString database_name("Library");
     qDebug() << database_path;
@@ -27,6 +30,10 @@ Database::Database(QObject *parent)
 
     // create db or load
     initDatabase();
+
+    // nothing in library, rescan
+    if (isEmpty())
+        updateLibrary();
 }
 
 Database *Database::instance()
@@ -46,6 +53,37 @@ Database::~Database()
 {
     if (mDatabase.isOpen())
         mDatabase.close();
+}
+
+
+QStringList Database::getBookDirs()
+{
+    QStringList result;
+
+    // loop dirs
+    QDir lib_dir(mLibraryPath);
+    QDirIterator directories(mLibraryPath, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+
+    while(directories.hasNext()) {
+        directories.next();
+
+        // does folder contain any audio files? if we have audio files, this is a book
+        QDir current_dir(directories.filePath());
+        QStringList dir_list = current_dir.entryList(mFileFilters, QDir::NoDotAndDotDot | QDir::Files);
+        if (dir_list.count() == 0)
+            continue;
+
+        result.append(directories.filePath().replace(mLibraryPath, ""));
+    }
+
+    return result;
+}
+
+
+QStringList Database::getBookFiles(const QString &xPath)
+{
+    QDir current_dir(xPath);
+    return current_dir.entryList(mFileFilters, QDir::NoDotAndDotDot | QDir::Files);
 }
 
 
@@ -121,7 +159,7 @@ QVariant Database::getInfo(const QString &xKey)
 
 
 
-void Database::setChapter(const Chapter &xChapter)
+void Database::writeChapter(const Chapter &xChapter)
 {
     QSqlQuery query(mDatabase);
     query.prepare("REPLACE INTO files (path, title, duration, artist, genre, year) VALUES (?, ?, ?, ?, ?, ?)");
@@ -136,7 +174,7 @@ void Database::setChapter(const Chapter &xChapter)
     }
 }
 
-const Chapter Database::getChapter(const QString &xPath)
+Chapter Database::getChapter(const QString &xPath)
 {
     Chapter c;
     c.path = xPath;
@@ -146,6 +184,7 @@ const Chapter Database::getChapter(const QString &xPath)
     query.addBindValue(xPath);
 
     if (query.exec()) {
+        // from db
         while (query.next()) { // get first result
             c.title = query.value("title").toString();
             c.duration = query.value("duration").toInt();
@@ -155,11 +194,31 @@ const Chapter Database::getChapter(const QString &xPath)
         }
     }
 
+    if (c.isEmpty()) {
+        // from file
+        QString abs_path = mLibraryPath + xPath;
+        QFileInfo file_info = QFileInfo(abs_path);
+
+        c.duration = Util::getTimeMSec(abs_path);
+        c.artist = Util::getTagArtist(abs_path);
+        c.genre = Util::getTagGenre(abs_path);
+        c.title = Util::getTagTitle(abs_path);
+        c.year = Util::getTagYear(abs_path);
+
+        if (c.title.isEmpty())
+            c.title = Util::toCamelCase(file_info.baseName().replace("_", " "));
+
+        if (c.year == -1)
+            c.year = file_info.birthTime().date().year();
+
+        writeChapter(c);
+    }
+
     return c;
 }
 
 
-void Database::setBook(const Book &xBook)
+void Database::writeBook(const Book &xBook)
 {
     QSqlQuery query(mDatabase);
     query.prepare("REPLACE INTO books (path, progress) VALUES (?, ?)");
@@ -171,18 +230,19 @@ void Database::setBook(const Book &xBook)
 }
 
 
-const Book Database::getBook(const QString &xPath)
+Book Database::getBook(const QString &xPath)
 {
     Book b;
     b.path = xPath;
 
     QSqlQuery query(mDatabase);
 
-    // get books
+    // get book info
     query.prepare("SELECT * FROM books WHERE path = ?");
     query.addBindValue(xPath);
 
     if (query.exec()) {
+        // from db
         while (query.next()) { // get first result
             b.progress = query.value("progress").toInt();
         }
@@ -206,8 +266,92 @@ const Book Database::getBook(const QString &xPath)
         }
     }
 
+    if (b.isEmpty()) {
+        // from file
+        QStringList chapter_files = getBookFiles(mLibraryPath + xPath);
+
+        for (QString current_file : chapter_files) {
+            QString chapter_path = xPath + "/" + current_file;
+            Chapter c = getChapter(chapter_path);
+            b.addChapter(c);
+        }
+
+        writeBook(b);
+    }
+
+    b.ready();
     return b;
 }
 
 
+
+QString Database::libraryPath() const
+{
+    return mLibraryPath;
+}
+
+
+void Database::setLibraryPath(QString &xPath) {
+    xPath = xPath.replace("file://","");
+    if (xPath == mLibraryPath)
+        return;
+    mLibraryPath = xPath;
+    Settings::setValue("library_path", mLibraryPath);
+    qDebug() << mLibraryPath;
+    updateLibrary();
+    emit pathChanged();
+}
+
+
+int Database::size() const
+{
+    return mLibraryItems.size();
+}
+
+
+bool Database::isEmpty() const
+{
+    return mLibraryItems.isEmpty();
+}
+
+
+QVector<Book> Database::getLibraryItems() {
+    return mLibraryItems;
+}
+
+
+Book * Database::getLibraryItem(QString &xPath)
+{
+    for(Book &b: mLibraryItems) {
+        if (b.path == xPath)
+            return &b;
+    }
+    return nullptr;
+}
+
+
+bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
+    return s1.title.toLower() < s2.title.toLower();
+}
+
+
+void Database::updateLibrary() {
+    // delete old books
+    mLibraryItems = QVector<Book>();
+
+    // set library path
+    setInfo("library_path", mLibraryPath);
+
+    // get book directories
+    QStringList book_dirs = getBookDirs();
+    for (QString book_path : book_dirs) {
+        Book book = getBook(book_path);
+        mLibraryItems.append(book);
+    }
+
+    // sort
+    qSort(mLibraryItems.begin(), mLibraryItems.end(), caseInsensitiveLessThan);
+
+    emit libraryUpdated();
+}
 
