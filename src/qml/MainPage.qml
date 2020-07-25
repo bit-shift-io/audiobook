@@ -69,12 +69,12 @@ Page {
                 anchors.left: parent.left
                 anchors.topMargin: Style.app.margin
                 live: false
-                value: Player.progress;
+                value: Player.sliderValue;
                 from: 0
                 to: 10000
                 onPressedChanged: {
                     if(!pressed)
-                        Player.setProgress(value);
+                        Player.setSliderValue(value);
                 }
             }
 
