@@ -47,6 +47,12 @@ Page {
                 text: 'Volume'
             }
 
+            Label {
+                id: volume_value_label
+                text: Player.volume
+                anchors.right: parent.right
+            }
+
             Slider {
                 id: volume_slider
                 anchors.top: volume_label.bottom
@@ -71,6 +77,12 @@ Page {
             Label {
                 id: speed_label
                 text: 'Playback Speed'
+            }
+
+            Label {
+                id: speed_value_label
+                text: Player.speed
+                anchors.right: parent.right
             }
 
             Slider {
