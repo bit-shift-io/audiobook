@@ -19,7 +19,7 @@ Player::Player(QMediaPlayer *parent)
     connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
     connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
     //connect(this, &QMediaPlayer::seekableChanged, this, &Player::seekableChanged); // broken on android
-    //connect(this, &QMediaPlayer::bufferStatusChanged, this, &Player::bufferChanged);
+    //connect(this, &QMediaPlayer::bufferStatusChanged, this, &Player::bufferChanged); // broken
 
     // exit app
     connect(qApp, &QApplication::aboutToQuit, this, &Player::exitHandler);
@@ -52,24 +52,6 @@ QObject *Player::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 }
 
 
-void Player::loadBook() {
-    qDebug() << mCurrentBook->title << mCurrentBook->progress;
-    mSetPosition = -1;
-    mProgressScale = 10000.0/mCurrentBook->duration;
-    mProgress = mCurrentBook->progress;
-
-    playlist()->clear();
-    for(auto chapter: mCurrentBook->chapters)
-    {
-        QUrl url = QUrl::fromLocalFile(Database::instance()->libraryPath() + chapter.path);
-        playlist()->addMedia(url);
-    }
-
-    // set a default item in the playlist
-    setChapterIndex(0);
-
-    setProgress(mProgress);
-}
 
 
 void Player::setChapterIndex(int xIndex) {
@@ -139,6 +121,7 @@ void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
 
 qint64 Player::sliderValue() const {
     // multiply by scale of the slider
+    qDebug() << "slider value";
     return mProgress * mProgressScale;
 }
 
@@ -182,16 +165,20 @@ QString Player::titleText() const
 
 void Player::positionChanged(qint64 xPosition)
 {
-    // dont change progress if media is changing
+
     if (mSetPosition > xPosition) {
-        if (QMediaPlayer::isSeekable()) {
-            qDebug() << "seekable!";
-            setPosition(mSetPosition);
-            setMuted(false);
-            mSetPosition = -1;
-        }
-        return;
+        // dont change progress if media is changing
+        if (!QMediaPlayer::isSeekable())
+            return;
+
+        qDebug() << "seekable!";
+        setPosition(mSetPosition);
+        setMuted(false);
+        mSetPosition = -1;
     }
+
+    qDebug() << "position changed emit";
+
 
     mProgress = mCurrentBook->getStartProgressChapter(chapterIndex()) + xPosition;
     mCurrentBook->progress = mProgress;
@@ -204,6 +191,7 @@ void Player::setProgress(qint64 xPosition) {
     // this converts from book progress to
     // chapter index
     // chapter time -> position
+    qDebug() << "setProgress";
     int chapter_index = mCurrentBook->getChapterIndex(xPosition);
     qint64 chapter_position = mCurrentBook->getChapterPosition(xPosition);
 
@@ -260,9 +248,34 @@ void Player::setCurrentItem(QString &xIndex)
     if (mCurrentBook != nullptr && mCurrentBook->path == xIndex)
         return;
 
-    mCurrentBook = Database::instance()->getLibraryItem(xIndex);
+
+    // save book progress
+    if (mCurrentBook != nullptr)
+        Database::instance()->writeBook(*mCurrentBook);
+
+
+    // load the new book to playlist
+    playlist()->clear();
     Settings::setValue("current_item", xIndex);
-    loadBook();
+    mCurrentBook = Database::instance()->getLibraryItem(xIndex);
+
+    qDebug() << mCurrentBook->title << mCurrentBook->progress;
+
+    mSetPosition = -1;
+    mProgressScale = 10000.0/mCurrentBook->duration;
+    mProgress = mCurrentBook->progress;
+    emit progressChanged();
+
+    for(auto chapter: mCurrentBook->chapters)
+    {
+        QUrl url = QUrl::fromLocalFile(Database::instance()->libraryPath() + chapter.path);
+        playlist()->addMedia(url);
+    }
+
+    // set a default item in the playlist
+    //setChapterIndex(0);
+
+    setProgress(mProgress);
 }
 
 

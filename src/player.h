@@ -50,7 +50,6 @@ public slots:
     void playlistIndexChanged(int xIndex);
     void setProgress(qint64 xPosition);
     void setSliderValue(qint64 xPosition);
-    void loadBook();
     void setChapterIndex(int xIndex);
     void setPlaybackMode(QMediaPlaylist::PlaybackMode mode);
     void togglePlayPause();
