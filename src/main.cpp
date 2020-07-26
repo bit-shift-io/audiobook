@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 
 
     // create singletons
+    Settings* settings = Settings::instance();
     Database* database = Database::instance();
     Player* player = Player::instance();
 

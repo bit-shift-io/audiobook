@@ -55,7 +55,7 @@ Page {
                 to: 100
                 value: Player.volume
                 snapMode: Slider.SnapAlways
-                stepSize: 25
+                stepSize: 20
 
                 onPressedChanged: {
                     Player.volume = value;
@@ -77,11 +77,11 @@ Page {
                 id: speed_slider
                 anchors.top: speed_label.bottom
                 width: parent.width
-                from: 0.5
-                to: 1.5
+                from: 50
+                to: 150
                 value: Player.speed
                 snapMode: Slider.SnapAlways
-                stepSize: 0.1
+                stepSize: 10
 
                 onPressedChanged: {
                     Player.speed = value;

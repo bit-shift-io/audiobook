@@ -14,3 +14,12 @@ QObject *Settings::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
     // C++ and QML instance they are the same instance
     return Settings::instance();
 }
+
+Settings::Settings(QObject *parent)
+    : QSettings(QSettings::Format::IniFormat,
+                QSettings::UserScope,
+                QCoreApplication::instance()->organizationName(),
+                QCoreApplication::instance()->applicationName(),
+                parent)
+{
+}

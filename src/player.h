@@ -21,7 +21,7 @@ class Player : public QMediaPlayer
     Q_PROPERTY(QString chapterText READ chapterText NOTIFY currentIndexChanged)
     Q_PROPERTY(QString chapterProgressText READ chapterProgressText NOTIFY currentIndexChanged)
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
-    Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
+    Q_PROPERTY(int speed READ speed WRITE setSpeed NOTIFY speedChanged)
 
 public:
     ~Player();
@@ -37,7 +37,7 @@ public:
     QString chapterProgressText() const;
     int chapterIndex() const;
     int volume() const;
-    qreal speed() const;
+    int speed() const;
     void exitHandler();
 
     // current/active item
@@ -58,14 +58,14 @@ public slots:
     void volumeUp();
     void volumeDown();
     void setVolume(int xVolume);
-    void setSpeed(qreal xSpeed);
+    void setSpeed(int xSpeed);
 
 signals:
     void progressChanged();
     void playlistChanged();
     void currentIndexChanged(int xIndex);
     void volumeChanged(int xVolume);
-    void speedChanged(qreal xSpeed);
+    void speedChanged(int xSpeed);
 
 
 private:

@@ -1,5 +1,6 @@
 
 #include <QApplication>
+#include <QSettings>
 #include "player.h"
 #include "database.h"
 #include "util.h"
@@ -27,6 +28,12 @@ Player::Player(QMediaPlayer *parent)
     // load settings
     QString current_item = Settings::value("current_item", "").toString();
     setCurrentItem(current_item);
+
+    int volume = Settings::value("volume", 100).toInt();
+    setVolume(volume);
+
+    int speed = Settings::value("speed", 100).toInt();
+    setSpeed(speed);
 }
 
 
@@ -88,14 +95,15 @@ int Player::volume() const
     return QMediaPlayer::volume();
 }
 
-qreal Player::speed() const
+int Player::speed() const
 {
-    return QMediaPlayer::playbackRate();
+    return QMediaPlayer::playbackRate() * 100;
 }
 
 
 void Player::exitHandler()
 {
+    Settings::instance()->sync();
 }
 
 
@@ -213,6 +221,7 @@ void Player::skipForward() {
     setProgress(current_position);
 }
 
+
 void Player::skipBackward() {
     qint64 current_position = mProgress - mSkip;
     if (current_position < 0)
@@ -220,23 +229,35 @@ void Player::skipBackward() {
     setProgress(current_position);
 }
 
+
 void Player::volumeUp() {
     setVolume(volume() + 25);
 }
+
 
 void Player::volumeDown() {
     setVolume(volume() - 25);
 }
 
+
 void Player::setVolume(int xVolume)
 {
+    if (QMediaPlayer::volume() == xVolume)
+        return;
+
     QMediaPlayer::setMuted(false);
     QMediaPlayer::setVolume(xVolume);
+    Settings::setValue("volume", xVolume);
 }
 
-void Player::setSpeed(qreal xSpeed)
+
+void Player::setSpeed(int xSpeed)
 {
-    QMediaPlayer::setPlaybackRate(xSpeed);
+    if ((QMediaPlayer::playbackRate() * 100) == xSpeed)
+        return;
+
+    QMediaPlayer::setPlaybackRate(xSpeed/100.0);
+    Settings::setValue("speed", xSpeed);
 }
 
 
