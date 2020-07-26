@@ -18,7 +18,8 @@ Player::Player(QMediaPlayer *parent)
     connect(this, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
     connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
     connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
-    connect(this, &QMediaPlayer::seekableChanged, this, &Player::seekableChanged);
+    //connect(this, &QMediaPlayer::seekableChanged, this, &Player::seekableChanged); // broken on android
+    //connect(this, &QMediaPlayer::bufferStatusChanged, this, &Player::bufferChanged);
 
     // exit app
     connect(qApp, &QApplication::aboutToQuit, this, &Player::exitHandler);
@@ -52,6 +53,8 @@ QObject *Player::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 
 
 void Player::loadBook() {
+    qDebug() << mCurrentBook->title << mCurrentBook->progress;
+    mSetPosition = -1;
     mProgressScale = 10000.0/mCurrentBook->duration;
     mProgress = mCurrentBook->progress;
 
@@ -62,7 +65,10 @@ void Player::loadBook() {
         playlist()->addMedia(url);
     }
 
-    setProgress(mCurrentBook->progress);
+    // set a default item in the playlist
+    setChapterIndex(0);
+
+    setProgress(mProgress);
 }
 
 
@@ -81,7 +87,7 @@ QString Player::chapterText() const {
 
 QString Player::chapterProgressText() const
 {
-    if (playlist()->currentIndex() == -1)
+    if (chapterIndex() == -1)
         return "";
 
     QString index = QString::number(playlist()->currentIndex() +1);
@@ -147,18 +153,6 @@ void Player::setSliderValue(qint64 xPosition)
 }
 
 
-void Player::seekableChanged(bool seekable)
-{
-    // when the audio is seekable
-    // we can unmute, and progress the track head
-    if (seekable && mSetPosition != -1) {
-        setPosition(mSetPosition);
-        setMuted(false);
-        mSetPosition = -1;
-    }
-}
-
-
 QString Player::positionText() const
 {
     if (mCurrentBook == nullptr)
@@ -190,7 +184,12 @@ void Player::positionChanged(qint64 xPosition)
 {
     // dont change progress if media is changing
     if (mSetPosition > xPosition) {
-        //setProgress(mSetPosition);
+        if (QMediaPlayer::isSeekable()) {
+            qDebug() << "seekable!";
+            setPosition(mSetPosition);
+            setMuted(false);
+            mSetPosition = -1;
+        }
         return;
     }
 
@@ -205,17 +204,8 @@ void Player::setProgress(qint64 xPosition) {
     // this converts from book progress to
     // chapter index
     // chapter time -> position
-    int chapter_index = 0;
-    qint64 chapter_position = xPosition;
-
-    // loop over chapters, reduce position by each chapter length till we are in the correct chapter
-    for(int i = 0; i < mCurrentBook->chapters.length(); ++i) {
-        if (chapter_position < mCurrentBook->chapters[i].duration) {
-            chapter_index = i;
-            break;
-        }
-        chapter_position -= mCurrentBook->chapters[i].duration;
-    }
+    int chapter_index = mCurrentBook->getChapterIndex(xPosition);
+    qint64 chapter_position = mCurrentBook->getChapterPosition(xPosition);
 
     if (chapter_index == chapterIndex()) {
         QMediaPlayer::setPosition(chapter_position);
@@ -252,6 +242,7 @@ void Player::volumeDown() {
 
 void Player::setVolume(int xVolume)
 {
+    QMediaPlayer::setMuted(false);
     QMediaPlayer::setVolume(xVolume);
 }
 

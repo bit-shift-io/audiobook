@@ -11,7 +11,7 @@ class QJSEngine;
 class Database : public QObject
 {
     Q_OBJECT
-    const static int DB_VERSION = 0;
+    const static int DB_VERSION = 1;
 
     Q_PROPERTY(QString libraryPath READ libraryPath WRITE setLibraryPath NOTIFY pathChanged)
     Q_PROPERTY(int size READ size)

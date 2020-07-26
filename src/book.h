@@ -44,6 +44,33 @@ public:
     }
 
 
+    int getChapterIndex(qint64 xPosition) {
+        // loop over chapters, reduce position by each chapter length till we are in the correct chapter
+        for(int i = 0; i < chapters.length(); ++i) {
+            if (xPosition < chapters[i].duration) {
+                return i;
+            }
+            xPosition -= chapters[i].duration;
+        }
+        return 0;
+    }
+
+
+    qint64 getChapterPosition(qint64 xProgress) {
+        int chapter_index = 0;
+        qint64 chapter_position = xProgress;
+        // loop over chapters, reduce position by each chapter length till we are in the correct chapter
+        for(int i = 0; i < chapters.length(); ++i) {
+            if (chapter_position < chapters[i].duration) {
+                chapter_index = i;
+                break;
+            }
+            chapter_position -= chapters[i].duration;
+        }
+        return chapter_position;
+    }
+
+
     void ready() {
         if (!isEmpty()) {
             if (chapters.size() == 1) {

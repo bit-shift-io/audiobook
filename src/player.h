@@ -39,7 +39,6 @@ public:
     int volume() const;
     qreal speed() const;
     void exitHandler();
-    void seekableChanged(bool seekable);
 
     // current/active item
     void setCurrentItem(QString &xIndex);
