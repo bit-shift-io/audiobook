@@ -28,10 +28,21 @@ public:
         return false;
     };
 
+
     void addChapter(const Chapter &xChapter) {
         duration += xChapter.duration;
         chapters.append(xChapter);
     }
+
+
+    qint64 getStartProgressChapter(int xChapterIndex) {
+        qint64 start_pos = 0;
+        for(int i = 0; i<xChapterIndex; ++i) {
+            start_pos += chapters[i].duration;
+        }
+        return start_pos;
+    }
+
 
     void ready() {
         if (!isEmpty()) {

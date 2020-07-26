@@ -39,7 +39,7 @@ public:
     int volume() const;
     qreal speed() const;
     void exitHandler();
-    void test(MediaStatus status);
+    void seekableChanged(bool seekable);
 
     // current/active item
     void setCurrentItem(QString &xIndex);
@@ -74,7 +74,6 @@ private:
     Book * mCurrentBook = nullptr;
     int mSkip = 30000; // 30 sec
     float mProgressScale; // decimal
-    bool mChangingMedia = false;
     qint64 mSetPosition = -1;
     qint64 mProgress = 0;
     explicit Player(QMediaPlayer *parent = nullptr);
