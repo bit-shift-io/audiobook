@@ -58,7 +58,7 @@ Page {
             showHidden: false
             showDirsFirst: true
             showFiles: true
-            folder: "file://" + Library.path
+            folder: "file://" + Database.libraryPath
             nameFilters: "*.*"
         }
 
