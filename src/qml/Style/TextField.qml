@@ -4,6 +4,8 @@ import QtQuick.Templates 2.12 as T
 T.TextField {
     id: control
 
+    placeholderText: 'enter text'
+    placeholderTextColor: Style.text_field.font_color
     font.pixelSize: Style.text_field.font_size
     font.weight: Style.text_field.font_weight
     color: Style.text_field.font_color
@@ -47,14 +49,14 @@ T.TextField {
         states: [
             State {
                 name: "normal"
-                when: !control.down
+                when: !control.focus
                 PropertyChanges {
                     target: buttonBackground
                 }
             },
             State {
                 name: "focused"
-                when: control.down
+                when: control.focus
                 PropertyChanges {
                     target: buttonBackground
                     color: Style.text_field.color_background_focused
@@ -66,7 +68,7 @@ T.TextField {
             },
             State {
                 name: "disabled"
-                when: control.down
+                when: !control.enabled
                 PropertyChanges {
                     target: buttonBackground
                     color: Style.text_field.color_background_disabled
