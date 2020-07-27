@@ -13,7 +13,7 @@
         <file>qml/LibraryPage.qml</file>
         <file>qml/ChapterPage.qml</file>
         <file>qml/Style/ImageButton.qml</file>
-        <file>qml/Style/Spacer.qml</file>
+        <file>qml/Style/Separator.qml</file>
         <file>qml/FilePicker.qml</file>
         <file>qml/Style/Slider.qml</file>
         <file>qml/Style/TextField.qml</file>

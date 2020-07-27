@@ -28,7 +28,7 @@ Page {
 
             Button {
                 id: back_button
-                text: "Back"
+                text: "<"
                 onClicked: {
                     stack_view.pop()
                 }
@@ -36,6 +36,7 @@ Page {
             Label {
                 text: root_settings.title
                 horizontalAlignment: Text.AlignHCenter
+                anchors.centerIn: parent.verticalCenter
             }
         }
     }
@@ -50,9 +51,8 @@ Page {
             anchors.left: parent.left
             anchors.top: parent.top
 
-            Rectangle {
+            Item {
                 id: library_path_row
-                color: Style.settings.color_background
                 implicitHeight: library_path_label.height + library_path.height + Style.settings.margin * 2
                 implicitWidth: content.width
                 anchors.margins: Style.settings.margin
@@ -84,19 +84,29 @@ Page {
                 }
             }
 
-            Spacer {}
+            Separator {}
 
-            Rectangle {
-                id: font_scale
-                color: Style.settings.color_background
-                implicitHeight: font_scale_spin.height
+            Item {
+                id: font_scale_row
+                implicitHeight: font_scale_label.height + font_scale_desc.height + Style.settings.margin * 2
                 implicitWidth: content.width
 
                 Label {
+                    id: font_scale_label
                     text: 'Font Scale'
+                    font.pixelSize: Style.settings.size_heading
+                    font.weight: Style.settings.weight_heading
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignHCenter
-                    anchors.fill: parent
+                    anchors.margins: Style.settings.margin
+                }
+
+                Label {
+                    id: font_scale_desc
+                    anchors.top: font_scale_label.bottom
+                    text: 'Scale of application fonts'
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignHCenter
                     anchors.margins: Style.settings.margin
                 }
 
@@ -105,9 +115,12 @@ Page {
                     value: QSettings.value('font_scale', 100)
                     from: 50
                     to: 200
+                    stepSize: 10
+                    editable: true
                     Layout.alignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.margins: Style.settings.margin
+                    anchors.verticalCenter: parent.verticalCenter
                     onValueChanged: {
                         Style.font_scale = value / 100;
                         QSettings.setValue('font_scale', value);
@@ -115,28 +128,40 @@ Page {
                 }
             }
 
-            Spacer {}
+            Separator {}
 
-            Rectangle {
-                id: radar_enabled
-                color: Style.settings.color_background
-                implicitHeight: radar_check.height
+            Item {
+                id: repeat_library_row
+                implicitHeight: repeat_library_label.height + repeat_library_desc.height + Style.settings.margin * 2
                 implicitWidth: content.width
 
+
                 Label {
-                    text: 'Radar Enabled'
+                    id: repeat_library_label
+                    text: 'Repeat Library'
+                    font.pixelSize: Style.settings.size_heading
+                    font.weight: Style.settings.weight_heading
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignHCenter
-                    anchors.fill: parent
                     anchors.margins: Style.settings.margin
                 }
 
-                CheckBox {
-                    id: radar_check
+                Label {
+                    id: repeat_library_desc
+                    anchors.top: repeat_library_label.bottom
+                    text: 'Repeat library when playing'
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignHCenter
+                    anchors.margins: Style.settings.margin
+                }
+
+                Switch {
+                    id: repeat_library_value
                     Layout.alignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.margins: Style.settings.margin
-                    checked: false
+                    anchors.verticalCenter: parent.verticalCenter
+                    checked: true
                     onCheckedChanged: {
                     }
                 }
@@ -144,12 +169,12 @@ Page {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log(parent.id);
+                        console.log(repeat_library_value);
                     }
                 }
             }
 
-            Spacer {}
+            Separator {}
 
 
         }

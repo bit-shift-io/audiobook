@@ -78,9 +78,9 @@ QtObject {
 
     }
 
-    property QtObject spacer: QtObject {
-        property int margin: app.margin
-        property color color: '#464646'
+    property QtObject separator: QtObject {
+        property int height: 4
+        property color color: app.color2
     }
 
     property QtObject settings: QtObject {
