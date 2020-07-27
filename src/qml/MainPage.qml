@@ -17,10 +17,20 @@ Page {
     Connections {
         target: Player
         function onStateChanged(xState) {
-            console.log(xState)
-            if (Player.state === Player.PlayingState) {
+            switch(xState) {
+            case Player.PlayingState:
+                play_button.state = 'play';
                 root.active_swipe_view = 0;
                 console.log("change swipe view");
+                break;
+            case Player.PausedState:
+                play_button.state = 'pause';
+                break;
+            case Player.StoppedState:
+                play_button.state = 'pause';
+                break;
+            default:
+                // code block
             }
         }
     }
@@ -139,14 +149,9 @@ Page {
                 imageSource: 'qrc:/play-circle-solid.svg'
 
                 onClicked: {
-                    state = 'pause'
-
-                    if (Player.audioAvailable)
-                        Player.togglePlayPause()
-
-                    if (Player.state === Player.PlayingState)
-                        state = 'play'
+                    Player.togglePlayPause()
                 }
+
                 states: [
                     State {
                         name: 'play'

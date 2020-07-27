@@ -80,7 +80,7 @@ QtObject {
 
     property QtObject separator: QtObject {
         property int height: 4
-        property color color: app.color2
+        property color color: app.color_2
     }
 
     property QtObject settings: QtObject {

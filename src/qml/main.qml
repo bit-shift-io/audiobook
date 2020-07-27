@@ -11,7 +11,7 @@ ApplicationWindow {
         if (Player.titleText === '')
             Qt.application.name;
         else
-            Qt.application.name + ' | ' + Player.titleText;
+            Qt.application.name + ' - ' + Player.titleText;
     }
     width: 350
     height: 500

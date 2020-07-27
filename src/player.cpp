@@ -103,7 +103,6 @@ int Player::speed() const
 
 void Player::exitHandler()
 {
-    Settings::instance()->sync();
 }
 
 
@@ -129,7 +128,6 @@ void Player::setPlaybackMode(QMediaPlaylist::PlaybackMode mode) {
 
 qint64 Player::sliderValue() const {
     // multiply by scale of the slider
-    qDebug() << "slider value";
     return mProgress * mProgressScale;
 }
 
@@ -179,14 +177,10 @@ void Player::positionChanged(qint64 xPosition)
         if (!QMediaPlayer::isSeekable())
             return;
 
-        qDebug() << "seekable!";
         setPosition(mSetPosition);
         setMuted(false);
         mSetPosition = -1;
     }
-
-    qDebug() << "position changed emit";
-
 
     mProgress = mCurrentBook->getStartProgressChapter(chapterIndex()) + xPosition;
     mCurrentBook->progress = mProgress;
@@ -199,7 +193,6 @@ void Player::setProgress(qint64 xPosition) {
     // this converts from book progress to
     // chapter index
     // chapter time -> position
-    qDebug() << "setProgress";
     int chapter_index = mCurrentBook->getChapterIndex(xPosition);
     qint64 chapter_position = mCurrentBook->getChapterPosition(xPosition);
 
