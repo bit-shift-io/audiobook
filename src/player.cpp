@@ -22,6 +22,9 @@ Player::Player(QMediaPlayer *parent)
     //connect(this, &QMediaPlayer::seekableChanged, this, &Player::seekableChanged); // broken on android
     //connect(this, &QMediaPlayer::bufferStatusChanged, this, &Player::bufferChanged); // broken
 
+    mTimer = new QTimer(this);
+    connect(mTimer, &QTimer::timeout, this, &Player::endSleepTimer);
+
     // exit app
     connect(qApp, &QApplication::aboutToQuit, this, &Player::exitHandler);
 
@@ -34,6 +37,9 @@ Player::Player(QMediaPlayer *parent)
 
     int speed = Settings::value("speed", 100).toInt();
     setSpeed(speed);
+
+    int sleep_time = Settings::value("sleep_time", 3600000).toInt(); // 1hr in msec
+    setSleepTime(sleep_time);
 }
 
 
@@ -85,19 +91,46 @@ QString Player::chapterProgressText() const
 }
 
 
+QString Player::sleepTimeText() const
+{
+    return Util::getDisplayTime(mSleepTime);
+}
+
+
 int Player::chapterIndex() const
 {
     return playlist()->currentIndex();
 }
+
 
 int Player::volume() const
 {
     return QMediaPlayer::volume();
 }
 
+
 int Player::speed() const
 {
     return QMediaPlayer::playbackRate() * 100;
+}
+
+
+int Player::sleepTime() const
+{
+    return mSleepTime;
+}
+
+
+bool Player::sleepTimerEnabled() const
+{
+    return mSleepTimeEnabled;
+}
+
+
+void Player::endSleepTimer()
+{
+   QMediaPlayer::pause();
+   setSleepTimerEnabled(false);
 }
 
 
@@ -251,6 +284,33 @@ void Player::setSpeed(int xSpeed)
 
     QMediaPlayer::setPlaybackRate(xSpeed/100.0);
     Settings::setValue("speed", xSpeed);
+}
+
+
+void Player::setSleepTime(int xTime)
+{
+    if (mSleepTime == xTime)
+        return;
+
+    mSleepTime = xTime;
+    Settings::setValue("sleep_time", mSleepTime);
+    emit sleepTimeChanged(mSleepTime);
+}
+
+
+void Player::setSleepTimerEnabled(bool xEnabled)
+{
+    if (mSleepTimeEnabled == xEnabled)
+        return;
+
+    mSleepTimeEnabled = xEnabled;
+
+    if (mSleepTimeEnabled)
+        mTimer->start(mSleepTime);
+    else
+        mTimer->stop();
+
+    emit sleepTimerEnabledChanged(mSleepTimeEnabled);
 }
 
 

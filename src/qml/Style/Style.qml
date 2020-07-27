@@ -105,6 +105,13 @@ QtObject {
         property int height: 4
     }
 
+    property QtObject duration_picker: QtObject {
+        property int font_size_digit: app.font_size * 3
+        property int font_size_text: app.font_size * 2
+        property int font_size_button: app.font_size * 2
+        property int size_button: 60
+    }
+
     property QtObject control: QtObject {
         property int margin: app.margin
         property int font_size_title: app.font_size * 2

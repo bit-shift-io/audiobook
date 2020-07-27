@@ -17,21 +17,8 @@ Page {
     Connections {
         target: Player
         function onStateChanged(xState) {
-            switch(xState) {
-            case Player.PlayingState:
-                play_button.state = 'play';
+            if (xState === Player.PlayingState)
                 root.active_swipe_view = 0;
-                console.log("change swipe view");
-                break;
-            case Player.PausedState:
-                play_button.state = 'pause';
-                break;
-            case Player.StoppedState:
-                play_button.state = 'pause';
-                break;
-            default:
-                // code block
-            }
         }
     }
 
@@ -128,8 +115,28 @@ Page {
                 imageSource: 'qrc:/stopwatch-solid.svg'
                 imagePadding: Style.image_button.padding_small
                 onClicked: {
-                    Player.skipBackward()
+                    Player.sleepTimerEnabled = !Player.sleepTimerEnabled;
                 }
+
+                states: [
+                    State {
+                        name: 'enabled'
+                        when: Player.sleepTimerEnabled
+                        PropertyChanges {
+                            target: timmer_button
+                            imageSource: 'qrc:/bed-solid.svg'
+                        }
+                    },
+                    State {
+                        name: 'disabled'
+                        when: !Player.sleepTimerEnabled
+                        PropertyChanges {
+                            target: timmer_button
+                            imageSource: 'qrc:/stopwatch-solid.svg'
+                        }
+                    }
+
+                ]
             }
 
             ImageButton {
@@ -155,7 +162,7 @@ Page {
                 states: [
                     State {
                         name: 'play'
-                        when: play_button.checked
+                        when: Player.state == Player.PlayingState
                         PropertyChanges {
                             target: play_button
                             imageSource: 'qrc:/pause-solid.svg'
@@ -163,7 +170,7 @@ Page {
                     },
                     State {
                         name: 'pause'
-                        when: !play_button.checked
+                        when: Player.state != Player.PlayingState
                         PropertyChanges {
                             target: play_button
                             imageSource: 'qrc:/play-circle-solid.svg'

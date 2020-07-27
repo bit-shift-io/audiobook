@@ -4,8 +4,8 @@ import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.0
 import QSettings 1.0
 import QtQml.Models 2.2
-
 import Database 1.0
+import Player 1.0
 import 'Style'
 
 Page {
@@ -22,23 +22,20 @@ Page {
         Layout.fillWidth: true
         height: back_button.height
 
-        RowLayout {
-            id: tool_row
-            anchors.fill: parent
-
-            Button {
-                id: back_button
-                text: "<"
-                onClicked: {
-                    stack_view.pop()
-                }
-            }
-            Label {
-                text: root_settings.title
-                horizontalAlignment: Text.AlignHCenter
-                anchors.centerIn: parent.verticalCenter
+        Button {
+            id: back_button
+            text: "<"
+            onClicked: {
+                stack_view.pop()
             }
         }
+
+        Label {
+            text: root_settings.title
+            horizontalAlignment: Text.AlignHCenter
+            anchors.centerIn: parent
+        }
+
     }
 
     Item {
@@ -124,6 +121,50 @@ Page {
                     onValueChanged: {
                         Style.font_scale = value / 100;
                         QSettings.setValue('font_scale', value);
+                    }
+                }
+            }
+
+            Separator {}
+
+            Item {
+                id: sleep_time_row
+                implicitHeight: sleep_time_label.height + sleep_time_desc.height + Style.settings.margin * 2
+                implicitWidth: content.width
+                anchors.margins: Style.settings.margin
+
+                Label {
+                    id: sleep_time_label
+                    text: 'Sleep Duration'
+                    font.pixelSize: Style.settings.size_heading
+                    font.weight: Style.settings.weight_heading
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignHCenter
+                    anchors.margins: Style.settings.margin
+                }
+
+                Label {
+                    id: sleep_time_desc
+                    anchors.top: parent.children[0].bottom
+                    text: 'Sleep timmer duration'
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignHCenter
+                    anchors.margins: Style.settings.margin
+                }
+
+                Label {
+                    id: sleep_time_value
+                    text: Player.sleepTimeText
+                    Layout.alignment: Qt.AlignRight
+                    anchors.right: parent.right
+                    anchors.margins: Style.settings.margin
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        stack_view.push("DurationPicker.qml");
                     }
                 }
             }

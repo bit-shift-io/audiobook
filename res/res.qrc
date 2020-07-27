@@ -29,5 +29,6 @@
         <file>stopwatch-solid.svg</file>
         <file>folder-solid.svg</file>
         <file>file-alt-solid.svg</file>
+        <file>backspace-solid.svg</file>
     </qresource>
 </RCC>

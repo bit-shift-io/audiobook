@@ -5,6 +5,7 @@
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
 
+class QTimer;
 class Book;
 class QQmlEngine;
 class QJSEngine;
@@ -22,6 +23,9 @@ class Player : public QMediaPlayer
     Q_PROPERTY(QString chapterProgressText READ chapterProgressText NOTIFY currentIndexChanged)
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
     Q_PROPERTY(int speed READ speed WRITE setSpeed NOTIFY speedChanged)
+    Q_PROPERTY(int sleepTime READ sleepTime WRITE setSleepTime NOTIFY sleepTimeChanged)
+    Q_PROPERTY(QString sleepTimeText READ sleepTimeText NOTIFY sleepTimeChanged)
+    Q_PROPERTY(bool sleepTimerEnabled READ sleepTimerEnabled WRITE setSleepTimerEnabled NOTIFY sleepTimerEnabledChanged)
 
 public:
     ~Player();
@@ -35,9 +39,13 @@ public:
     QString titleText() const;
     QString chapterText() const;
     QString chapterProgressText() const;
+    QString sleepTimeText() const;
     int chapterIndex() const;
     int volume() const;
     int speed() const;
+    int sleepTime() const;
+    bool sleepTimerEnabled() const;
+    void endSleepTimer();
     void exitHandler();
 
     // current/active item
@@ -59,6 +67,8 @@ public slots:
     void volumeDown();
     void setVolume(int xVolume);
     void setSpeed(int xSpeed);
+    void setSleepTime(int xTime);
+    void setSleepTimerEnabled(bool xEnabled);
 
 signals:
     void progressChanged();
@@ -66,6 +76,8 @@ signals:
     void currentIndexChanged(int xIndex);
     void volumeChanged(int xVolume);
     void speedChanged(int xSpeed);
+    void sleepTimeChanged(int xTime);
+    void sleepTimerEnabledChanged(bool xEnabled);
 
 
 private:
@@ -74,6 +86,9 @@ private:
     float mProgressScale; // decimal
     qint64 mSetPosition = -1;
     qint64 mProgress = 0;
+    int mSleepTime = 3600000; // 1hr
+    bool mSleepTimeEnabled = false;
+    QTimer * mTimer = nullptr;
     explicit Player(QMediaPlayer *parent = nullptr);
 };
 
