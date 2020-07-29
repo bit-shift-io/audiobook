@@ -13,7 +13,7 @@
 #include "libraryfilterproxy.h"
 #include "chaptermodel.h"
 #include "player.h"
-
+#include "shortcuts.h"
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroidExtras>
@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
     Settings* settings = Settings::instance();
     Database* database = Database::instance();
     Player* player = Player::instance();
+    Shortcuts * shortcuts = Shortcuts::instance();
 
     // library model proxy for filtering search
     // https://doc.qt.io/archives/qt-5.10/qtquickcontrols-filesystembrowser-example.html
