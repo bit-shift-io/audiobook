@@ -341,6 +341,24 @@ void Player::setRepeatMode(Player::Repeat xMode)
         return;
 
     mRepeatMode = xMode;
+    Settings::setValue("repeat_mode", mRepeatMode);
+
+    switch(mRepeatMode){
+    case(Repeat::LIBRARY):
+        playlist()->setPlaybackMode(QMediaPlaylist::Sequential);
+        break;
+    case(Repeat::BOOK):
+        playlist()->setPlaybackMode(QMediaPlaylist::Loop);
+        break;
+    case(Repeat::CHAPTER):
+        playlist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+        break;
+    case(Repeat::NONE):
+        playlist()->setPlaybackMode(QMediaPlaylist::Sequential);
+        break;
+
+    }
+
     emit repeatModeChanged(mRepeatMode);
 }
 

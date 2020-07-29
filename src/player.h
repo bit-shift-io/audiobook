@@ -27,7 +27,7 @@ class Player : public QMediaPlayer
     Q_PROPERTY(int sleepTime READ sleepTime WRITE setSleepTime NOTIFY sleepTimeChanged)
     Q_PROPERTY(QString sleepTimeText READ sleepTimeText NOTIFY sleepTimeChanged)
     Q_PROPERTY(bool sleepTimerEnabled READ sleepTimerEnabled WRITE setSleepTimerEnabled NOTIFY sleepTimerEnabledChanged)
-    //Q_PROPERTY(RepeatMode RepeatMode READ RepeatMode WRITE setRepeatMode NOTIFY repeatModeChanged)
+    Q_PROPERTY(Player::Repeat repeatMode READ repeatMode WRITE setRepeatMode NOTIFY repeatModeChanged)
 
 public:
     enum Repeat {
