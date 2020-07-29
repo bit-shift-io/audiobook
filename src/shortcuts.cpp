@@ -1,15 +1,26 @@
 
 #include <QDebug>
 #include <QKeySequence>
+#include <QMetaMethod>
+#include <QMetaObject>
 #include <QShortcut>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QGraphicsScene>
 #include "shortcuts.h"
-#include "shortcut.h"
+
 
 Shortcuts::Shortcuts(QObject *parent)
     : QObject(parent)
 {
     qApp->installEventFilter(this);
-    init();
+
+    add(QKeySequence::Quit, QCoreApplication::instance(), "quit");
+    add(QKeySequence(Qt::Key_Space), Player::instance(), "togglePlayPause");
+    add(QKeySequence(Qt::Key_Right), Player::instance(), "skipForward");
+    add(QKeySequence(Qt::Key_Left), Player::instance(), "skipBackward");
+    add(QKeySequence(Qt::Key_Up), Player::instance(), "volumeUp");
+    add(QKeySequence(Qt::Key_Down), Player::instance(), "volumeDown");
 }
 
 
@@ -30,56 +41,48 @@ QObject *Shortcuts::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
 
 bool Shortcuts::eventFilter(QObject *obj, QEvent *e)
 {
+    // https://stackoverflow.com/questions/12192780/assigning-keyboard-shortcuts-to-qml-components
+    if(e->type() == QEvent::KeyRelease) {
+        // key release
+        mAlreadySent = false;
+        return QObject::eventFilter(obj, e);
+    }
+
     if (e->type() != QEvent::KeyPress)
         return QObject::eventFilter(obj, e);
 
-    qDebug() << e->type();
+    if ((dynamic_cast<QGraphicsScene*>(obj)) || (obj->objectName() == "blockShortcut") || (dynamic_cast<QLineEdit*>(obj)) )
+        return QObject::eventFilter(obj, e);
+
+    QKeyEvent *keyEvent = static_cast<QKeyEvent*>(e);
+
+    // Just mod keys is not enough for a shortcut, block them just by returning.
+    if (keyEvent->key() >= Qt::Key_Shift && keyEvent->key() <= Qt::Key_Alt)
+        return QObject::eventFilter(obj, e);
+
+    int keyInt = keyEvent->modifiers() + keyEvent->key();
+
+    for (ShortcutData &shortcut : mShortcuts) {
+        if (!mAlreadySent && QKeySequence(keyInt) == shortcut.KeySequence) {
+            mAlreadySent = true;
+            // execute!
+            QMetaObject::invokeMethod(shortcut.Context, shortcut.Slot, Qt::DirectConnection);
+            //QMetaObject::invokeMethod(shortcut.Context, shortcut.Slot, Qt::DirectConnection, Q_ARG(QString, "1234"));
+            break;
+        }
+    }
 
     return QObject::eventFilter(obj, e);
 }
 
 
-void Shortcuts::init()
+void Shortcuts::add(QKeySequence xKeySequence, QObject *xContext, const char* xSlot)
 {
-    Shortcut s;
-    s.setKey(Qt::CTRL + Qt::Key_Q);
-    //connect(s, s.activated(), this, this->ready());
-
-    //add(QKeySequence(Qt::CTRL + Qt::Key_P), Player::instance(), &Player::togglePlayPause);
-
-    // TODO: hotkeys in c++
-    //https://stackoverflow.com/questions/12192780/assigning-keyboard-shortcuts-to-qml-components
-    // https://asmaloney.com/2016/03/code/using-c11-lambdas-as-qt-slots/
-    // https://code.woboq.org/qt5/qtdeclarative/src/quick/util/qquickshortcut.cpp.html
-
-
-
-    /*
-    QWidget *parent = nullptr;
-
-    QShortcut *quitShortcut = new QShortcut(QKeySequence::Quit, parent);
-    connect(quitShortcut, &QShortcut::activated, parent, &QCoreApplication::quit);
-
-    QShortcut *toggleShortcut = new QShortcut(Qt::Key_Space, parent);
-    connect(toggleShortcut, &QShortcut::activated, Player::instance(), &Player::togglePlayPause);
-
-    QShortcut *forwardShortcut = new QShortcut(Qt::Key_Right, parent);
-    connect(forwardShortcut, &QShortcut::activated, Player::instance(), &Player::skipForward);
-
-    QShortcut *backwardShortcut = new QShortcut(Qt::Key_Left, parent);
-    connect(backwardShortcut, &QShortcut::activated, Player::instance(), &Player::skipBackward);
-
-    QShortcut *increaseShortcut = new QShortcut(Qt::Key_Up, parent);
-    connect(increaseShortcut, &QShortcut::activated, Player::instance(), &Player::volumeUp);
-
-    QShortcut *decreaseShortcut = new QShortcut(Qt::Key_Down, parent);
-    connect(decreaseShortcut, &QShortcut::activated, Player::instance(), &Player::volumeDown);
-    */
+    // need to remove the first char from slot
+    ShortcutData s;
+    s.KeySequence = xKeySequence;
+    s.Context = xContext;
+    s.Slot = xSlot;
+    mShortcuts.append(s);
 }
 
-
-
-void Shortcuts::add(QKeySequence xKeySequence, const QObject *context, const char* slot)
-{
-
-}

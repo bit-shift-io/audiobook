@@ -68,7 +68,6 @@ HEADERS += \
   src/librarymodel.h \
   src/player.h \
   src/settings.h \
-  src/shortcut.h \
   src/shortcuts.h \
   src/taglib/ape/apefile.h \
   src/taglib/ape/apefooter.h \
@@ -197,7 +196,6 @@ SOURCES += \
   src/main.cpp \
   src/player.cpp \
   src/settings.cpp \
-  src/shortcut.cpp \
   src/shortcuts.cpp \
   src/taglib/ape/apefile.cpp \
   src/taglib/ape/apefooter.cpp \
