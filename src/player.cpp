@@ -13,12 +13,13 @@ Player::Player(QMediaPlayer *parent)
     // TODO: use parent playlist? parent->playlist()
     QMediaPlaylist *playlist = new QMediaPlaylist;
     setPlaylist(playlist);
-
-    // connects
     connect(playlist, &QMediaPlaylist::currentIndexChanged, this, &Player::playlistIndexChanged);
+
+    connect(this, &QMediaPlayer::mediaStatusChanged, this, &Player::updateMediaStatus);
     connect(this, &QMediaPlayer::positionChanged, this, &Player::positionChanged);
     connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
     connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
+
     //connect(this, &QMediaPlayer::seekableChanged, this, &Player::seekableChanged); // broken on android
     //connect(this, &QMediaPlayer::bufferStatusChanged, this, &Player::bufferChanged); // broken
 
@@ -40,6 +41,10 @@ Player::Player(QMediaPlayer *parent)
 
     int sleep_time = Settings::value("sleep_time", 3600000).toInt(); // 1hr in msec
     setSleepTime(sleep_time);
+
+
+    Repeat repeat_mode = static_cast<Repeat>(Settings::value("repeat_mode", Repeat::LIBRARY).toInt());
+    setRepeatMode(repeat_mode);
 }
 
 
@@ -94,6 +99,12 @@ QString Player::chapterProgressText() const
 QString Player::sleepTimeText() const
 {
     return Util::getDisplayTime(mSleepTime);
+}
+
+
+Player::Repeat Player::repeatMode() const
+{
+    return mRepeatMode;
 }
 
 
@@ -314,6 +325,26 @@ void Player::setSleepTimerEnabled(bool xEnabled)
 }
 
 
+void Player::updateMediaStatus(QMediaPlayer::MediaStatus xStatus)
+{
+    if (xStatus == QMediaPlayer::NoMedia && chapterIndex() == -1 && mRepeatMode == Repeat::LIBRARY) {
+        QString next_book = Database::instance()->getNextLibraryItem(mCurrentBook->path)->path;
+        setCurrentItem(next_book);
+        qDebug() << "load next book from lib" << next_book;
+    }
+}
+
+
+void Player::setRepeatMode(Player::Repeat xMode)
+{
+    if (mRepeatMode == xMode)
+        return;
+
+    mRepeatMode = xMode;
+    emit repeatModeChanged(mRepeatMode);
+}
+
+
 void Player::setCurrentItem(QString &xIndex)
 {
     if (xIndex.isEmpty())
@@ -345,6 +376,9 @@ void Player::setCurrentItem(QString &xIndex)
         QUrl url = QUrl::fromLocalFile(Database::instance()->libraryPath() + chapter.path);
         playlist()->addMedia(url);
     }
+
+    // changing book requires this
+    emit playlistChanged();
 
     // set a default item in the playlist
     //setChapterIndex(0);

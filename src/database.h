@@ -43,6 +43,7 @@ public:
     bool isEmpty() const;
     QVector<Book> getLibraryItems();
     Book * getLibraryItem(QString &xPath);
+    Book * getNextLibraryItem(QString &xPath);
 
 signals:
     void pathChanged();

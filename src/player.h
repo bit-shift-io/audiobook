@@ -13,6 +13,7 @@ class QJSEngine;
 class Player : public QMediaPlayer
 {
     Q_OBJECT
+
     Q_PROPERTY(QString currentItem WRITE setCurrentItem NOTIFY currentItemChanged)
     Q_PROPERTY(qint64 sliderValue READ sliderValue NOTIFY progressChanged)
     Q_PROPERTY(int chapterIndex READ chapterIndex WRITE setChapterIndex NOTIFY progressChanged)
@@ -26,8 +27,17 @@ class Player : public QMediaPlayer
     Q_PROPERTY(int sleepTime READ sleepTime WRITE setSleepTime NOTIFY sleepTimeChanged)
     Q_PROPERTY(QString sleepTimeText READ sleepTimeText NOTIFY sleepTimeChanged)
     Q_PROPERTY(bool sleepTimerEnabled READ sleepTimerEnabled WRITE setSleepTimerEnabled NOTIFY sleepTimerEnabledChanged)
+    //Q_PROPERTY(RepeatMode RepeatMode READ RepeatMode WRITE setRepeatMode NOTIFY repeatModeChanged)
 
 public:
+    enum Repeat {
+        LIBRARY = 0,
+        BOOK,
+        CHAPTER,
+        NONE,
+    };
+    Q_ENUM(Repeat);
+
     ~Player();
     Player(const Player&) = delete; // disable copy for singleton
     static Player *instance();
@@ -40,6 +50,7 @@ public:
     QString chapterText() const;
     QString chapterProgressText() const;
     QString sleepTimeText() const;
+    Player::Repeat repeatMode() const;
     int chapterIndex() const;
     int volume() const;
     int speed() const;
@@ -54,6 +65,7 @@ public:
     Book * getCurrentItem();
 
 public slots:
+    void setRepeatMode(Player::Repeat xMode);
     void positionChanged(qint64 xPosition);
     void playlistIndexChanged(int xIndex);
     void setProgress(qint64 xPosition);
@@ -69,6 +81,7 @@ public slots:
     void setSpeed(int xSpeed);
     void setSleepTime(int xTime);
     void setSleepTimerEnabled(bool xEnabled);
+    void updateMediaStatus(QMediaPlayer::MediaStatus xStatus);
 
 signals:
     void progressChanged();
@@ -78,9 +91,11 @@ signals:
     void speedChanged(int xSpeed);
     void sleepTimeChanged(int xTime);
     void sleepTimerEnabledChanged(bool xEnabled);
+    void repeatModeChanged(enum Player::Repeat xMode);
 
 
 private:
+    enum Player::Repeat mRepeatMode;
     Book * mCurrentBook = nullptr;
     int mSkip = 30000; // 30 sec
     float mProgressScale; // decimal

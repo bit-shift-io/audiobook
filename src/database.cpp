@@ -329,6 +329,17 @@ Book * Database::getLibraryItem(QString &xPath)
     return nullptr;
 }
 
+Book *Database::getNextLibraryItem(QString &xPath)
+{
+    for(int i=0; i<mLibraryItems.size(); ++i) {
+        Book &b = mLibraryItems[i];
+        if (b.path == xPath) {
+            return &mLibraryItems[(i + 1) % mLibraryItems.size()];
+        }
+    }
+    return nullptr;
+}
+
 
 bool caseInsensitiveLessThan(const Book &s1, const Book &s2) {
     return s1.title.toLower() < s2.title.toLower();
