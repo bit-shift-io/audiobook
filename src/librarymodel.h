@@ -21,6 +21,7 @@ public:
         DurationRole,
         ArtistRole,
         PathRole,
+        CurrentItemRole,
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -37,6 +38,7 @@ public:
         names[DurationRole] = "duration";
         names[ArtistRole] = "artist";
         names[PathRole] = "path";
+        names[CurrentItemRole] = "isCurrentItem";
         return names;
     }
 

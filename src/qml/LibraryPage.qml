@@ -61,7 +61,7 @@ Page {
 
             Rectangle {
                 id: background
-                color: ListView.isCurrentItem? Style.library.color_highlight : Style.library.color_background // TODO: model.isCurrentItem for active item
+                color: model.isCurrentItem? Style.library.color_highlight : Style.library.color_background
                 radius: Style.library.radius_background
                 implicitHeight: library_title.height + library_artist.height + Style.library.margin * 3
                 implicitWidth: library_list.width

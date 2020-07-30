@@ -19,6 +19,7 @@ public:
         TitleRole,
         FileNameRole,
         DurationRole,
+        CurrentItemRole,
     };
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -33,11 +34,9 @@ public:
         names[TitleRole] = "title";
         names[FileNameRole] = "fileName";
         names[DurationRole] = "duration";
+        names[CurrentItemRole] = "isCurrentItem";
         return names;
     }
-
-public slots:
-    void chapterIndexChanged(int xIndex);
 
 
 };

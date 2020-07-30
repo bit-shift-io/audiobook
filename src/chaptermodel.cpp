@@ -8,18 +8,13 @@ ChapterModel::ChapterModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     // connect library
-    connect(Player::instance(), &Player::currentIndexChanged, this, &ChapterModel::chapterIndexChanged);
+    connect(Player::instance(), &Player::currentIndexChanged, this, &ChapterModel::refresh);
 }
 
 
 void ChapterModel::refresh() {
     beginResetModel();
     endResetModel();
-}
-
-void ChapterModel::chapterIndexChanged(int xIndex)
-{
-    refresh();
 }
 
 
@@ -52,6 +47,8 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
             return QVariant(c.path);
         case DurationRole:
             return QVariant(Util::getDisplayTime(c.duration));
+        case CurrentItemRole:
+            return QVariant(index.row() == Player::instance()->chapterIndex());
     }
     return QVariant();
 }

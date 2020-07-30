@@ -82,6 +82,7 @@ public slots:
     void setSleepTime(int xTime);
     void setSleepTimerEnabled(bool xEnabled);
     void updateMediaStatus(QMediaPlayer::MediaStatus xStatus);
+    void updateSeekable(bool xSeekable);
 
 signals:
     void progressChanged();
@@ -103,6 +104,7 @@ private:
     qint64 mProgress = 0;
     int mSleepTime = 3600000; // 1hr
     bool mSleepTimeEnabled = false;
+    bool mChangingBook = false;
     QTimer * mTimer = nullptr;
     explicit Player(QMediaPlayer *parent = nullptr);
 };

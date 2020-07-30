@@ -20,7 +20,7 @@ Player::Player(QMediaPlayer *parent)
     connect(this, &QMediaPlayer::volumeChanged, this, &Player::volumeChanged);
     connect(this, &QMediaPlayer::playbackRateChanged, this, &Player::speedChanged);
 
-    //connect(this, &QMediaPlayer::seekableChanged, this, &Player::seekableChanged); // broken on android
+    connect(this, &QMediaPlayer::seekableChanged, this, &Player::updateSeekable); // broken on android
     //connect(this, &QMediaPlayer::bufferStatusChanged, this, &Player::bufferChanged); // broken
 
     mTimer = new QTimer(this);
@@ -147,6 +147,7 @@ void Player::endSleepTimer()
 
 void Player::exitHandler()
 {
+    Database::instance()->writeBook(*mCurrentBook);
 }
 
 
@@ -215,20 +216,20 @@ QString Player::titleText() const
 
 void Player::positionChanged(qint64 xPosition)
 {
-
-    if (mSetPosition > xPosition) {
+    if (mSetPosition != -1) {
         // dont change progress if media is changing
         if (!QMediaPlayer::isSeekable())
             return;
 
-        setPosition(mSetPosition);
+        QMediaPlayer::setPosition(mSetPosition);
         setMuted(false);
+        qDebug() << "unmute";
         mSetPosition = -1;
+        mChangingBook = false;
     }
 
     mProgress = mCurrentBook->getStartProgressChapter(chapterIndex()) + xPosition;
     mCurrentBook->progress = mProgress;
-    Database::instance()->writeBook(*mCurrentBook);
     emit progressChanged();
 }
 
@@ -248,6 +249,7 @@ void Player::setProgress(qint64 xPosition) {
     // set chapter and position
     QMediaPlayer::setMuted(true);
     mSetPosition = chapter_position;
+    qDebug() << "muted" << mSetPosition;
     setChapterIndex(chapter_index);
 }
 
@@ -327,11 +329,15 @@ void Player::setSleepTimerEnabled(bool xEnabled)
 
 void Player::updateMediaStatus(QMediaPlayer::MediaStatus xStatus)
 {
-    if (xStatus == QMediaPlayer::NoMedia && chapterIndex() == -1 && mRepeatMode == Repeat::LIBRARY) {
+    if (xStatus == QMediaPlayer::NoMedia && chapterIndex() == -1 && mRepeatMode == Repeat::LIBRARY && !mChangingBook) {
         QString next_book = Database::instance()->getNextLibraryItem(mCurrentBook->path)->path;
         setCurrentItem(next_book);
-        qDebug() << "load next book from lib" << next_book;
     }
+}
+
+void Player::updateSeekable(bool xSeekable)
+{
+    qDebug() << "seekable" << xSeekable;
 }
 
 
@@ -365,12 +371,15 @@ void Player::setRepeatMode(Player::Repeat xMode)
 
 void Player::setCurrentItem(QString &xIndex)
 {
+    qDebug() << "setItem" << xIndex;
+
     if (xIndex.isEmpty())
         return;
 
     if (mCurrentBook != nullptr && mCurrentBook->path == xIndex)
         return;
 
+    mChangingBook = true;
 
     // save book progress
     if (mCurrentBook != nullptr)
