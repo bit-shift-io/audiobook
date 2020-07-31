@@ -74,7 +74,7 @@ def run_desktop():
     try:
         run('''
         cd build/src
-        ./qweather
+        ./audiobook
         ''')
     except KeyboardInterrupt:
         log('exit')
@@ -86,7 +86,7 @@ def run_mobile():
     try:
         run('''
         cd build/src
-        QT_QUICK_CONTROLS_MOBILE=true QT_QUICK_CONTROLS_STYLE=Plasma ./qweather
+        QT_QUICK_CONTROLS_MOBILE=true QT_QUICK_CONTROLS_STYLE=Plasma ./audiobook
         ''')
     except KeyboardInterrupt:
         log('exit')
@@ -97,7 +97,7 @@ def run_mobile():
 def debug():
     run('''
     cd build/src
-    gdb qweather
+    gdb audiobook
     ''')
     return
 

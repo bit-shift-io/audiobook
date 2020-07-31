@@ -42,15 +42,49 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>) # /bin
 
 ################# QT components #################
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Multimedia REQUIRED)
-find_package(Qt5MultimediaWidgets REQUIRED)
+# widgets for systray qapplication
+# graphical effects for drop shadow
+# charts for charts
+find_package(Qt5 COMPONENTS REQUIRED Core Quick Svg Sql Multimedia)
 
-set(QT_USE_QTMULTIMEDIA TRUE)
-set(QT_USE_QTMULTIMEDIAWIDGETS TRUE)
+#find_package(Qt5Widgets REQUIRED)
+#find_package(Qt5Core REQUIRED)
+#find_package(Qt5Multimedia REQUIRED)
+#find_package(Qt5MultimediaWidgets REQUIRED)
+
+#set(QT_USE_QTMULTIMEDIA TRUE)
+#set(QT_USE_QTMULTIMEDIAWIDGETS TRUE)
 
 ################# Files #################
+
+set(INCLUDES
+    src/taglib
+    src/taglib/utf8-cpp
+    src/taglib/toolkit
+    src/taglib/mpeg/id3v1
+    src/taglib/mpeg/id3v2
+    src/taglib/mpeg/id3v2/frames
+    src/taglib/ape
+    src/taglib/asf
+    src/taglib/flac
+    src/taglib/mp4
+    src/taglib/mpc
+    src/taglib/mpeg
+    src/taglib/ogg
+    src/taglib/riff
+    src/taglib/trueaudio
+    src/taglib/wavpack
+    src/taglib/ogg/flac
+    src/taglib/ogg/speex
+    src/taglib/ogg/vorbis
+    src/taglib/ogg/opus
+    src/taglib/riff/aiff
+    src/taglib/riff/wav
+    src/taglib/mod
+    src/taglib/it
+    src/taglib/s3m
+    src/taglib/xm
+)
 
 set(HEADERS
     src/book.h
@@ -85,7 +119,10 @@ set(RESOURCES
     res/res.qrc
 )
 
+
 ################# Target #################
+
+include_directories(${INCLUDES})
 
 # qt resources
 set(CMAKE_AUTORCC ON)
@@ -94,10 +131,9 @@ qt5_add_resources (RCC_SOURCES res/res.qrc)
 # app config
 add_executable(audiobook ${SOURCES} ${HEADERS} ${UI} ${RCC_SOURCES})
 
-
 # app config
-target_link_libraries(audiobook Qt5::Widgets)
-QT5_USE_MODULES(audiobook Multimedia MultimediaWidgets)
+target_link_libraries(audiobook Qt5::Core Qt5::Quick Qt5::Sql Qt5::Svg)
+QT5_USE_MODULES(audiobook Multimedia)
 
 ################# Install #################
 
