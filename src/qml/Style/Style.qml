@@ -47,6 +47,11 @@ QtObject {
         property color color_down: '#646464'
     }
 
+    property QtObject menu: QtObject {
+        property color color_background: app.color
+        property color color_highlight: app.color_highlight
+    }
+
     property QtObject slider: QtObject {
         property color color_handle: '#ffffff'
         property color color_handle_pressed: '#464646'

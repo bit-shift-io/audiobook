@@ -19,5 +19,8 @@
         <file>qml/Style/TextField.qml</file>
         <file>qml/Style/ListSeparator.qml</file>
         <file>qml/DurationPicker.qml</file>
+        <file>qml/Style/Menu.qml</file>
+        <file>qml/Style/MenuItem.qml</file>
+        <file>qml/ListViewPicker.qml</file>
     </qresource>
 </RCC>

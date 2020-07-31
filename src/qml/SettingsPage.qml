@@ -107,20 +107,29 @@ Page {
                     anchors.margins: Style.settings.margin
                 }
 
-                SpinBox {
-                    id: font_scale_spin
-                    value: QSettings.value('font_scale', 100)
-                    from: 50
-                    to: 200
-                    stepSize: 10
-                    editable: true
+                Label {
+                    id: font_scale_value
+                    text: Style.font_scale * 100
                     Layout.alignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.margins: Style.settings.margin
                     anchors.verticalCenter: parent.verticalCenter
-                    onValueChanged: {
+                }
+
+                ListViewPicker {
+                    id: lvp
+                    model: [{label: "75"}, {label: "100"}, {label: "125"}, {label: "150"}, {label: "200"}]
+                    onAccepted: {
+                        var value = parseInt(model[currentIndex].label)
                         Style.font_scale = value / 100;
                         QSettings.setValue('font_scale', value);
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        lvp.open();
                     }
                 }
             }
