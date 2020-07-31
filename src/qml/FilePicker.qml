@@ -68,7 +68,7 @@ Page {
             Item {
                 id: file_row
                 implicitHeight: file_name_label.height + Style.app.margin * 2
-                implicitWidth: parent.width
+                implicitWidth: file_list_view.width
                 anchors.margins: Style.app.margin
 
                 Image {
