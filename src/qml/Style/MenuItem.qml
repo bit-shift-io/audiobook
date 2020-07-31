@@ -1,5 +1,5 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtQuick.Templates 2.2 as T
 
 MenuItem {
