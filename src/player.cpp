@@ -102,6 +102,15 @@ QString Player::sleepTimeText() const
 }
 
 
+QString Player::repeatModeText() const
+{
+    QString result = QMetaEnum::fromType<Player::Repeat>().valueToKey(mRepeatMode);
+    result = result.toLower();
+    result[0] = result.at(0).toTitleCase();
+    return result;
+}
+
+
 Player::Repeat Player::repeatMode() const
 {
     return mRepeatMode;

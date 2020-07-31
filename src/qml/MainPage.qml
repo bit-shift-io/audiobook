@@ -64,7 +64,7 @@ Page {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.left: parent.left
-                anchors.topMargin: Style.app.margin
+                anchors.topMargin: Style.app.margin / 2
                 live: false
                 value: Player.sliderValue;
                 from: 0

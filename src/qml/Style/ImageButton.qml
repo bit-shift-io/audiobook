@@ -5,8 +5,8 @@ import QtGraphicalEffects 1.0
 AbstractButton {
     id: button
 
-    width: 40
-    height: 40
+    width: 50
+    height: 50
 
     property alias imageSource: image.source
     property int imagePadding: Style.image_button.padding

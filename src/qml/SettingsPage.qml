@@ -179,7 +179,7 @@ Page {
 
                 Label {
                     id: repeat_library_label
-                    text: 'Repeat Library'
+                    text: 'Repeat Mode'
                     font.pixelSize: Style.settings.size_heading
                     font.weight: Style.settings.weight_heading
                     horizontalAlignment: Text.AlignLeft
@@ -190,27 +190,33 @@ Page {
                 Label {
                     id: repeat_library_desc
                     anchors.top: repeat_library_label.bottom
-                    text: 'Repeat library when playing'
+                    text: 'Repeat item when playing'
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignHCenter
                     anchors.margins: Style.settings.margin
                 }
 
-                Switch {
-                    id: repeat_library_value
+                Label {
+                    id: repeat_mode_value
+                    text: Player.repeatModeText
                     Layout.alignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.margins: Style.settings.margin
                     anchors.verticalCenter: parent.verticalCenter
-                    checked: true
-                    onCheckedChanged: {
-                    }
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        console.log(repeat_library_value);
+                        contextMenu.popup()
+                    }
+
+                    Menu {
+                        id: contextMenu
+                        MenuItem { text: "Library"; onClicked: Player.repeatMode = Player.LIBRARY }
+                        MenuItem { text: "Book"; onClicked: Player.repeatMode = Player.BOOK}
+                        MenuItem { text: "Chapter"; onClicked: Player.repeatMode = Player.CHAPTER }
+                        MenuItem { text: "None"; onClicked: Player.repeatMode = Player.NONE }
                     }
                 }
             }

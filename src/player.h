@@ -28,6 +28,7 @@ class Player : public QMediaPlayer
     Q_PROPERTY(QString sleepTimeText READ sleepTimeText NOTIFY sleepTimeChanged)
     Q_PROPERTY(bool sleepTimerEnabled READ sleepTimerEnabled WRITE setSleepTimerEnabled NOTIFY sleepTimerEnabledChanged)
     Q_PROPERTY(Player::Repeat repeatMode READ repeatMode WRITE setRepeatMode NOTIFY repeatModeChanged)
+    Q_PROPERTY(QString repeatModeText READ repeatModeText NOTIFY repeatModeChanged)
 
 public:
     enum Repeat {
@@ -50,6 +51,7 @@ public:
     QString chapterText() const;
     QString chapterProgressText() const;
     QString sleepTimeText() const;
+    QString repeatModeText() const;
     Player::Repeat repeatMode() const;
     int chapterIndex() const;
     int volume() const;
