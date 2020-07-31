@@ -68,7 +68,7 @@ public:
 
 public slots:
     void setRepeatMode(Player::Repeat xMode);
-    void positionChanged(qint64 xPosition);
+    void updatePosition(qint64 xPosition);
     void playlistIndexChanged(int xIndex);
     void setProgress(qint64 xPosition);
     void setSliderValue(qint64 xPosition);
@@ -85,6 +85,7 @@ public slots:
     void setSleepTimerEnabled(bool xEnabled);
     void updateMediaStatus(QMediaPlayer::MediaStatus xStatus);
     void updateSeekable(bool xSeekable);
+    void updateBuffer(int xValue);
 
 signals:
     void progressChanged();
