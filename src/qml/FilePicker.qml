@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.2
 import Qt.labs.folderlistmodel 2.1
 import QtGraphicalEffects 1.0
 import Database 1.0
+import Util 1.0
 import 'Style'
 
 Page {
@@ -46,10 +47,26 @@ Page {
         }
     }
 
+    ComboBox {
+        id: extra_paths
+        anchors.top: parent.top
+        implicitWidth: parent.width
+        visible: Util.getAndroidStorageLocations().length > 0
+        model: Util.getAndroidStorageLocations()
+        onCurrentIndexChanged: {
+            folder_list_model.folder = 'file://' + Util.getAndroidStorageLocations()[currentIndex] + '/'
+            console.log('file://' + Util.getAndroidStorageLocations()[currentIndex] + '/')
+            console.log('file://' + Database.libraryPath)
+        }
+    }
 
     ListView {
         id: file_list_view
-        anchors.fill: parent
+        anchors.top: Util.getAndroidStorageLocations().length > 0 ? extra_paths.bottom : parent.top
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        clip: true
         ScrollBar.vertical: ScrollBar {}
 
         model: FolderListModel {

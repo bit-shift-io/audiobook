@@ -7,6 +7,24 @@
 #include "taglib/fileref.h"
 
 
+Util::Util(QObject *parent)
+    : QObject(parent)
+{
+}
+
+Util *Util::instance()
+{
+    static Util* instance = new Util;
+    return instance;
+}
+
+QObject *Util::qmlInstance(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    return Util::instance(); // C++ and QML instance
+}
+
 
 QString Util::getDisplayTime(const QString &xFileName)
 {
@@ -96,14 +114,19 @@ QString Util::getMusicLocation()
 
 QString Util::getHomeLocation()
 {
-#ifdef Q_OS_ANDROID
-    // GenericDataLocation = user folder
-    //QStringList systemEnvironment = QProcess::systemEnvironment();
-    //qDebug() << systemEnvironment;
-    //qDebug() << QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
-    return QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString(), QStandardPaths::LocateDirectory);
-#endif
     return QStandardPaths::locate(QStandardPaths::HomeLocation, QString(), QStandardPaths::LocateDirectory);
+}
+
+QStringList Util::getAndroidStorageLocations()
+{
+    // GenericDataLocation = user folder
+    QStringList system_environment = QProcess::systemEnvironment();
+    QStringList result;
+    for (auto s: system_environment) {
+        if (s.contains("STORAGE="))
+            result.append(s.split("=")[1]);
+    }
+    return result;
 }
 
 QString Util::appendFile(QString &xString) {

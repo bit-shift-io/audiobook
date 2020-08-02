@@ -14,6 +14,7 @@
 #include "chaptermodel.h"
 #include "player.h"
 #include "shortcuts.h"
+#include "util.h"
 
 #ifdef Q_OS_ANDROID
 #include <QtAndroidExtras>
@@ -74,6 +75,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<Settings>("QSettings", 1, 0, "QSettings", &Settings::qmlInstance);
     qmlRegisterSingletonType<Database>("Database", 1, 0, "Database", &Database::qmlInstance);
     qmlRegisterSingletonType<Player>("Player", 1, 0, "Player", &Player::qmlInstance);
+    qmlRegisterSingletonType<Util>("Util", 1, 0, "Util", &Util::qmlInstance);
 
 
     qmlRegisterType<ChapterModel>("ChapterModel", 1, 0, "ChapterModel");
