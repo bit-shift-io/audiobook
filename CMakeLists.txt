@@ -359,6 +359,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "audiobook")
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 
 if(UNIX)
-  install(FILES bitshift.audiobook.desktop DESTINATION share/applications ) # /usr/share?
+  install(FILES res/bitshift.audiobook.desktop DESTINATION share/applications ) # /usr/share?
   install(FILES res/bitshift.audiobook.svg DESTINATION share/pixmaps ) # /usr/share?
 endif()
