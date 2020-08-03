@@ -156,7 +156,8 @@ void Player::endSleepTimer()
 
 void Player::exitHandler()
 {
-    Database::instance()->writeBook(*mCurrentBook);
+    if (mCurrentBook != nullptr)
+        Database::instance()->writeBook(*mCurrentBook);
 }
 
 
@@ -430,6 +431,8 @@ void Player::setCurrentItem(QString &xIndex)
 
 QString Player::currentItem()
 {
+    if (mCurrentBook == nullptr)
+        return "";
     return mCurrentBook->path;
 }
 
