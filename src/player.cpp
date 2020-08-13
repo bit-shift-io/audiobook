@@ -163,6 +163,8 @@ void Player::exitHandler()
 
 void Player::playlistIndexChanged(int xIndex)
 {
+    // save book progress
+    Database::instance()->writeBook(*mCurrentBook);
     emit currentIndexChanged(xIndex);
 }
 
@@ -172,6 +174,8 @@ void Player::togglePlayPause() {
         QMediaPlayer::play();
     } else {
         QMediaPlayer::pause();
+        // save book progress
+        Database::instance()->writeBook(*mCurrentBook);
     }
 }
 
