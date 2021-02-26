@@ -3,3 +3,4 @@
 /install/
 src/audiobook-git/
 *.user
+.SRCINFO
