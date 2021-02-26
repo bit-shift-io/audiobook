@@ -5,6 +5,7 @@ pkgbase = audiobook-git
 	url = https://github.com/bit-shift-io/audiobook
 	arch = any
 	license = GPL3
+	makedepends = binutils
 	makedepends = cmake
 	makedepends = git
 	makedepends = qt5-tools
